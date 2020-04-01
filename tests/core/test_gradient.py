@@ -62,7 +62,7 @@ class LLHRatio_TestCase(unittest.TestCase):
         rss_seed = 4
         wd = '/data/user/hmniederhausen/point_sources/skyllh/test_trials/'
         pseudo_data = load_pseudo_data(os.path.join(wd, 'trial_data_rss4_gamma20_nsig40.pkl'))
-        mean_n_sig, n_sig, n_events_list, events_list = pseudo_data
+        _ , _ , n_events_list, events_list = pseudo_data
         self.ana.initialize_trial(events_list, n_events_list)
 
 
