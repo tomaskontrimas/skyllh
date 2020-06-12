@@ -827,7 +827,9 @@ class Minimizer(object):
                             'int!')
         self._max_repetitions = n
 
-    def minimize(self, rss, fitparamset, func, args=None, kwargs=None):
+    def minimize(
+            self, rss, fitparamset, func, args=None, ns_scale_factor=1,
+            kwargs=None):
         """Minimizes the the given function ``func`` by calling the ``minimize``
         method of the minimizer implementation.
 
@@ -875,7 +877,9 @@ class Minimizer(object):
             kwargs = dict()
 
         bounds = fitparamset.bounds
+        bounds[0] *= ns_scale_factor
         initials = fitparamset.initials
+        initials[0] *= ns_scale_factor
         logger.debug('Do function minimization: initials: {}'.format(initials))
 
         (xmin, fmin, status) = self._minimizer_impl.minimize(
@@ -893,6 +897,7 @@ class Minimizer(object):
             # Create a new set of random parameter initials based on the
             # parameter bounds.
             initials = fitparamset.generate_random_initials(rss)
+            initials[0] *= ns_scale_factor
 
             logger.debug(
                 'Previous rep ({}) status={}, new initials={}'.format(
@@ -925,6 +930,8 @@ class Minimizer(object):
             if(args is None):
                 args = tuple()
             (fmin, grads) = func(xmin, *args)
+
+        xmin[0] /= ns_scale_factor
 
         logger.debug(
             '%s (%s): Minimized function: %d iterations, %d repetitions' % (

@@ -108,7 +108,7 @@ class LLHRatio(object, metaclass=abc.ABCMeta):
         """
         pass
 
-    def maximize(self, rss, fitparamset, tl=None):
+    def maximize(self, rss, fitparamset, ns_scale_factor=1, tl=None):
         """Maximize the log-likelihood ratio function, by using the ``evaluate``
         method.
 
@@ -139,10 +139,14 @@ class LLHRatio(object, metaclass=abc.ABCMeta):
 
         # Define the negative llhratio function, that will get minimized.
         self_evaluate = self.evaluate
-        def negative_llhratio_func(fitparam_values, func_stats, tl=None):
+        def negative_llhratio_func(
+                fitparam_values, func_stats, ns_scale_factor, tl=None):
             func_stats['n_calls'] += 1
             with TaskTimer(tl, 'Evaluate llh-ratio function.'):
-                (f, grads) = self_evaluate(fitparam_values, tl=tl)
+                fitparam_values_scaled = np.copy(fitparam_values)
+                fitparam_values_scaled[0] /= ns_scale_factor
+                (f, grads) = self_evaluate(fitparam_values_scaled, tl=tl)
+                grads[0] /= ns_scale_factor
                 if(tracing): logger.debug(
                     'LLH-ratio func value f={:g}, grads={}'.format(
                         f, str(grads)))
@@ -153,7 +157,9 @@ class LLHRatio(object, metaclass=abc.ABCMeta):
         func_stats = {'n_calls': 0}
         with TaskTimer(tl, 'Minimize -llhratio function.'):
             (fitparam_values, fmin, status) = self._minimizer.minimize(
-                rss, fitparamset, negative_llhratio_func, args=(func_stats,tl),
+                rss, fitparamset, negative_llhratio_func,
+                args=(func_stats,ns_scale_factor,tl),
+                ns_scale_factor=ns_scale_factor,
                 kwargs=minimize_kwargs)
         log_lambda_max = -fmin
         status['n_llhratio_func_calls'] = func_stats['n_calls']
@@ -215,7 +221,7 @@ class TCLLHRatio(LLHRatio, metaclass=abc.ABCMeta):
         """
         pass
 
-    def maximize(self, rss, fitparamset, tl=None):
+    def maximize(self, rss, fitparamset, ns_scale_factor=1, tl=None):
         """Maximizes this log-likelihood ratio function, by minimizing its
         negative.
         This method has a special implementation when a 1D Newton-Rapson
@@ -267,7 +273,8 @@ class TCLLHRatio(LLHRatio, metaclass=abc.ABCMeta):
 
             return (log_lambda_max, fitparam_values, status)
 
-        return super(TCLLHRatio, self).maximize(rss, fitparamset, tl=tl)
+        return super(TCLLHRatio, self).maximize(
+            rss, fitparamset, ns_scale_factor=ns_scale_factor, tl=tl)
 
 
 class SingleDatasetTCLLHRatio(TCLLHRatio, metaclass=abc.ABCMeta):

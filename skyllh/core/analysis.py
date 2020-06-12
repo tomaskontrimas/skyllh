@@ -1027,7 +1027,7 @@ class TimeIntegratedMultiDatasetSingleSourceAnalysis(Analysis):
     """
     def __init__(self, src_hypo_group_manager, src_fitparam_mapper,
                  fitparam_ns,
-                 test_statistic, bkg_gen_method=None):
+                 test_statistic, bkg_gen_method=None, ns_scale_factor=1):
         """Creates a new time-integrated point-like source analysis assuming a
         single source.
 
@@ -1059,6 +1059,8 @@ class TimeIntegratedMultiDatasetSingleSourceAnalysis(Analysis):
             bkg_gen_method)
 
         self.fitparam_ns = fitparam_ns
+
+        self.ns_scale_factor = ns_scale_factor
 
         # Define the member for the list of PDF ratio lists. Each list entry is
         # a list of PDF ratio instances for each data set.
@@ -1297,7 +1299,7 @@ class TimeIntegratedMultiDatasetSingleSourceAnalysis(Analysis):
             process, i.e. from the minimizer.
         """
         (log_lambda_max, fitparam_values, status) = self._llhratio.maximize(
-            rss, self._fitparamset, tl=tl)
+            rss, self._fitparamset, ns_scale_factor=self.ns_scale_factor, tl=tl)
         return (self._fitparamset, log_lambda_max, fitparam_values, status)
 
     def calculate_fluxmodel_scaling_factor(self, mean_ns, fitparam_values):
