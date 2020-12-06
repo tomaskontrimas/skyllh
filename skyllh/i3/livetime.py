@@ -4,7 +4,10 @@ import numpy as np
 
 from skyllh.core.livetime import Livetime
 from skyllh.core import storage
-from skyllh.i3.dataset import I3Dataset
+from skyllh.i3.dataset import (
+    I3Dataset,
+    I3DatasetData
+)
 
 class I3Livetime(Livetime):
     """The I3Livetime class provides the functionality to load a Livetime object
@@ -59,8 +62,40 @@ class I3Livetime(Livetime):
         if(not isinstance(ds, I3Dataset)):
             raise TypeError('The ds argument must be an instance of I3Dataset!')
         if(len(ds.grl_pathfilename_list) == 0):
-            raise ValueError('No GRL files have been defined for the given dataset!')
+            raise ValueError('No GRL files have been defined for the given '
+                'dataset!')
         return I3Livetime.from_GRL_files(ds.grl_pathfilename_list)
+
+    @staticmethod
+    def from_I3DatasetData(data):
+        """Loads an I3Livetime instance from a given I3DatasetData instance,
+        which must have good-run-list (GRL) data loaded.
+
+        Parameters
+        ----------
+        data : I3DatasetData instance
+            The instance of I3DatasetData which holds the good-run-list (GRL)
+            data.
+
+        Returns
+        -------
+        livetime : I3Livetime instance
+            The created I3Livetime instance for the GRL data from the provided
+            loaded dataset data.
+        """
+        if(not isinstance(data, I3DatasetData)):
+            raise TypeError('The given data argument must be an instance of '
+                'I3DatasetData!')
+        if(data.grl is None):
+            raise ValueError('No GRL data was loaded. The grl property of '
+                'the I3DatasetData instance is None!')
+
+        uptime_mjd_intervals_arr = np.hstack((
+            data.grl['start'].reshape((len(data.grl),1)),
+            data.grl['stop'].reshape((len(data.grl),1))
+        ))
+
+        return I3Livetime(uptime_mjd_intervals_arr)
 
     def __init__(self, uptime_mjd_intervals_arr):
         super(I3Livetime, self).__init__(uptime_mjd_intervals_arr)

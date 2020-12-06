@@ -44,21 +44,26 @@ class Livetime(object):
         Raises ValueError if the data integrity is broken.
         """
         if(not isinstance(self._uptime_mjd_intervals_arr, np.ndarray)):
-            raise TypeError('The internal MJD interval array must be of type ndarray!')
+            raise TypeError('The internal MJD interval array must be of type '
+                'ndarray!')
 
         if(self._uptime_mjd_intervals_arr.dtype != np.float64):
-            raise TypeError('The type of the internal MJD interval array is not float64!')
+            raise TypeError('The type of the internal MJD interval array is '
+                'not float64!')
 
         # Check the shape of the array.
         if(self._uptime_mjd_intervals_arr.ndim != 2):
-            raise ValueError('The dimensionality of the internel MJD interval array must be 2!')
+            raise ValueError('The dimensionality of the internel MJD interval '
+                'array must be 2!')
         if(self._uptime_mjd_intervals_arr.shape[1] != 2):
-            raise ValueError('The length of the second axis of the internal MJD interval array must be 2!')
+            raise ValueError('The length of the second axis of the internal '
+                'MJD interval array must be 2!')
 
         bins = self._onoff_intervals
-        # Check if the bin edges are monotonically non decreasing.
+        # Check if the bin edges are monotonically increasing.
         if(not np.all(np.diff(bins) >= 0)):
-            raise ValueError('The interval edges of the internal MJD interval array are not monotonically non decreasing!')
+            raise ValueError('The interval edges of the internal MJD interval '
+                'array are not monotonically increasing!')
 
     @property
     def uptime_mjd_intervals_arr(self):

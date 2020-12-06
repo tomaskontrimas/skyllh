@@ -5,9 +5,10 @@ from __future__ import division
 import abc
 import numpy as np
 
+from skyllh.core.math import MathFunction
 from skyllh.core.py import float_cast, classname
 
-class TimeProfileModel(object, metaclass=abc.ABCMeta):
+class TimeProfile(MathFunction, metaclass=abc.ABCMeta):
     """Abstract base class for an emission time profile of a source.
     """
 
@@ -21,7 +22,7 @@ class TimeProfileModel(object, metaclass=abc.ABCMeta):
         t_end : float
             The MJD end time of the box profile.
         """
-        super(TimeProfileModel, self).__init__()
+        super(TimeProfile, self).__init__()
 
         self.t_start = t_start
         self.t_end = t_end
@@ -65,20 +66,6 @@ class TimeProfileModel(object, metaclass=abc.ABCMeta):
         dt : float
             The MJD time difference of how far to move the time profile in time.
             This can be a positive or negative time shift.
-        """
-        pass
-
-    @abc.abstractmethod
-    def update(self, fitparams):
-        """This method is supposed to update the time profile based on new
-        fit parameter values. This method should return a boolean flag if an
-        update was actually performed.
-
-        Returns
-        -------
-        updated : bool
-            Flag if the time profile actually got updated because of new fit
-            parameter values.
         """
         pass
 
@@ -130,29 +117,31 @@ class TimeProfileModel(object, metaclass=abc.ABCMeta):
         pass
 
 
-class BoxTimeProfile(TimeProfileModel):
+class BoxTimeProfile(TimeProfile):
     """The BoxTimeProfile describes a box-shaped emission time profile of a
     source. It has the following fit parameters:
 
-        T0 : float
+        t_0 : float
             The mid MJD time of the box profile.
-        Tw : float
+        t_w : float
             The width (days) of the box profile.
     """
-    def __init__(self, T0, Tw):
+    def __init__(self, t_0, t_w):
         """Creates a new box-shaped time profile instance.
 
         Parameters
         ----------
-        T0 : float
+        t_0 : float
             The mid MJD time of the box profile.
-        Tw : float
+        t_w : float
             The width (days) of the box profile.
         """
-        t_start = T0 - Tw/2.
-        t_end = T0 + Tw/2.
+        t_start = t_0 - t_w/2.
+        t_end = t_0 + t_w/2.
 
         super(BoxTimeProfile, self).__init__(t_start, t_end)
+
+        self.param_names = ('t_0', 't_w')
 
     def move(self, dt):
         """Moves the box-shaped time profile by the time difference dt.
@@ -167,64 +156,32 @@ class BoxTimeProfile(TimeProfileModel):
         self._t_end += dt
 
     @property
-    def T0(self):
+    def t_0(self):
         """The time of the mid point of the box.
         """
         return 0.5*(self._t_start + self._t_end)
-    @T0.setter
-    def T0(self, t):
-        old_T0 = self.T0
-        dt = t - old_T0
+    @t_0.setter
+    def t_0(self, t):
+        old_t_0 = self.t_0
+        dt = t - old_t_0
         self.move(dt)
 
     @property
-    def Tw(self):
+    def t_w(self):
         """The time width (in days) of the box.
         """
         return self._t_end - self._t_start
-    @Tw.setter
-    def Tw(self, w):
-        T0 = self.T0
-        self._t_start = T0 - 0.5*w
-        self._t_end = T0 + 0.5*w
+    @t_w.setter
+    def t_w(self, w):
+        t_0 = self.t_0
+        self._t_start = t_0 - 0.5*w
+        self._t_end = t_0 + 0.5*w
 
-    def __str__(self):
-        """Pretty string representation of the BoxTimeProfile class instance.
+    def math_function_str(self):
+        """The string showing the mathematical function of this box time
+        profile.
         """
-        s = '%s(T0=%.6f, Tw=%.6f)'%(classname(self), self.T0, self.Tw)
-        return s
-
-    def update(self, fitparams):
-        """Updates the box-shaped time profile with the new fit parameter
-        values.
-
-        Parameters
-        ----------
-        fitparams : dict
-            The dictionary with the new fit parameter values. The key must be
-            the name of the fit parameter and the value the new parameter value.
-
-        Returns
-        -------
-        updated : bool
-            Flag if the time profile actually got updated because of new fit
-            parameter values.
-        """
-        updated = False
-
-        self_T0 = self.T0
-        T0 = fitparams.get('T0', self_T0)
-        if(T0 != self_T0):
-            self.T0 = T0
-            updated = True
-
-        self_Tw = self.Tw
-        Tw = fitparams.get('Tw', self_Tw)
-        if(Tw != self_Tw):
-            self.Tw = Tw
-            updated = True
-
-        return updated
+        return '1/%g'%(self.t_w)
 
     def get_integral(self, t1, t2):
         """Calculates the integral of the box-shaped time profile from MJD time

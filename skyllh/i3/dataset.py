@@ -9,6 +9,7 @@ from skyllh.core.dataset import (
     Dataset,
     DatasetData
 )
+from skyllh.core.debugging import get_logger
 from skyllh.core.storage import (
     DataFieldRecordArray,
     create_FileLoader
@@ -18,6 +19,10 @@ from skyllh.core.timing import TaskTimer
 # Load the IceCube specific config defaults.
 # This will change the skyllh.core.config.CFG dictionary.
 from skyllh.i3 import config
+
+
+logger = get_logger('skyllh.i3.dataset')
+
 
 class I3Dataset(Dataset):
     """The I3Dataset class is an IceCube specific Dataset class that adds
@@ -192,6 +197,23 @@ class I3Dataset(Dataset):
             grl_data = fileloader_grl.load_data(
                 efficiency_mode=efficiency_mode)
             grl_data.rename_fields(self._grl_field_name_renaming_dict)
+
+        # The run numbers might not be monotonically increasing between
+        # different years of data, due to 24h test runs. I.e. those were taken
+        # during the previous year's run configuration but belong to the next
+        # year's run configuration. Hence, we need to sort the runs according
+        # to their run numbers.
+        grl_data.sort_by_field('run')
+
+        # Remove runs where start and stop MJD times are equal, i.e. runs of
+        # zero length. They should not be within the GRL. So print a warning
+        # if we encounter those.
+        m = grl_data['start'] == grl_data['stop']
+        zero_length_runs = grl_data['run'][m]
+        if(len(zero_length_runs) > 0):
+            logger.warning('The following runs have identical start and stop '
+                'MJD times in the GRL: %s'%([run for run in zero_length_runs]))
+            grl_data = grl_data[np.logical_not(m)]
 
         return grl_data
 

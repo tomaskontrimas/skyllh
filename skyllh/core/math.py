@@ -3,8 +3,6 @@
 """The `math` module contains classes for pure mathematical objects.
 """
 
-from __future__ import division
-
 import abc
 from copy import deepcopy
 
@@ -33,6 +31,7 @@ class MathFunction(object, metaclass=abc.ABCMeta):
         """The tuple holding the names of the math function's parameters.
         """
         return self._param_names
+
     @param_names.setter
     def param_names(self, names):
         if(not issequence(names)):
