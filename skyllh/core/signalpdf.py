@@ -23,7 +23,7 @@ from skyllh.core.pdf import (
 )
 from skyllh.core.source_hypothesis import SourceHypoGroupManager
 from skyllh.physics.source import PointLikeSource
-from skyllh.physics.time_profile import TimeProfileModel
+from skyllh.physics.flux_profile import TimeFluxProfile
 
 
 class GaussianPSFPointLikeSourceSignalSpatialPDF(SpatialPDF, IsSignalPDF):
@@ -138,7 +138,7 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
     account.
     """
 
-    def __init__(self, livetime, time_profile):
+    def __init__(self, livetime, time_flux_profile):
         """Creates a new signal time PDF instance for a given time profile of
         the source.
 
@@ -147,13 +147,13 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
         livetime : Livetime instance
             An instance of Livetime, which provides the detector live-time
             information.
-        time_profile : TimeProfileModel instance
-            The time profile of the source.
+        time_flux_profile : TimeFluxProfile instance
+            The time flux profile of the source.
         """
         super(SignalTimePDF, self).__init__()
 
         self.livetime = livetime
-        self.time_profile = time_profile
+        self.time_flux_profile = time_flux_profile
 
         # Define the time axis with the time boundaries of the live-time.
         self.add_axis(PDFAxis(
@@ -165,7 +165,7 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
         # integrals for each detector on-time interval during the time profile,
         # in order to be able to rescale the time profile to unity with
         # overlapping detector off-times removed.
-        (self._I, self._S) = self._calculate_time_profile_I_and_S()
+        (self._I, self._S) = self._calculate_time_flux_profile_I_and_S()
 
     @property
     def livetime(self):
@@ -182,19 +182,19 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
         self._livetime = lt
 
     @property
-    def time_profile(self):
-        """The instance of TimeProfileModel providing the (assumed) physical
-        time profile of the source.
+    def time_flux_profile(self):
+        """The instance of TimeFluxProfile providing the (assumed) physical
+        flux time profile of the source.
         """
-        return self._time_profile
+        return self._time_flux_profile
 
-    @time_profile.setter
-    def time_profile(self, tp):
-        if(not isinstance(tp, TimeProfileModel)):
+    @time_flux_profile.setter
+    def time_flux_profile(self, tfp):
+        if(not isinstance(tfp, TimeFluxProfile)):
             raise TypeError(
-                'The time_profile property must be an instance of '
-                'TimeProfileModel!')
-        self._time_profile = tp
+                'The time_flux_profile property must be an instance of '
+                'TimeFluxProfile!')
+        self._time_flux_profile = tfp
 
     def __str__(self):
         """Pretty string representation of the signal time PDF.
@@ -203,13 +203,14 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
         s += ' '*display.INDENTATION_WIDTH + \
             'livetime = %s,\n' % (str(self._livetime))
         s += ' '*display.INDENTATION_WIDTH + \
-            'time_profile = %s\n' % (str(self._time_profile))
+            'time_flux_profile = %s\n' % (str(self._time_flux_profile))
         s += ')'
         return s
 
-    def _calculate_time_profile_I_and_S(self):
-        """Calculates the total integral, I, of the time profile and the sum, A,
-        of the time-profile integrals during the detector on-time intervals.
+    def _calculate_time_flux_profile_I_and_S(self):
+        """Calculates the total integral, I, of the time flux profile and the
+        sum, S, of the time-flux-profile integrals during the detector on-time
+        intervals.
 
         Returns
         -------
@@ -220,22 +221,24 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
             on-time intervals.
         """
         ontime_intervals = self._livetime.get_ontime_intervals_between(
-            self._time_profile.t_start, self._time_profile.t_end)
-        I = self._time_profile.get_total_integral()
-        S = np.sum(self._time_profile.get_integral(
+            self._time_flux_profile.t_start, self._time_flux_profile.t_end)
+
+        I = self._time_flux_profile.get_total_integral()
+        S = np.sum(self._time_flux_profile.get_integral(
             ontime_intervals[:, 0], ontime_intervals[:, 1]))
+
         return (I, S)
 
-    def assert_is_valid_for_exp_data(self, data_exp):
-        """Checks if the time PDF is valid for all the given experimental data.
+    def assert_is_valid_for_trial_data(self, tdm):
+        """Checks if the time PDF is valid for all the given trial data.
         It checks if the time of all events is within the defined time axis of
         the PDF.
 
         Parameters
         ----------
-        data_exp : numpy record ndarray
-            The array holding the experimental data. The following data fields
-            must exist:
+        tdm : TrialDataManager instance
+            The TrialDataManager instance holding the trial data. The following
+            data fields must exist:
 
             - 'time' : float
                 The MJD time of the data event.
@@ -246,15 +249,16 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
             If some of the data is outside the time range of the PDF.
         """
         time_axis = self.get_axis('time')
+        data_time = tdm.get_data('time')
 
-        if(np.any((data_exp['time'] < time_axis.vmin) |
-                  (data_exp['time'] > time_axis.vmax))):
-            raise ValueError('Some data is outside the time range (%.3f, %.3f)!' % (
-                time_axis.vmin, time_axis.vmax))
+        if(np.any((data_time < time_axis.vmin) |
+                  (data_time > time_axis.vmax))):
+            raise ValueError('Some data is outside the time range '
+                '(%.3f, %.3f)!'%(time_axis.vmin, time_axis.vmax))
 
-    def get_prob(self, tdm, fitparams):
+    def get_prob(self, tdm, params=None, tl=None):
         """Calculates the signal time probability of each event for the given
-        set of signal time fit parameter values.
+        set of signal time parameter values.
 
         Parameters
         ----------
@@ -265,20 +269,23 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
 
             - 'time' : float
                 The MJD time of the event.
-        fitparams : dict
+        params : dict | None
             The dictionary holding the signal time parameter values for which
             the signal time probability should be calculated.
+            This can be ``Ǹone`` if the PDF that do not depend on any
+            parameters.
 
         Returns
         -------
         prob : array of float
             The (N,)-shaped ndarray holding the probability for each event.
         """
-        # Update the time-profile if its fit-parameter values have changed and
+        # Update the time-profile if its parameter values have changed and
         # recalculate self._I and self._S if an updated was actually performed.
-        updated = self._time_profile.update(fitparams)
-        if(updated):
-            (self._I, self._S) = self._calculate_time_profile_I_and_S()
+        if(params is not None):
+            updated = self._time_flux_profile.set_params(params)
+            if(updated):
+                (self._I, self._S) = self._calculate_time_flux_profile_I_and_S()
 
         events_time = tdm.get_data('time')
 
@@ -286,12 +293,12 @@ class SignalTimePDF(TimePDF, IsSignalPDF):
         # interval.
         on = self._livetime.is_on(events_time)
 
-        # The sum of the on-time integrals of the time profile, A, will be zero
-        # if the time profile is entirly during detector off-time.
+        # The sum of the on-time integrals of the time profile, S, will be zero
+        # if the time flux profile is entirly during detector off-time.
         prob = np.zeros((tdm.n_selected_events,), dtype=np.float)
         if(self._S > 0):
-            prob[on] = self._time_profile.get_value(
-                events_time[on]) / (self._I * self._S)
+            prob[on] = self._time_flux_profile(events_time[on]) / (
+                self._I * self._S)
 
         return prob
 
