@@ -1,0 +1,7 @@
+skyllh.plotting.i3.pdf module
+=============================
+
+.. automodule:: skyllh.plotting.i3.pdf
+   :members:
+   :undoc-members:
+   :show-inheritance:

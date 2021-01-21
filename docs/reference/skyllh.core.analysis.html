@@ -1,0 +1,1043 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.analysis module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.analysis_utils module" href="skyllh.core.analysis_utils.html" />
+    <link rel="prev" title="skyllh.core.utils.trials module" href="skyllh.core.utils.trials.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.analysis module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.analysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.analysis">
+<span id="skyllh-core-analysis-module"></span><h1>skyllh.core.analysis module<a class="headerlink" href="#module-skyllh.core.analysis" title="Permalink to this headline">¶</a></h1>
+<p>The analysis module provides classes for pre-defined analyses.</p>
+<dl class="py class">
+<dt id="skyllh.core.analysis.Analysis">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.analysis.</code><code class="sig-name descname">Analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em>, <em class="sig-param"><span class="n">src_fitparam_mapper</span></em>, <em class="sig-param"><span class="n">test_statistic</span></em>, <em class="sig-param"><span class="n">bkg_gen_method</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is the abstract base class for all analysis classes. It contains
+common properties required by all analyses and defines the overall analysis
+interface howto set-up and run an analysis.</p>
+<dl class="simple">
+<dt>Note: This analysis base class assumes the analysis to be a log-likelihood</dt><dd><p>ratio test, i.e. requires a mathematical log-likelihood ratio
+function.</p>
+</dd>
+</dl>
+<p>To set-up and run an analysis the following procedure applies:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Create an analysis instance.</p></li>
+<li><p>Add the datasets and their PDF ratio instances via the
+<a class="reference internal" href="#skyllh.core.analysis.Analysis.add_dataset" title="skyllh.core.analysis.Analysis.add_dataset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_dataset()</span></code></a> method.</p></li>
+<li><p>Construct the log-likelihood ratio function via the
+<a class="reference internal" href="#skyllh.core.analysis.Analysis.construct_llhratio" title="skyllh.core.analysis.Analysis.construct_llhratio"><code class="xref py py-meth docutils literal notranslate"><span class="pre">construct_llhratio()</span></code></a> method.</p></li>
+<li><p>Call the <a class="reference internal" href="#skyllh.core.analysis.Analysis.do_trial" title="skyllh.core.analysis.Analysis.do_trial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">do_trial()</span></code></a> or <a class="reference internal" href="#skyllh.core.analysis.Analysis.unblind" title="skyllh.core.analysis.Analysis.unblind"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unblind()</span></code></a> method to perform a
+random trial or to unblind the data. Both methods will fit the global
+fit parameters using the set up data. Finally, the test statistic
+is calculated via the <a class="reference internal" href="#skyllh.core.analysis.Analysis.calculate_test_statistic" title="skyllh.core.analysis.Analysis.calculate_test_statistic"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calculate_test_statistic()</span></code></a> method.</p></li>
+</ol>
+</div></blockquote>
+<p>In order to calculate sensitivities and discovery potentials, analysis
+trials have to be performed on random data samples with injected signal
+events. To perform a trial with injected signal events, the signal generator
+has to be constructed via the <code class="docutils literal notranslate"><span class="pre">construct_signal_generator</span></code> method before
+any random trial data can be generated.</p>
+<p>Constructor of the analysis base class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_hypo_group_manager</strong> (<em>instance of SourceHypoGroupManager</em>) – The instance of SourceHypoGroupManager, which defines the groups of
+source hypotheses, their flux model, and their detector signal
+efficiency implementation method.</p></li>
+<li><p><strong>src_fitparam_mapper</strong> (<em>instance of SourceFitParameterMapper</em>) – The SourceFitParameterMapper instance managing the global fit
+parameters and their relation to the individual sources.</p></li>
+<li><p><strong>test_statistic</strong> (<em>TestStatistic instance</em>) – The TestStatistic instance that defines the test statistic function
+of the analysis.</p></li>
+<li><p><strong>bkg_gen_method</strong> (<em>instance of BackgroundGenerationMethod | None</em>) – The instance of BackgroundGenerationMethod that should be used to
+generate background events for pseudo data. This can be set to None,
+if there is no need to generate background events.</p></li>
+<li><p><strong>event_selection_method</strong> (<em>instance of EventSelectionMethod | None</em>) – The instance of EventSelectionMethod that implements the selection
+of the events, which have potential to be signal. All non-selected
+events will be treated as pure background events. This is for
+runtime optimization only.
+If set to None (default), the AllEventSelectionMethod will be used,
+that selects all events for the analysis.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.src_hypo_group_manager">
+<em class="property">property </em><code class="sig-name descname">src_hypo_group_manager</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.src_hypo_group_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SourceHypoGroupManager instance, which defines the groups of
+source hypothesis, their flux model, and their detector signal
+efficiency implementation method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.src_fitparam_mapper">
+<em class="property">property </em><code class="sig-name descname">src_fitparam_mapper</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.src_fitparam_mapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SourceFitParameterMapper instance that manages the global fit
+parameters and their relation to the sources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.test_statistic">
+<em class="property">property </em><code class="sig-name descname">test_statistic</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.test_statistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>The TestStatistic instance that defines the test-statistic function
+of the analysis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.bkg_gen_method">
+<em class="property">property </em><code class="sig-name descname">bkg_gen_method</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.bkg_gen_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The BackgroundGenerationMethod instance that implements the
+background event generation. This can be None if no background
+generation method has been defined.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.dataset_list">
+<em class="property">property </em><code class="sig-name descname">dataset_list</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.dataset_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of Dataset instances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.data_list">
+<em class="property">property </em><code class="sig-name descname">data_list</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.data_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of DatasetData instances holding the original data of the
+dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.n_datasets">
+<em class="property">property </em><code class="sig-name descname">n_datasets</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.n_datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of datasets used in this analysis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.fitparamset">
+<em class="property">property </em><code class="sig-name descname">fitparamset</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.fitparamset" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The instance of FitParameterSet holding all the global
+fit parameters of the log-likelihood ratio function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.llhratio">
+<em class="property">property </em><code class="sig-name descname">llhratio</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.llhratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>The log-likelihood ratio function instance. It is None, if it has
+not been constructed yet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.bkg_generator">
+<em class="property">property </em><code class="sig-name descname">bkg_generator</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.bkg_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The background generator instance. Is None of the
+background generator has not been constructed via the
+<cite>construct_background_generator</cite> method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.sig_generator">
+<em class="property">property </em><code class="sig-name descname">sig_generator</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.sig_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The signal generator instance. Is None if the signal
+generator has not been constructed via the
+<cite>construct_signal_generator</cite> method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.total_livetime">
+<em class="property">property </em><code class="sig-name descname">total_livetime</code><a class="headerlink" href="#skyllh.core.analysis.Analysis.total_livetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The total live-time in days of the loaded data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.add_dataset">
+<code class="sig-name descname">add_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">tdm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">event_selection_method</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.add_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given dataset to the list of datasets for this analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>Dataset instance</em>) – The Dataset instance that should get added.</p></li>
+<li><p><strong>data</strong> (<em>DatasetData instance</em>) – The DatasetData instance holding the original (prepared) data of the
+dataset.</p></li>
+<li><p><strong>tdm</strong> (<em>TrialDataManager instance | None</em>) – The TrialDataManager instance managing the trial data and additional
+data fields of the data set. If set to None, it means that no
+additional data fields are defined.</p></li>
+<li><p><strong>event_selection_method</strong> (<em>instance of EventSelectionMethod | None</em>) – The instance of EventSelectionMethod to use to select only
+signal-like events from the data. All other events
+will be treated as pure background events. This reduces the amount
+of log-likelihood-ratio function evaluations. If set to None, all
+events will be evaluated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.calculate_test_statistic">
+<code class="sig-name descname">calculate_test_statistic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_lambda</span></em>, <em class="sig-param"><span class="n">fitparam_values</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.calculate_test_statistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the test statistic value by calling the <code class="docutils literal notranslate"><span class="pre">evaluate</span></code>
+method of the TestStatistic class with the given log_lambda value and
+fit parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>log_lambda</strong> (<em>float</em>) – The value of the log-likelihood ratio function. Usually, this is its
+maximum.</p></li>
+<li><p><strong>fitparam_values</strong> (<em>(</em><em>N_fitparam+1</em><em>)</em><em>-shaped 1D ndarray</em>) – The 1D ndarray holding the fit parameter values of the
+log-likelihood ratio function for the given log_lambda value.</p></li>
+<li><p><strong>arguments and keyword arguments</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>------------------------------------------</strong> – </p></li>
+<li><p><strong>additional arguments and keyword arguments are passed to the</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>method of the TestStatistic class instance.</strong> (<em>evaluate</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>TS</strong> (<em>float</em>) – The calculated test-statistic value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.construct_llhratio">
+<em class="property">abstract </em><code class="sig-name descname">construct_llhratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.construct_llhratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to construct the log-likelihood ratio
+function and sets it as the _llhratio property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.construct_background_generator">
+<code class="sig-name descname">construct_background_generator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.construct_background_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs the background generator for all added datasets.
+This method must be called after all the datasets were added via the
+add_dataset method. It sets the <cite>bkg_generator</cite> property of this
+Analysis class instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.construct_signal_generator">
+<code class="sig-name descname">construct_signal_generator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.construct_signal_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs the signal generator for all added datasets.
+This method must be called after all the datasets were added via the
+add_dataset method. It sets the <cite>sig_generator</cite> property of this
+Analysis class instance. The signal generation method has to be set
+through the source hypothesis group.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.initialize_trial">
+<em class="property">abstract </em><code class="sig-name descname">initialize_trial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events_list</span></em>, <em class="sig-param"><span class="n">n_events_list</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.initialize_trial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to initialize the log-likelihood ratio
+function with a new set of given trial data. This is a low-level method.
+For convenient methods see the <cite>unblind</cite> and <cite>do_trial</cite> methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events_list</strong> (<em>list of numpy record ndarray</em>) – The list of data events to use for the log-likelihood function
+evaluation. The data arrays for the datasets must be in the same
+order than the added datasets.</p></li>
+<li><p><strong>n_events_list</strong> (<em>list of int | None</em>) – The list of the number of events of each data set. These numbers
+can be larger than the number of events given by the <cite>events_list</cite>
+argument in cases where an event selection method was already used.
+If set to None, the number of events is taken from the given
+<cite>events_list</cite> argument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.maximize_llhratio">
+<em class="property">abstract </em><code class="sig-name descname">maximize_llhratio</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.maximize_llhratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to maximize the log-likelihood ratio
+function, by calling the <code class="docutils literal notranslate"><span class="pre">maximize</span></code> method of the LLHRatio class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<em>RandomStateService instance</em>) – The RandomStateService instance to draw random numbers from.</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord instance | None</em>) – The optional TimeLord instance that should be used to time the
+maximization of the LLH ratio function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>fitparamset</strong> (<em>FitParameterSet instance</em>) – The instance of FitParameterSet holding the global fit parameter
+definitions used in the maximization process.</p></li>
+<li><p><strong>log_lambda_max</strong> (<em>float</em>) – The value of the log-likelihood ratio function at its maximum.</p></li>
+<li><p><strong>fitparam_values</strong> (<em>(N_fitparam,)-shaped 1D ndarray</em>) – The ndarray holding the global fit parameter values.
+By definition, the first element is the value of the fit parameter
+ns.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The dictionary with status information about the maximization
+process, i.e. from the minimizer.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.unblind">
+<code class="sig-name descname">unblind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.unblind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates the unscrambled data, i.e. unblinds the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rss</strong> (<em>RandomStateService instance</em>) – The RandomStateService instance that should be used draw random
+numbers from.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>TS</strong> (<em>float</em>) – The test-statistic value.</p></li>
+<li><p><strong>fitparam_dict</strong> (<em>dict</em>) – The dictionary holding the global fit parameter names and their best
+fit values.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The status dictionary with information about the performed
+minimization process of the negative of the log-likelihood ratio
+function.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.generate_background_events">
+<code class="sig-name descname">generate_background_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">mean_n_bkg_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bkg_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.generate_background_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates background events utilizing the background generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The RandomStateService instance to use for generating random
+numbers.</p></li>
+<li><p><strong>mean_n_bkg_list</strong> (<em>list of float | None</em>) – The mean number of background events that should be generated for
+each dataset. If set to None (the default), the background
+generation method needs to obtain this number itself.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The instance of TimeLord that should be used to time individual
+tasks of this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>n_events_list</strong> (<em>list of int</em>) – The list of the number of events that have been generated for each
+pseudo data set.</p></li>
+<li><p><strong>events_list</strong> (<em>list of DataFieldRecordArray instances</em>) – The list of DataFieldRecordArray instances containing the pseudo
+data events for each data sample. The number of events for each
+data set can be less than the number of events given by
+<cite>n_events_list</cite> if an event selection method was already utilized
+when generating background events.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.generate_signal_events">
+<code class="sig-name descname">generate_signal_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">mean_n_sig</span></em>, <em class="sig-param"><span class="n">sig_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_events_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">events_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.generate_signal_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates signal events utilizing the signal generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The RandomStateService instance to use for generating random
+numbers.</p></li>
+<li><p><strong>mean_n_sig</strong> (<em>float</em>) – The mean number of signal events that should be generated for the
+trial. The actual number of generated events will be drawn from a
+Poisson distribution with this given signal mean as mean.</p></li>
+<li><p><strong>sig_kwargs</strong> (<em>dict | None</em>) – Additional keyword arguments for the <cite>generate_signal_events</cite> method
+of the <cite>SignalGenerator</cite> class. An usual keyword argument is
+<cite>poisson</cite>.</p></li>
+<li><p><strong>n_events_list</strong> (<em>list of int | None</em>) – If given, it specifies the number of events of each data set already
+present and the number of signal events will be added.</p></li>
+<li><p><strong>events_list</strong> (<em>list of DataFieldRecordArray instances | None</em>) – If given, it specifies the events of each data set already present
+and the signal events will be added.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The instance of TimeLord that should be used to time individual
+tasks of this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>n_sig</strong> (<em>int</em>) – The actual number of injected signal events.</p></li>
+<li><p><strong>n_events_list</strong> (<em>list of int</em>) – The list of the number of events that have been generated for each
+pseudo data set.</p></li>
+<li><p><strong>events_list</strong> (<em>list of DataFieldRecordArray instances</em>) – The list of DataFieldRecordArray instances containing the pseudo
+signal data events for each data set. An entry is None, if no signal
+events were generated for this particular data set.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.generate_pseudo_data">
+<code class="sig-name descname">generate_pseudo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">mean_n_bkg_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean_n_sig</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bkg_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sig_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.generate_pseudo_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates pseudo data with background and possible signal
+events for each data set using the background and signal generation
+methods of the analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The RandomStateService instance to use for generating random
+numbers.</p></li>
+<li><p><strong>mean_n_bkg_list</strong> (<em>list of float | None</em>) – The mean number of background events that should be generated for
+each dataset. If set to None (the default), the background
+generation method needs to obtain this number itself.</p></li>
+<li><p><strong>mean_n_sig</strong> (<em>float</em>) – The mean number of signal events that should be generated for the
+trial. The actual number of generated events will be drawn from a
+Poisson distribution with this given signal mean as mean.</p></li>
+<li><p><strong>bkg_kwargs</strong> (<em>dict | None</em>) – Additional keyword arguments for the <cite>generate_events</cite> method of the
+background generation method class. An usual keyword argument is
+<cite>poisson</cite>.</p></li>
+<li><p><strong>sig_kwargs</strong> (<em>dict | None</em>) – Additional keyword arguments for the <cite>generate_signal_events</cite> method
+of the <cite>SignalGenerator</cite> class. An usual keyword argument is
+<cite>poisson</cite>.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The instance of TimeLord that should be used to time individual
+tasks of this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>n_sig</strong> (<em>int</em>) – The actual number of injected signal events.</p></li>
+<li><p><strong>n_events_list</strong> (<em>list of int</em>) – The list of the number of events that have been generated for each
+pseudo data set.</p></li>
+<li><p><strong>events_list</strong> (<em>list of DataFieldRecordArray instances</em>) – The list of DataFieldRecordArray instances containing the pseudo
+data events for each data sample. The number of events for each
+data set can be less than the number of events given by
+<cite>n_events_list</cite> if an event selection method was already utilized
+when generating background events.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.do_trial_with_given_pseudo_data">
+<code class="sig-name descname">do_trial_with_given_pseudo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">mean_n_sig</span></em>, <em class="sig-param"><span class="n">n_sig</span></em>, <em class="sig-param"><span class="n">n_events_list</span></em>, <em class="sig-param"><span class="n">events_list</span></em>, <em class="sig-param"><span class="n">mean_n_sig_0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minimizer_status_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.do_trial_with_given_pseudo_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an analysis trial on the given pseudo data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The RandomStateService instance to use for generating random
+numbers.</p></li>
+<li><p><strong>mean_n_sig</strong> (<em>float</em>) – The mean number of signal events the pseudo data was generated with.</p></li>
+<li><p><strong>n_sig</strong> (<em>int</em>) – The total number of actual signal events in the pseudo data.</p></li>
+<li><p><strong>n_events_list</strong> (<em>list of int</em>) – The total number of events for each data set of the pseudo data.</p></li>
+<li><p><strong>events_list</strong> (<em>list of DataFieldRecordArray instances</em>) – The list of DataFieldRecordArray instances containing the pseudo
+data events for each data sample. The number of events for each
+data sample can be less than the number of events given by
+<cite>n_events_list</cite> if an event selection method was already utilized
+when generating background events.</p></li>
+<li><p><strong>mean_n_sig_0</strong> (<em>float | None</em>) – The fixed mean number of signal events for the null-hypothesis,
+when using a ns-profile log-likelihood-ratio function.
+If set to None, this argument is interpreted as 0.</p></li>
+<li><p><strong>minimizer_status_dict</strong> (<em>dict | None</em>) – If a dictionary is provided, it will be updated with the minimizer
+status dictionary.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The instance of TimeLord that should be used to time individual
+tasks.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>result</strong> (<em>structured numpy ndarray</em>) – The structured numpy ndarray holding the result of the trial. It
+contains the following data fields:</p>
+<dl class="simple">
+<dt>rss_seed<span class="classifier">int</span></dt><dd><p>The RandomStateService seed.</p>
+</dd>
+<dt>mean_n_sig<span class="classifier">float</span></dt><dd><p>The mean number of signal events.</p>
+</dd>
+<dt>n_sig<span class="classifier">int</span></dt><dd><p>The actual number of injected signal events.</p>
+</dd>
+<dt>mean_n_sig_0<span class="classifier">float</span></dt><dd><p>The fixed mean number of signal events for the null-hypothesis.</p>
+</dd>
+<dt>ts<span class="classifier">float</span></dt><dd><p>The test-statistic value.</p>
+</dd>
+<dt>[&lt;fitparam_name&gt; …<span class="classifier">float ]</span></dt><dd><p>Any additional fit parameters of the LLH function.</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.do_trial_with_given_bkg_and_sig_pseudo_data">
+<code class="sig-name descname">do_trial_with_given_bkg_and_sig_pseudo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">mean_n_sig</span></em>, <em class="sig-param"><span class="n">n_sig</span></em>, <em class="sig-param"><span class="n">n_bkg_events_list</span></em>, <em class="sig-param"><span class="n">n_sig_events_list</span></em>, <em class="sig-param"><span class="n">bkg_events_list</span></em>, <em class="sig-param"><span class="n">sig_events_list</span></em>, <em class="sig-param"><span class="n">mean_n_sig_0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minimizer_status_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.do_trial_with_given_bkg_and_sig_pseudo_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an analysis trial on the given background and signal pseudo
+data. This method merges the background and signal pseudo events and
+calls the <code class="docutils literal notranslate"><span class="pre">do_trial_with_given_pseudo_data</span></code> method of this class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method alters the DataFieldRecordArray instances of the
+bkg_events_list argument!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The RandomStateService instance to use for generating random
+numbers.</p></li>
+<li><p><strong>mean_n_sig</strong> (<em>float</em>) – The mean number of signal events the pseudo data was generated with.</p></li>
+<li><p><strong>n_sig</strong> (<em>int</em>) – The total number of actual signal events in the pseudo data.</p></li>
+<li><p><strong>n_bkg_events_list</strong> (<em>list of int</em>) – The total number of background events for each data set of the
+pseudo data.</p></li>
+<li><p><strong>n_sig_events_list</strong> (<em>list of int</em>) – The total number of signal events for each data set of the
+pseudo data.</p></li>
+<li><p><strong>bkg_events_list</strong> (<em>list of DataFieldRecordArray instances</em>) – The list of DataFieldRecordArray instances containing the background
+pseudo data events for each data set.</p></li>
+<li><p><strong>sig_events_list</strong> (<em>list of DataFieldRecordArray instances</em><em> or </em><em>None</em>) – The list of DataFieldRecordArray instances containing the signal
+pseudo data events for each data set. If a particular dataset has
+no signal events, the entry for that dataset can be None.</p></li>
+<li><p><strong>mean_n_sig_0</strong> (<em>float | None</em>) – The fixed mean number of signal events for the null-hypothesis,
+when using a ns-profile log-likelihood-ratio function.
+If set to None, this argument is interpreted as 0.</p></li>
+<li><p><strong>minimizer_status_dict</strong> (<em>dict | None</em>) – If a dictionary is provided, it will be updated with the minimizer
+status dictionary.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The instance of TimeLord that should be used to time individual
+tasks.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> (<em>structured numpy ndarray</em>) – The structured numpy ndarray holding the result of the trial.
+See the documentation of the <code class="docutils literal notranslate"><span class="pre">do_trial_with_given_pseudo_data</span></code>
+method for further information.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.do_trial">
+<code class="sig-name descname">do_trial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">mean_n_bkg_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean_n_sig</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">mean_n_sig_0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bkg_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sig_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minimizer_status_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.do_trial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an analysis trial by generating a pseudo data sample with
+background events and possible signal events, and performs the LLH
+analysis on that random pseudo data sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The RandomStateService instance to use for generating random
+numbers.</p></li>
+<li><p><strong>mean_n_bkg_list</strong> (<em>list of float | None</em>) – The mean number of background events that should be generated for
+each dataset. If set to None (the default), the background
+generation method needs to obtain this number itself.</p></li>
+<li><p><strong>mean_n_sig</strong> (<em>float</em>) – The mean number of signal events that should be generated for the
+trial. The actual number of generated events will be drawn from a
+Poisson distribution with this given signal mean as mean.</p></li>
+<li><p><strong>mean_n_sig_0</strong> (<em>float | None</em>) – The fixed mean number of signal events for the null-hypothesis,
+when using a ns-profile log-likelihood-ratio function.
+If set to None, this argument is interpreted as 0.</p></li>
+<li><p><strong>bkg_kwargs</strong> (<em>dict | None</em>) – Additional keyword arguments for the <cite>generate_events</cite> method of the
+background generation method class. An usual keyword argument is
+<cite>poisson</cite>.</p></li>
+<li><p><strong>sig_kwargs</strong> (<em>dict | None</em>) – Additional keyword arguments for the <cite>generate_signal_events</cite> method
+of the <cite>SignalGenerator</cite> class. An usual keyword argument is
+<cite>poisson</cite>.</p></li>
+<li><p><strong>minimizer_status_dict</strong> (<em>dict | None</em>) – If a dictionary is provided, it will be updated with the minimizer
+status dictionary.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The instance of TimeLord that should be used to time individual
+tasks.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>result</strong> (<em>structured numpy ndarray</em>) – The structured numpy ndarray holding the result of the trial. It
+contains the following data fields:</p>
+<dl class="simple">
+<dt>mean_n_sig<span class="classifier">float</span></dt><dd><p>The mean number of signal events.</p>
+</dd>
+<dt>n_sig<span class="classifier">int</span></dt><dd><p>The actual number of injected signal events.</p>
+</dd>
+<dt>mean_n_sig_0<span class="classifier">float</span></dt><dd><p>The fixed mean number of signal events for the null-hypothesis.</p>
+</dd>
+<dt>ts<span class="classifier">float</span></dt><dd><p>The test-statistic value.</p>
+</dd>
+<dt>[&lt;fitparam_name&gt; …<span class="classifier">float ]</span></dt><dd><p>Any additional fit parameters of the LLH function.</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.Analysis.do_trials">
+<code class="sig-name descname">do_trials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">mean_n_bkg_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean_n_sig</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">mean_n_sig_0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bkg_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sig_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ncpu</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ppbar</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.Analysis.do_trials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes <cite>do_trial</cite> method <cite>N</cite> times with possible multi-processing.
+One trial performs an analysis trial by generating a pseudo data sample
+with background events and possible signal events, and performs the LLH
+analysis on that random pseudo data sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The RandomStateService instance to use for generating random
+numbers.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of trials to generate using the <cite>do_trial</cite> method.</p></li>
+<li><p><strong>mean_n_bkg_list</strong> (<em>list of float | None</em>) – The mean number of background events that should be generated for
+each dataset. If set to None (the default), the number of data
+events of each data sample will be used as mean.</p></li>
+<li><p><strong>mean_n_sig</strong> (<em>float</em>) – The mean number of signal events that should be generated for the
+trial. The actual number of generated events will be drawn from a
+Poisson distribution with this given signal mean as mean.</p></li>
+<li><p><strong>mean_n_sig_0</strong> (<em>float | None</em>) – The fixed mean number of signal events for the null-hypothesis,
+when using a ns-profile log-likelihood-ratio function.</p></li>
+<li><p><strong>bkg_kwargs</strong> (<em>dict | None</em>) – Additional keyword arguments for the <cite>generate_events</cite> method of the
+background generation method class. An usual keyword argument is
+<cite>poisson</cite>.</p></li>
+<li><p><strong>sig_kwargs</strong> (<em>dict | None</em>) – Additional keyword arguments for the <cite>generate_signal_events</cite> method
+of the <cite>SignalGenerator</cite> class. An usual keyword argument is
+<cite>poisson</cite>. If <cite>poisson</cite> is set to True, the actual number of
+generated signal events will be drawn from a Poisson distribution
+with the given mean number of signal events.
+If set to False, the argument <code class="docutils literal notranslate"><span class="pre">mean_n_sig</span></code> specifies the actual
+number of generated signal events.</p></li>
+<li><p><strong>ncpu</strong> (<em>int | None</em>) – The number of CPUs to use, i.e. the number of subprocesses to
+spawn. If set to None, the global setting will be used.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The instance of TimeLord that should be used to time individual
+tasks.</p></li>
+<li><p><strong>ppbar</strong> (<em>instance of ProgressBar | None</em>) – The possible parent ProgressBar instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>result</strong> (<em>structured numpy ndarray</em>) – The structured numpy ndarray holding the result of the trial. It
+contains the following data fields:</p>
+<dl class="simple">
+<dt>n_sig<span class="classifier">int</span></dt><dd><p>The actual number of injected signal events.</p>
+</dd>
+<dt>ts<span class="classifier">float</span></dt><dd><p>The test-statistic value.</p>
+</dd>
+<dt>[&lt;fitparam_name&gt; …<span class="classifier">float ]</span></dt><dd><p>Any additional fit parameters of the LLH function.</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.analysis.</code><code class="sig-name descname">TimeIntegratedMultiDatasetSingleSourceAnalysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em>, <em class="sig-param"><span class="n">src_fitparam_mapper</span></em>, <em class="sig-param"><span class="n">fitparam_ns</span></em>, <em class="sig-param"><span class="n">test_statistic</span></em>, <em class="sig-param"><span class="n">bkg_gen_method</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.analysis.Analysis" title="skyllh.core.analysis.Analysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.analysis.Analysis</span></code></a></p>
+<p>This is an analysis class that implements a time-integrated LLH ratio
+analysis for multiple datasets assuming a single source.</p>
+<p>To run this analysis the following procedure applies:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Add the datasets and their spatial and energy PDF ratio instances
+via the <a class="reference internal" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.add_dataset" title="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.add_dataset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_dataset()</span></code></a> method.</p></li>
+<li><p>Construct the log-likelihood ratio function via the
+<a class="reference internal" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.construct_llhratio" title="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.construct_llhratio"><code class="xref py py-meth docutils literal notranslate"><span class="pre">construct_llhratio()</span></code></a> method.</p></li>
+<li><p>Initialize a trial via the <a class="reference internal" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.initialize_trial" title="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.initialize_trial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">initialize_trial()</span></code></a> method.</p></li>
+<li><p>Fit the global fit parameters to the trial data via the
+<a class="reference internal" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.maximize_llhratio" title="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.maximize_llhratio"><code class="xref py py-meth docutils literal notranslate"><span class="pre">maximize_llhratio()</span></code></a> method.</p></li>
+</ol>
+</div></blockquote>
+<p>Creates a new time-integrated point-like source analysis assuming a
+single source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_hypo_group_manager</strong> (<em>instance of SourceHypoGroupManager</em>) – The instance of SourceHypoGroupManager, which defines the groups of
+source hypotheses, their flux model, and their detector signal
+efficiency implementation method.</p></li>
+<li><p><strong>src_fitparam_mapper</strong> (<em>instance of SingleSourceFitParameterMapper</em>) – The instance of SingleSourceFitParameterMapper defining the global
+fit parameters and their mapping to the source fit parameters.</p></li>
+<li><p><strong>fitparam_ns</strong> (<em>FitParameter instance</em>) – The FitParameter instance defining the fit parameter ns.</p></li>
+<li><p><strong>test_statistic</strong> (<em>TestStatistic instance</em>) – The TestStatistic instance that defines the test statistic function
+of the analysis.</p></li>
+<li><p><strong>bkg_gen_method</strong> (<em>instance of BackgroundGenerationMethod | None</em>) – The instance of BackgroundGenerationMethod that will be used to
+generate background events for a new analysis trial. This can be set
+to None, if no background events have to get generated.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.fitparam_ns">
+<em class="property">property </em><code class="sig-name descname">fitparam_ns</code><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.fitparam_ns" title="Permalink to this definition">¶</a></dt>
+<dd><p>The FitParameter instance for the fit parameter ns.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.add_dataset">
+<code class="sig-name descname">add_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">pdfratios</span></em>, <em class="sig-param"><span class="n">tdm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">event_selection_method</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.add_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a dataset with its PDF ratio instances to the analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>Dataset instance</em>) – The Dataset instance that should get added.</p></li>
+<li><p><strong>data</strong> (<em>DatasetData instance</em>) – The DatasetData instance holding the original (prepared) data of the
+dataset.</p></li>
+<li><p><strong>pdfratios</strong> (<em>PDFRatio instance | sequence of PDFRatio instances</em>) – The PDFRatio instance or the sequence of PDFRatio instances for the
+to-be-added data set.</p></li>
+<li><p><strong>tdm</strong> (<em>TrialDataManager instance | None</em>) – The TrialDataManager instance that manages the trial data and
+additional data fields for this data set.</p></li>
+<li><p><strong>event_selection_method</strong> (<em>instance of EventSelectionMethod | None</em>) – The instance of EventSelectionMethod to use to select only
+signal-like events from the trial data. All other events
+will be treated as pure background events. This reduces the amount
+of log-likelihood-ratio function evaluations. If set to None, all
+events will be evaluated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.construct_llhratio">
+<code class="sig-name descname">construct_llhratio</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minimizer</span></em>, <em class="sig-param"><span class="n">ppbar</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.construct_llhratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs the log-likelihood-ratio (LLH-ratio) function of the
+analysis. This setups all the necessary analysis
+objects like detector signal efficiencies and dataset signal weights,
+constructs the log-likelihood ratio functions for each dataset and the
+final composite llh ratio function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minimizer</strong> (<em>instance of Minimizer</em>) – The instance of Minimizer that should be used to minimize the
+negative of the log-likelihood ratio function.</p></li>
+<li><p><strong>ppbar</strong> (<em>ProgressBar instance | None</em>) – The instance of ProgressBar of the optional parent progress bar.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>llhratio</strong> (<em>instance of MultiDatasetTCLLHRatio</em>) – The instance of MultiDatasetTCLLHRatio that implements the
+log-likelihood-ratio function of the analysis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.change_source">
+<code class="sig-name descname">change_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.change_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the source of the analysis to the given source. It makes the
+necessary changes to all the objects of the analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>source</strong> (<em>SourceModel instance</em>) – The SourceModel instance describing the new source.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.initialize_trial">
+<code class="sig-name descname">initialize_trial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events_list</span></em>, <em class="sig-param"><span class="n">n_events_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.initialize_trial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method initializes the multi-dataset log-likelihood ratio
+function with a new set of given trial data. This is a low-level method.
+For convenient methods see the <cite>unblind</cite> and <cite>do_trial</cite> methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events_list</strong> (<em>list of DataFieldRecordArray instances</em>) – The list of DataFieldRecordArray instances holding the data events
+to use for the log-likelihood function evaluation. The data arrays
+for the datasets must be in the same order than the added datasets.</p></li>
+<li><p><strong>n_events_list</strong> (<em>list of int | None</em>) – The list of the number of events of each data set. If set to None,
+the number of events is taken from the size of the given events
+arrays.</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord | None</em>) – The optional TimeLord instance that should be used for timing
+measurements.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.maximize_llhratio">
+<code class="sig-name descname">maximize_llhratio</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.maximize_llhratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximizes the log-likelihood ratio function, by minimizing its
+negative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<em>RandomStateService instance</em>) – The RandomStateService instance that should be used to draw random
+numbers from. It is used by the minimizer to generate random
+fit parameter initial values.</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord instance | None</em>) – The optional TimeLord instance that should be used to time the
+maximization of the LLH ratio function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>fitparamset</strong> (<em>FitParameterSet instance</em>) – The instance of FitParameterSet holding the global fit parameter
+definitions used in the maximization process.</p></li>
+<li><p><strong>log_lambda_max</strong> (<em>float</em>) – The value of the log-likelihood ratio function at its maximum.</p></li>
+<li><p><strong>fitparam_values</strong> (<em>(N_fitparam,)-shaped 1D ndarray</em>) – The ndarray holding the global fit parameter values.
+By definition, the first element is the value of the fit parameter
+ns.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The dictionary with status information about the maximization
+process, i.e. from the minimizer.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.calculate_fluxmodel_scaling_factor">
+<code class="sig-name descname">calculate_fluxmodel_scaling_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean_ns</span></em>, <em class="sig-param"><span class="n">fitparam_values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.analysis.TimeIntegratedMultiDatasetSingleSourceAnalysis.calculate_fluxmodel_scaling_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the factor the source’s fluxmodel has to be scaled
+in order to obtain the given mean number of signal events in the
+detector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_ns</strong> (<em>float</em>) – The mean number of signal events in the detector for which the
+scaling factor is calculated.</p></li>
+<li><p><strong>fitparam_values</strong> (<em>(</em><em>N_fitparams</em><em>,</em><em>)</em><em>-shaped 1D ndarray</em>) – The ndarray holding the fit parameter values that should be used for
+the flux calculation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>factor</strong> (<em>float</em>) – The factor the given fluxmodel needs to be scaled in order to obtain
+the given mean number of signal events in the detector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.analysis_utils.html" class="btn btn-neutral float-right" title="skyllh.core.analysis_utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.utils.trials.html" class="btn btn-neutral float-left" title="skyllh.core.utils.trials module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

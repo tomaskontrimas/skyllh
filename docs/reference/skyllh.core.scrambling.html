@@ -1,0 +1,446 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.scrambling module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.session module" href="skyllh.core.session.html" />
+    <link rel="prev" title="skyllh.core.random module" href="skyllh.core.random.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.scrambling module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.scrambling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.scrambling">
+<span id="skyllh-core-scrambling-module"></span><h1>skyllh.core.scrambling module<a class="headerlink" href="#module-skyllh.core.scrambling" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skyllh.core.scrambling.DataScramblingMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.scrambling.</code><code class="sig-name descname">DataScramblingMethod</code><a class="headerlink" href="#skyllh.core.scrambling.DataScramblingMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class (type) for implementing a data scrambling method.</p>
+<dl class="py method">
+<dt id="skyllh.core.scrambling.DataScramblingMethod.scramble">
+<em class="property">abstract </em><code class="sig-name descname">scramble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.scrambling.DataScramblingMethod.scramble" title="Permalink to this definition">¶</a></dt>
+<dd><p>The scramble method implements the actual scrambling of the given
+data, which is method dependent. The scrambling must be performed
+in-place, i.e. it alters the data inside the given data array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The random state service providing the random number
+generator (RNG).</p></li>
+<li><p><strong>data</strong> (<em>instance of DataFieldRecordArray</em>) – The DataFieldRecordArray containing the to be scrambled data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong> (<em>DataFieldRecordArray</em>) – The given DataFieldRecordArray holding the scrambled data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.scrambling.UniformRAScramblingMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.scrambling.</code><code class="sig-name descname">UniformRAScramblingMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_range</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.scrambling.UniformRAScramblingMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.scrambling.DataScramblingMethod" title="skyllh.core.scrambling.DataScramblingMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.scrambling.DataScramblingMethod</span></code></a></p>
+<p>The UniformRAScramblingMethod method performs right-ascention scrambling
+uniformly within a given RA range. By default it’s (0, 2pi).</p>
+<p>Note: This alters only the <code class="docutils literal notranslate"><span class="pre">ra</span></code> values of the data!</p>
+<p>Initializes a new RAScramblingMethod instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ra_range</strong> (<em>tuple | None</em>) – The two-element tuple holding the range in radians within the RA
+values should get drawn from. If set to None, the default (0, 2pi)
+will be used.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.scrambling.UniformRAScramblingMethod.ra_range">
+<em class="property">property </em><code class="sig-name descname">ra_range</code><a class="headerlink" href="#skyllh.core.scrambling.UniformRAScramblingMethod.ra_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>The two-element tuple holding the range within the RA values
+should get drawn from.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.scrambling.UniformRAScramblingMethod.scramble">
+<code class="sig-name descname">scramble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.scrambling.UniformRAScramblingMethod.scramble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scrambles the given data uniformly in right-ascention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The random state service providing the random number
+generator (RNG).</p></li>
+<li><p><strong>data</strong> (<em>instance of DataFieldRecordArray</em>) – The DataFieldRecordArray instance containing the to be scrambled
+data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong> (<em>DataFieldRecordArray</em>) – The given DataFieldRecordArray holding the scrambled data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.scrambling.TimeScramblingMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.scrambling.</code><code class="sig-name descname">TimeScramblingMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timegen</span></em>, <em class="sig-param"><span class="n">hor_to_equ_transform</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.scrambling.TimeScramblingMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.scrambling.DataScramblingMethod" title="skyllh.core.scrambling.DataScramblingMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.scrambling.DataScramblingMethod</span></code></a></p>
+<p>The TimeScramblingMethod class provides a data scrambling method to
+perform data coordinate scrambling based on a generated time. It draws a
+random time from a time generator and transforms the horizontal (local)
+coordinates into equatorial coordinates using a specified transformation
+function.</p>
+<p>Initializes a new time scramling method instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timegen</strong> (<a class="reference internal" href="skyllh.core.times.html#skyllh.core.times.TimeGenerator" title="skyllh.core.times.TimeGenerator"><em>TimeGenerator</em></a>) – The time generator that should be used to generate random MJD times.</p></li>
+<li><p><strong>hor_to_equ_transform</strong> (<em>callable</em>) – <p>The transformation function to transform coordinates from the
+horizontal system into the equatorial system.</p>
+<p>The call signature must be:</p>
+<blockquote>
+<div><p>__call__(azi, zen, mjd)</p>
+</div></blockquote>
+<p>The return signature must be: (ra, dec)</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.scrambling.TimeScramblingMethod.timegen">
+<em class="property">property </em><code class="sig-name descname">timegen</code><a class="headerlink" href="#skyllh.core.scrambling.TimeScramblingMethod.timegen" title="Permalink to this definition">¶</a></dt>
+<dd><p>The TimeGenerator instance that should be used to generate random MJD
+times.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.scrambling.TimeScramblingMethod.hor_to_equ_transform">
+<em class="property">property </em><code class="sig-name descname">hor_to_equ_transform</code><a class="headerlink" href="#skyllh.core.scrambling.TimeScramblingMethod.hor_to_equ_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>The transformation function to transform coordinates from the
+horizontal system into the equatorial system.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.scrambling.TimeScramblingMethod.scramble">
+<code class="sig-name descname">scramble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.scrambling.TimeScramblingMethod.scramble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scrambles the given data based on random MJD times, which are
+generated from a TimeGenerator instance. The event’s right-ascention and
+declination coordinates are calculated via a horizontal-to-equatorial
+coordinate transformation and the generated MJD time of the event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The random state service providing the random number
+generator (RNG).</p></li>
+<li><p><strong>data</strong> (<em>instance of DataFieldRecordArray</em>) – The DataFieldRecordArray instance containing the to be scrambled
+data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong> (<em>DataFieldRecordArray</em>) – The given DataFieldRecordArray holding the scrambled data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.scrambling.DataScrambler">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.scrambling.</code><code class="sig-name descname">DataScrambler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.scrambling.DataScrambler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates a data scrambler instance with a given defined scrambling
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference internal" href="#skyllh.core.scrambling.DataScramblingMethod" title="skyllh.core.scrambling.DataScramblingMethod"><em>DataScramblingMethod</em></a>) – The instance of DataScramblingMethod that defines the method of
+the data scrambling.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.scrambling.DataScrambler.method">
+<em class="property">property </em><code class="sig-name descname">method</code><a class="headerlink" href="#skyllh.core.scrambling.DataScrambler.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The underlaying scrambling method that should be used to scramble
+the data. This must be an instance of the DataScramblingMethod class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.scrambling.DataScrambler.scramble_data">
+<code class="sig-name descname">scramble_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rss</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.scrambling.DataScrambler.scramble_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scrambles the given data by calling the scramble method of the
+scrambling method class, that was configured for the data scrambler.
+If the <code class="docutils literal notranslate"><span class="pre">inplace_scrambling</span></code> property is set to False, a copy of the
+data is created before the scrambling is performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The random state service providing the random number generator
+(RNG).</p></li>
+<li><p><strong>data</strong> (<em>instance of DataFieldRecordArray</em>) – The DataFieldRecordArray instance holding the data, which should get
+scrambled.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em>) – Flag if a copy of the given data should be made before scrambling
+the data. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong> (<em>DataFieldRecordArray</em>) – The given DataFieldRecordArray instance with the scrambled data.
+If the <code class="docutils literal notranslate"><span class="pre">inplace_scrambling</span></code> property is set to True, this output
+array is the same array as the input array, otherwise it’s a new
+array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.session.html" class="btn btn-neutral float-right" title="skyllh.core.session module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.random.html" class="btn btn-neutral float-left" title="skyllh.core.random module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

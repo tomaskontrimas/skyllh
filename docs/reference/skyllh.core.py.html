@@ -1,0 +1,685 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.py module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.random module" href="skyllh.core.random.html" />
+    <link rel="prev" title="skyllh.core.progressbar module" href="skyllh.core.progressbar.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.py module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.py.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.py">
+<span id="skyllh-core-py-module"></span><h1>skyllh.core.py module<a class="headerlink" href="#module-skyllh.core.py" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skyllh.core.py.PyQualifier">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">PyQualifier</code><a class="headerlink" href="#skyllh.core.py.PyQualifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is the abstract base class for any Python qualifier class.
+An object can get qualified by calling a PyQualifier instance with that
+object. The PyQualifier class will be added to the <code class="docutils literal notranslate"><span class="pre">__pyqualifiers__</span></code>
+attribute of the object.</p>
+<dl class="py method">
+<dt id="skyllh.core.py.PyQualifier.check">
+<code class="sig-name descname">check</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.PyQualifier.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given Python object is declared with the PyQualifier
+class of the <cite>self</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>object</em>) – The Python object to check.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – The check result. <cite>True</cite> if the object is declared for this Python
+qualifier, and <cite>False</cite> otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.py.ConstPyQualifier">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">ConstPyQualifier</code><a class="headerlink" href="#skyllh.core.py.ConstPyQualifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.py.PyQualifier" title="skyllh.core.py.PyQualifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.py.PyQualifier</span></code></a></p>
+<p>This class defines a PyQualifier for constant Python objects.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.typename">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">typename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.typename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the given type <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.classname">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">classname</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.classname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the class of the class instance <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.get_byte_size_prefix">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">get_byte_size_prefix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.get_byte_size_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the biggest size prefix for the given size in bytes such that
+the new size is still greater one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> (<em>int</em>) – The size in bytes.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>newsize</strong> (<em>float</em>) – The new byte size accounting for the byte prefix.</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – The biggest byte size prefix.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.getsizeof">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">getsizeof</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">objects</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.getsizeof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the size in bytes the given objects have in memory.
+If an object is a sequence, the size of the elements of the sequence will
+be estimated as well and added to the result. This does not account for the
+multiple occurence of the same object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objects</strong> (<em>sequence of instances of object | instance of object.</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>memsize</strong> (<em>int</em>) – The memory size in bytes of the given objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.issequence">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">issequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.issequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given object <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a sequence or not. The definition of
+a sequence in this case is, that the function <code class="docutils literal notranslate"><span class="pre">len</span></code> is defined for the
+object.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A str object is NOT considered as a sequence!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return True</dt>
+<dd class="field-odd"><p>If the given object is a sequence.</p>
+</dd>
+<dt class="field-even">Return False</dt>
+<dd class="field-even"><p>If the given object is a str object or not a sequence.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.issequenceof">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">issequenceof</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">pyqualifiers</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.issequenceof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given object <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a sequence with items being
+instances of type <code class="docutils literal notranslate"><span class="pre">T</span></code>, possibly qualified with the given Python
+qualifiers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>object</em>) – The Python object to check.</p></li>
+<li><p><strong>T</strong> (<em>type | tuple of types</em>) – The type each item of the sequence should be. If a tuple of types is
+given, each item can be one of the given types.</p></li>
+<li><p><strong>pyqualifiers</strong> (<em>instance of PyQualifier |</em>) – sequence of instances of PyQualifier | None
+One or more instances of PyQualifier. Each instance acts as a filter
+for each item.
+If any of the filters return <cite>False</cite> for any of the items, this check
+returns <cite>False</cite>. If set to <cite>Ǹone</cite>, no filters are applied.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – The result of the check.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.issequenceofsubclass">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">issequenceofsubclass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.issequenceofsubclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given object <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a sequence with items being
+sub-classes of class T.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.isproperty">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">isproperty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.isproperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given attribute is of type property. The attribute must
+exist in <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>object</em>) – The Python object whose attribute to check for being a property.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the attribute.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – True if the given attribute is of type property, False otherwise.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If the given attribute is not an attribute of the class of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.func_has_n_args">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">func_has_n_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.func_has_n_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given function <cite>func</cite> has <cite>n</cite> arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>callable</em>) – The function to check.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The number of arguments the function must have.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – True if the given function has <cite>n</cite> arguments. False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.bool_cast">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">bool_cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">errmsg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.bool_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts the given value to a boolean value. If the cast is impossible, a
+TypeError is raised with the given error message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.int_cast">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">int_cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">errmsg</span></em>, <em class="sig-param"><span class="n">allow_None</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.int_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts the given value to an integer value. If the cast is impossible, a
+TypeError is raised with the given error message. If <cite>allow_None</cite> is set to
+<cite>True</cite> the value <cite>v</cite> can also be <cite>None</cite>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.float_cast">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">float_cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">errmsg</span></em>, <em class="sig-param"><span class="n">allow_None</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.float_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts the given value to a float. If the cast is impossible, a TypeError
+is raised with the given error message. If <cite>allow_None</cite> is set to <cite>True</cite>
+the value <cite>v</cite> can also be <cite>None</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>to_float_castable object | sequence of to_float_castable objects</em>) – The object that should get casted to a float. This can also be a
+sequence of objects that should get casted to floats.</p></li>
+<li><p><strong>errmsg</strong> (<em>str</em>) – The error message in case the cast failed.</p></li>
+<li><p><strong>allow_None</strong> (<em>bool</em>) – Flag if <code class="docutils literal notranslate"><span class="pre">None</span></code> is allowed as value for v. If yes, the casted result is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>float | None | list of float and or None</em> – The float / <code class="docutils literal notranslate"><span class="pre">None</span></code> value casted from <code class="docutils literal notranslate"><span class="pre">v</span></code>. If a sequence of objects
+was provided, a list of casted values is returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.str_cast">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">str_cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">errmsg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.str_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts the given value to a str object.
+If the cast is impossible, a TypeError is raised with the given error
+message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.list_of_cast">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">list_of_cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">errmsg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.list_of_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts the given value <cite>v</cite> to a list of items of type <cite>t</cite>.
+If the cast is impossible, a TypeError is raised with the given error
+message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.get_smallest_numpy_int_type">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">get_smallest_numpy_int_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.get_smallest_numpy_int_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the smallest numpy integer type that can represent the given
+integer values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<em>int | sequence of int</em>) – The integer value(s) that need to be representable by the returned
+integer type.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>inttype</strong> (<em>numpy integer type</em>) – The smallest numpy integer type that can represent the given values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.py.get_number_of_float_decimals">
+<code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">get_number_of_float_decimals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.get_number_of_float_decimals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the number of significant decimals the given float number has.
+The maximum number of supported decimals is 16.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – The float value whose number of significant decimals should get
+determined.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>decimals</strong> (<em>int</em>) – The number of decimals of value which are non-zero.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.py.ObjectCollection">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">ObjectCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">objs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">obj_type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.ObjectCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class provides a collection of objects of a specific type. Objects
+can be added to the collection via the <code class="docutils literal notranslate"><span class="pre">add</span></code> method or can be removed
+from the collection via the <code class="docutils literal notranslate"><span class="pre">pop</span></code> method. The objects of another object
+collection can be added to this object collection via the <code class="docutils literal notranslate"><span class="pre">add</span></code> method as
+well.</p>
+<p>Constructor of the ObjectCollection class. Must be called by the
+derived class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objs</strong> (<em>instance of obj_type | sequence of obj_type instances | None</em>) – The sequence of objects of type <code class="docutils literal notranslate"><span class="pre">obj_type</span></code> with which this
+collection should get initialized with.</p></li>
+<li><p><strong>obj_type</strong> (<em>type</em>) – The type of the objects, which can be added to the collection.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.py.ObjectCollection.obj_type">
+<em class="property">property </em><code class="sig-name descname">obj_type</code><a class="headerlink" href="#skyllh.core.py.ObjectCollection.obj_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The object type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.py.ObjectCollection.objects">
+<em class="property">property </em><code class="sig-name descname">objects</code><a class="headerlink" href="#skyllh.core.py.ObjectCollection.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of objects of this object collection.
+All objects are of the same type as specified through the <code class="docutils literal notranslate"><span class="pre">obj_type</span></code>
+property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.py.ObjectCollection.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.ObjectCollection.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a copy of this ObjectCollection. The objects of the
+collection are not copied!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.py.ObjectCollection.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.ObjectCollection.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given object to this object collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>obj_type instance | ObjectCollection of obj_type</em>) – An instance of <code class="docutils literal notranslate"><span class="pre">obj_type</span></code> that should be added to the collection.
+If given an ObjectCollection for objects of type obj_type, it will
+add all objects of the given collection to this collection.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> (<em>ObjectCollection</em>) – The instance of this ObjectCollection, in order to be able to chain
+several <code class="docutils literal notranslate"><span class="pre">add</span></code> calls.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.py.ObjectCollection.index">
+<code class="sig-name descname">index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.ObjectCollection.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the index of the given object instance within this object
+collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>obj_type instance</em>) – The instance of obj_type whose index should get retrieved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> (<em>int</em>) – The index of the object within this object collection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.py.ObjectCollection.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.ObjectCollection.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes and returns the object at the given index (default last).
+Raises IndexError if the collection is empty or index is out of range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int | None</em>) – The index of the object to remove. If set to None, the index of the
+last object is used.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong> (<em>obj_type</em>) – The removed object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.py.NamedObjectCollection">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.py.</code><code class="sig-name descname">NamedObjectCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">objs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">obj_type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.NamedObjectCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.py.ObjectCollection" title="skyllh.core.py.ObjectCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.py.ObjectCollection</span></code></a></p>
+<p>This class provides a collection of objects, which have a name. Access
+via the object name is efficient because the index of each object is
+tracked w.r.t. its name.</p>
+<p>Creates a new NamedObjectCollection instance. Must be called by the
+derived class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objs</strong> (<em>instance of obj_type | sequence of instances of obj_type | None</em>) – The sequence of objects of type <code class="docutils literal notranslate"><span class="pre">obj_type</span></code> with which this collection
+should get initialized with.</p></li>
+<li><p><strong>obj_type</strong> (<em>type</em>) – The type of the objects, which can be added to the collection.
+This type must have an attribute named <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.py.NamedObjectCollection.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.NamedObjectCollection.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given object to this named object collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>obj_type instance | NamedObjectCollection of obj_type</em>) – An instance of <code class="docutils literal notranslate"><span class="pre">obj_type</span></code> that should be added to this named
+object collection.
+If a NamedObjectCollection instance for objects of type <code class="docutils literal notranslate"><span class="pre">obj_type</span></code>
+is given, all objects of that given collection will be added to this
+named object collection.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> (<em>NamedObjectCollection</em>) – The instance of this NamedObjectCollection, in order to be able to
+chain several <code class="docutils literal notranslate"><span class="pre">add</span></code> calls.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.py.NamedObjectCollection.index_by_name">
+<code class="sig-name descname">index_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.NamedObjectCollection.index_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the index of the object with the given name within this named
+object collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the object whose index should get retrieved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> (<em>int</em>) – The index of the object within this named object collection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.py.NamedObjectCollection.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.py.NamedObjectCollection.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes and returns the object at the given index (default last).
+Raises IndexError if the collection is empty or index is out of range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int | str | None</em>) – The index of the object to remove. If set to None, the index of the
+last object is used.
+If a str instance is given, it specifies the name of the object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong> (<em>obj_type instance</em>) – The removed object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.random.html" class="btn btn-neutral float-right" title="skyllh.core.random module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.progressbar.html" class="btn btn-neutral float-left" title="skyllh.core.progressbar module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+skyllh.core.minimizers.iminuit module
+=====================================
+
+.. automodule:: skyllh.core.minimizers.iminuit
+   :members:
+   :undoc-members:
+   :show-inheritance:

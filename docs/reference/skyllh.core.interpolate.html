@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.interpolate module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.livetime module" href="skyllh.core.livetime.html" />
+    <link rel="prev" title="skyllh.core.display module" href="skyllh.core.display.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.interpolate module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.interpolate.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.interpolate">
+<span id="skyllh-core-interpolate-module"></span><h1>skyllh.core.interpolate module<a class="headerlink" href="#module-skyllh.core.interpolate" title="Permalink to this headline">¶</a></h1>
+<p>This module provides functionality for interpolation.</p>
+<dl class="py class">
+<dt id="skyllh.core.interpolate.GridManifoldInterpolationMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.interpolate.</code><code class="sig-name descname">GridManifoldInterpolationMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">param_grid_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is an abstract base class for implementing a method to interpolate
+a manifold that is defined on a grid of parameter values. In general the
+number of parameters can be arbitrary and hence the manifold’s
+dimensionality can be arbitrary, too. However, in practice the interpolation
+on a multi-dimensional manifold can be rather difficult.
+Nevertheless, we provide this interface to allow for manifold grids with
+different dimensionality.</p>
+<p>Constructor for a GridManifoldInterpolationMethod object.
+It must be called by the derived class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>callable R^d -&gt; R</em>) – <p>The function that takes d parameters as input and returns the
+value of the d-dimensional manifold at this point for each given
+event.
+The call signature of f must be:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(tdm,</span> <span class="pre">gridparams,</span> <span class="pre">eventdata)</span></code></p>
+</div></blockquote>
+<p>where <code class="docutils literal notranslate"><span class="pre">tdm</span></code> is the TrialDataManager instance holding the trial
+data, <code class="docutils literal notranslate"><span class="pre">gridparams</span></code> is the dictionary with the parameter values
+on the grid, and <code class="docutils literal notranslate"><span class="pre">eventdata</span></code> is a 2-dimensional (N,V)-shaped numpy
+ndarray holding the event data, where N is the number of events, and
+V the dimensionality of the event data.</p>
+</p></li>
+<li><p><strong>param_grid_set</strong> (<em>ParameterGrid instance | ParameterGridSet instance</em>) – The set of d parameter grids. This defines the grid of the
+manifold.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.interpolate.GridManifoldInterpolationMethod.f">
+<em class="property">property </em><code class="sig-name descname">f</code><a class="headerlink" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>The R^d -&gt; R manifold function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.interpolate.GridManifoldInterpolationMethod.param_grid_set">
+<em class="property">property </em><code class="sig-name descname">param_grid_set</code><a class="headerlink" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod.param_grid_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ParameterGridSet object defining the set of d parameter grids.
+This defines the grid of the manifold.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.interpolate.GridManifoldInterpolationMethod.ndim">
+<em class="property">property </em><code class="sig-name descname">ndim</code><a class="headerlink" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod.ndim" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The dimensionality of the manifold.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.interpolate.GridManifoldInterpolationMethod.get_value_and_gradients">
+<em class="property">abstract </em><code class="sig-name descname">get_value_and_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tdm</span></em>, <em class="sig-param"><span class="n">eventdata</span></em>, <em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod.get_value_and_gradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the interpolated value of the manifold at the d-dimensional
+point <code class="docutils literal notranslate"><span class="pre">params</span></code> for all given events, along with the d gradients,
+i.e. partial derivatives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<a class="reference internal" href="skyllh.core.trialdata.html#skyllh.core.trialdata.TrialDataManager" title="skyllh.core.trialdata.TrialDataManager"><em>TrialDataManager</em></a>) – The TrialDataManager instance holding the trial data.</p></li>
+<li><p><strong>eventdata</strong> (<em>numpy</em><em> (</em><em>N_events</em><em>,</em><em>V</em><em>)</em><em>-shaped 2D ndarray</em>) – The 2D (N_events,V)-shaped numpy ndarray holding the event data,
+where N_events is the number of events, and V the dimensionality of
+the event data.</p></li>
+<li><p><strong>params</strong> (<em>dict</em>) – The dictionary with the parameter values, defining the point on the
+manifold for which the value should get calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>value</strong> (<em>(N,) ndarray of float</em>) – The interpolated manifold value for the N given events.</p></li>
+<li><p><strong>gradients</strong> (<em>(D,N) ndarray of float</em>) – The D manifold gradients for the N given events, where D is the
+number of parameters. The order of the D parameters is defined
+by the ParameterGridSet that has been provided at construction time
+of this interpolation method object.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.interpolate.NullGridManifoldInterpolationMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.interpolate.</code><code class="sig-name descname">NullGridManifoldInterpolationMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">param_grid_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.NullGridManifoldInterpolationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod" title="skyllh.core.interpolate.GridManifoldInterpolationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.interpolate.GridManifoldInterpolationMethod</span></code></a></p>
+<p>This grid manifold interpolation method performes no interpolation. When
+the <code class="docutils literal notranslate"><span class="pre">get_value_and_gradients</span></code> method is called, it rounds the parameter
+values to their nearest grid point values. All gradients are set to zero.</p>
+<p>Creates a new NullGridManifoldInterpolationMethod instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>callable R^D -&gt; R</em>) – <p>The function that takes the parameter grid value as input and
+returns the value of the n-dimensional manifold at this point for
+each given event.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(tdm,</span> <span class="pre">gridparams,</span> <span class="pre">eventdata)</span></code></p>
+</div></blockquote>
+<p>where <code class="docutils literal notranslate"><span class="pre">gridparams</span></code> is the dictionary with the parameter names and
+values on the grid, and <code class="docutils literal notranslate"><span class="pre">eventdata</span></code> is a 2-dimensional
+(N,V)-shaped numpy ndarray holding the event data, where N is the
+number of events, and V the dimensionality of the event data.
+The return value of <code class="docutils literal notranslate"><span class="pre">f</span></code> must be a (N,)-shaped 1d ndarray of float.</p>
+</p></li>
+<li><p><strong>param_grid_set</strong> (<em>ParameterGrid instance | ParameterGridSet instance</em>) – The set of parameter grids. This defines the grid of the
+D-dimensional manifold.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.interpolate.NullGridManifoldInterpolationMethod.get_value_and_gradients">
+<code class="sig-name descname">get_value_and_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tdm</span></em>, <em class="sig-param"><span class="n">eventdata</span></em>, <em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.NullGridManifoldInterpolationMethod.get_value_and_gradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the non-interpolated manifold value and its gradient
+(zero) for each given event at the point <code class="docutils literal notranslate"><span class="pre">params</span></code>.
+By definition the D values of <code class="docutils literal notranslate"><span class="pre">params</span></code> must coincide with the
+parameter grid values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<a class="reference internal" href="skyllh.core.trialdata.html#skyllh.core.trialdata.TrialDataManager" title="skyllh.core.trialdata.TrialDataManager"><em>TrialDataManager</em></a>) – The TrialDataManager instance holding the trial data.</p></li>
+<li><p><strong>eventdata</strong> (<em>numpy</em><em> (</em><em>N_events</em><em>,</em><em>V</em><em>)</em><em>-shaped 2D ndarray</em>) – The 2D (N_events,V)-shaped numpy ndarray holding the event data,
+where N_events is the number of events, and V the dimensionality of
+the event data.</p></li>
+<li><p><strong>params</strong> (<em>dict</em>) – The dictionary with the D parameter values, defining the point on
+the manifold for which the value should get calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>value</strong> (<em>(N,) ndarray of float</em>) – The interpolated manifold value for the N given events.</p></li>
+<li><p><strong>gradients</strong> (<em>(D,N) ndarray of float</em>) – The D manifold gradients for the N given events, where D is the
+number of parameters.
+By definition, all gradients are zero.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.interpolate.Linear1DGridManifoldInterpolationMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.interpolate.</code><code class="sig-name descname">Linear1DGridManifoldInterpolationMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">param_grid_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.Linear1DGridManifoldInterpolationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod" title="skyllh.core.interpolate.GridManifoldInterpolationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.interpolate.GridManifoldInterpolationMethod</span></code></a></p>
+<p>This grid manifold interpolation method interpolates the 1-dimensional
+grid manifold using a line.</p>
+<p>Creates a new Linear1DGridManifoldInterpolationMethod instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>callable R -&gt; R</em>) – <p>The function that takes the parameter grid value as input and
+returns the value of the 1-dimensional manifold at this point for
+each given event.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(tdm,</span> <span class="pre">gridparams,</span> <span class="pre">eventdata)</span></code></p>
+</div></blockquote>
+<p>where <code class="docutils literal notranslate"><span class="pre">gridparams</span></code> is the dictionary with the parameter names and
+values on the grid, and <code class="docutils literal notranslate"><span class="pre">eventdata</span></code> is a 2-dimensional
+(N,V)-shaped numpy ndarray holding the event data, where N is the
+number of events, and V the dimensionality of the event data.
+The return value of <code class="docutils literal notranslate"><span class="pre">f</span></code> must be a (N,)-shaped 1d ndarray of float.</p>
+</p></li>
+<li><p><strong>param_grid_set</strong> (<em>ParameterGrid instance | ParameterGridSet instance</em>) – The set of parameter grids. This defines the grid of the
+1-dimensional manifold. By definition, only the first parameter grid
+is considered.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.interpolate.Linear1DGridManifoldInterpolationMethod.get_value_and_gradients">
+<code class="sig-name descname">get_value_and_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tdm</span></em>, <em class="sig-param"><span class="n">eventdata</span></em>, <em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.Linear1DGridManifoldInterpolationMethod.get_value_and_gradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the interpolated manifold value and its gradient for each
+given event at the point <code class="docutils literal notranslate"><span class="pre">params</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<a class="reference internal" href="skyllh.core.trialdata.html#skyllh.core.trialdata.TrialDataManager" title="skyllh.core.trialdata.TrialDataManager"><em>TrialDataManager</em></a>) – The TrialDataManager instance holding the trial data.</p></li>
+<li><p><strong>eventdata</strong> (<em>numpy</em><em> (</em><em>N_events</em><em>,</em><em>V</em><em>)</em><em>-shaped 2D ndarray</em>) – The 2D (N_events,V)-shaped numpy ndarray holding the event data,
+where N_events is the number of events, and V the dimensionality of
+the event data.</p></li>
+<li><p><strong>params</strong> (<em>dict</em>) – The dictionary with the parameter values, defining the point on the
+manifold for which the value should get calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>value</strong> (<em>(N,) ndarray of float</em>) – The interpolated manifold value for the N given events.</p></li>
+<li><p><strong>gradients</strong> (<em>(D,N) ndarray of float</em>) – The D manifold gradients for the N given events, where D is the
+number of parameters.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.interpolate.Parabola1DGridManifoldInterpolationMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.interpolate.</code><code class="sig-name descname">Parabola1DGridManifoldInterpolationMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">param_grid_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.Parabola1DGridManifoldInterpolationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.interpolate.GridManifoldInterpolationMethod" title="skyllh.core.interpolate.GridManifoldInterpolationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.interpolate.GridManifoldInterpolationMethod</span></code></a></p>
+<p>This grid manifold interpolation method interpolates the 1-dimensional
+grid manifold using a parabola.</p>
+<p>Creates a new Parabola1DGridManifoldInterpolationMethod instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>callable R -&gt; R</em>) – <p>The function that takes the parameter grid value as input and
+returns the value of the 1-dimensional manifold at this point for
+each given event.
+The call signature of f must be:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(tdm,</span> <span class="pre">gridparams,</span> <span class="pre">eventdata)</span></code></p>
+</div></blockquote>
+<p>where <code class="docutils literal notranslate"><span class="pre">gridparams</span></code> is the dictionary with the parameter names and
+values on the grid, and <code class="docutils literal notranslate"><span class="pre">eventdata</span></code> is a 2-dimensional
+(N,V)-shaped numpy ndarray holding the event data, where N is the
+number of events, and V the dimensionality of the event data.</p>
+</p></li>
+<li><p><strong>param_grid_set</strong> (<em>instance of ParameterGridSet</em>) – The set of parameter grids. This defines the grid of the
+1-dimensional manifold. By definition, only the first parameter grid
+is considered.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.interpolate.Parabola1DGridManifoldInterpolationMethod.get_value_and_gradients">
+<code class="sig-name descname">get_value_and_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tdm</span></em>, <em class="sig-param"><span class="n">eventdata</span></em>, <em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.interpolate.Parabola1DGridManifoldInterpolationMethod.get_value_and_gradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the interpolated manifold value and its gradient for each
+given event at the point <code class="docutils literal notranslate"><span class="pre">params</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<a class="reference internal" href="skyllh.core.trialdata.html#skyllh.core.trialdata.TrialDataManager" title="skyllh.core.trialdata.TrialDataManager"><em>TrialDataManager</em></a>) – The TrialDataManager instance holding the trial data.</p></li>
+<li><p><strong>eventdata</strong> (<em>numpy</em><em> (</em><em>N_events</em><em>,</em><em>V</em><em>)</em><em>-shaped 2D ndarray</em>) – The 2D (N_events,V)-shaped numpy ndarray holding the event data,
+where N_events is the number of events, and V the dimensionality of
+the event data.</p></li>
+<li><p><strong>params</strong> (<em>dict</em>) – The dictionary with the parameter values, defining the point on the
+manifold for which the value should get calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>value</strong> (<em>(N,) ndarray of float</em>) – The interpolated manifold value for the N given events.</p></li>
+<li><p><strong>gradients</strong> (<em>(D,N) ndarray of float</em>) – The D manifold gradients for the N given events, where D is the
+number of parameters.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.livetime.html" class="btn btn-neutral float-right" title="skyllh.core.livetime module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.display.html" class="btn btn-neutral float-left" title="skyllh.core.display module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

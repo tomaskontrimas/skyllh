@@ -1,0 +1,18 @@
+skyllh.cluster package
+======================
+
+.. automodule:: skyllh.cluster
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   skyllh.cluster.commands
+   skyllh.cluster.compute_node
+   skyllh.cluster.master_node
+   skyllh.cluster.srvclt

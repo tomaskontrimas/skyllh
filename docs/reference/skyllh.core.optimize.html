@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.optimize module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.parameters module" href="skyllh.core.parameters.html" />
+    <link rel="prev" title="skyllh.core.multiproc module" href="skyllh.core.multiproc.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.optimize module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.optimize.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.optimize">
+<span id="skyllh-core-optimize-module"></span><h1>skyllh.core.optimize module<a class="headerlink" href="#module-skyllh.core.optimize" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skyllh.core.optimize.EventSelectionMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.optimize.</code><code class="sig-name descname">EventSelectionMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.EventSelectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is the abstract base class for all event selection method classes.
+The idea is to pre-select only events that contribute to the likelihood
+function, i.e. are more signal than background like. The different methods
+are implemented through derived classes of this base class.</p>
+<p>Creates a new event selection method instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The instance of SourceHypoGroupManager that defines the list of
+sources, i.e. the list of SourceModel instances.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.optimize.EventSelectionMethod.src_hypo_group_manager">
+<em class="property">property </em><code class="sig-name descname">src_hypo_group_manager</code><a class="headerlink" href="#skyllh.core.optimize.EventSelectionMethod.src_hypo_group_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SourceHypoGroupManager instance, which defines the list of
+sources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.EventSelectionMethod.change_source_hypo_group_manager">
+<code class="sig-name descname">change_source_hypo_group_manager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.EventSelectionMethod.change_source_hypo_group_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the SourceHypoGroupManager instance of the event selection
+method. This will also recreate the internal source numpy record array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The new SourceHypoGroupManager instance, that should be used for
+this event selection method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.EventSelectionMethod.source_to_array">
+<em class="property">abstract </em><code class="sig-name descname">source_to_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sources</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.EventSelectionMethod.source_to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to convert a sequence of SourceModel
+instances into a structured numpy ndarray with the source information
+in a format that is best understood my the actual event selection
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sources</strong> (<em>sequence of SourceModel</em>) – The sequence of source models containing the necessary information
+of the source.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>arr</strong> (<em>numpy record ndarray</em>) – The generated numpy record ndarray holding the necessary information
+for each source.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.EventSelectionMethod.select_events">
+<em class="property">abstract </em><code class="sig-name descname">select_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events</span></em>, <em class="sig-param"><span class="n">retidxs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.EventSelectionMethod.select_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method selects the events, which will contribute to the
+log-likelihood ratio function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>instance of DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding the events.</p></li>
+<li><p><strong>retidxs</strong> (<em>bool</em>) – Flag if also the indices of of the selected events should get
+returned as 1d ndarray.
+Default is False.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The optional instance of TimeLord that should be used to collect
+timing information about this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>selected_events</strong> (<em>DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding the selected events,
+i.e. a subset of the <cite>events</cite> argument.</p></li>
+<li><p><strong>idxs</strong> (<em>ndarray of ints</em>) – The indices of the selected events, in case <cite>retidxs</cite> is set to
+True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.optimize.AllEventSelectionMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.optimize.</code><code class="sig-name descname">AllEventSelectionMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.AllEventSelectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.optimize.EventSelectionMethod" title="skyllh.core.optimize.EventSelectionMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.optimize.EventSelectionMethod</span></code></a></p>
+<p>This event selection method selects all events.</p>
+<p>Creates a new event selection method instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The instance of SourceHypoGroupManager that defines the list of
+sources, i.e. the list of SourceModel instances. For this particular
+event selection method it has no meaning, but it is an interface
+parameter.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.optimize.AllEventSelectionMethod.source_to_array">
+<code class="sig-name descname">source_to_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sources</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.AllEventSelectionMethod.source_to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to convert a sequence of SourceModel
+instances into a structured numpy ndarray with the source information
+in a format that is best understood my the actual event selection
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sources</strong> (<em>sequence of SourceModel</em>) – The sequence of source models containing the necessary information
+of the source.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>arr</strong> (<em>numpy record ndarray</em>) – The generated numpy record ndarray holding the necessary information
+for each source.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.AllEventSelectionMethod.select_events">
+<code class="sig-name descname">select_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events</span></em>, <em class="sig-param"><span class="n">retidxs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.AllEventSelectionMethod.select_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects all of the given events. Hence, the returned event array is
+the same as the given array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>instance of DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding the events, for which
+the selection method should get applied.</p></li>
+<li><p><strong>retidxs</strong> (<em>bool</em>) – Flag if also the indices of of the selected events should get
+returned as 1d ndarray.
+Default is False.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The optional instance of TimeLord that should be used to collect
+timing information about this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>selected_events</strong> (<em>DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding the selected events,
+i.e. a subset of the <cite>events</cite> argument.</p></li>
+<li><p><strong>idxs</strong> (<em>ndarray of ints</em>) – The indices of the selected events, in case <cite>retidxs</cite> is set to
+True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.optimize.SpatialEventSelectionMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.optimize.</code><code class="sig-name descname">SpatialEventSelectionMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.SpatialEventSelectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.optimize.EventSelectionMethod" title="skyllh.core.optimize.EventSelectionMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.optimize.EventSelectionMethod</span></code></a></p>
+<p>This class defines the base class for all spatial event selection
+methods.</p>
+<p>Creates a new event selection method instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The instance of SourceHypoGroupManager that defines the list of
+sources, i.e. the list of SourceModel instances.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.optimize.SpatialEventSelectionMethod.source_to_array">
+<code class="sig-name descname">source_to_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sources</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.SpatialEventSelectionMethod.source_to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given sequence of SourceModel instances into a
+structured numpy ndarray holding the necessary source information needed
+for this event selection method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sources</strong> (<em>sequence of SourceModel</em>) – The sequence of source models containing the necessary information
+of the source.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>arr</strong> (<em>numpy record ndarray</em>) – The generated numpy record ndarray holding the necessary information
+for each source. It contains the following data fields: ‘ra’, ‘dec’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.optimize.DecBandEventSectionMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.optimize.</code><code class="sig-name descname">DecBandEventSectionMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em>, <em class="sig-param"><span class="n">delta_angle</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.DecBandEventSectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.optimize.SpatialEventSelectionMethod" title="skyllh.core.optimize.SpatialEventSelectionMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.optimize.SpatialEventSelectionMethod</span></code></a></p>
+<p>This event selection method selects events within a declination band
+around a list of point-like source positions.</p>
+<p>Creates and configures a spatial declination band event selection
+method object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The instance of SourceHypoGroupManager that defines the list of
+sources, i.e. the list of SourceModel instances.</p></li>
+<li><p><strong>delta_angle</strong> (<em>float</em>) – The half-opening angle around the source in declination for which
+events should get selected.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.optimize.DecBandEventSectionMethod.delta_angle">
+<em class="property">property </em><code class="sig-name descname">delta_angle</code><a class="headerlink" href="#skyllh.core.optimize.DecBandEventSectionMethod.delta_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The half-opening angle around the source in declination and
+right-ascention for which events should get selected.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.DecBandEventSectionMethod.select_events">
+<code class="sig-name descname">select_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events</span></em>, <em class="sig-param"><span class="n">retidxs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.DecBandEventSectionMethod.select_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the events within the declination band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>instance of DataFieldRecordArray</em>) – <p>The instance of DataFieldRecordArray that holds the event data.
+The following data fields must exist:</p>
+<ul>
+<li><dl class="simple">
+<dt>’dec’<span class="classifier">float</span></dt><dd><p>The declination of the event.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+<li><p><strong>retidxs</strong> (<em>bool</em>) – Flag if also the indices of of the selected events should get
+returned as 1d ndarray.
+Default is False.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The optional instance of TimeLord that should be used to collect
+timing information about this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>selected_events</strong> (<em>instance of DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding only the selected
+events.</p></li>
+<li><p><strong>idxs</strong> (<em>ndarray of ints</em>) – The indices of the selected events, in case <cite>retidxs</cite> is set to
+True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.optimize.RABandEventSectionMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.optimize.</code><code class="sig-name descname">RABandEventSectionMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em>, <em class="sig-param"><span class="n">delta_angle</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.RABandEventSectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.optimize.SpatialEventSelectionMethod" title="skyllh.core.optimize.SpatialEventSelectionMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.optimize.SpatialEventSelectionMethod</span></code></a></p>
+<p>This event selection method selects events within a right-ascension band
+around a list of point-like source positions.</p>
+<p>Creates and configures a right-ascension band event selection
+method object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The instance of SourceHypoGroupManager that defines the list of
+sources, i.e. the list of SourceModel instances.</p></li>
+<li><p><strong>delta_angle</strong> (<em>float</em>) – The half-opening angle around the source in right-ascension for
+which events should get selected.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.optimize.RABandEventSectionMethod.delta_angle">
+<em class="property">property </em><code class="sig-name descname">delta_angle</code><a class="headerlink" href="#skyllh.core.optimize.RABandEventSectionMethod.delta_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The half-opening angle around the source in declination and
+right-ascention for which events should get selected.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.RABandEventSectionMethod.select_events">
+<code class="sig-name descname">select_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events</span></em>, <em class="sig-param"><span class="n">retidxs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.RABandEventSectionMethod.select_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the events within the right-ascention band.</p>
+<p>The solid angle dOmega = dRA * dSinDec = dRA * dDec * cos(dec) is a
+function of declination, i.e. for a constant dOmega, the right-ascension
+value has to change with declination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>instance of DataFieldRecordArray</em>) – <p>The instance of DataFieldRecordArray that holds the event data.
+The following data fields must exist:</p>
+<ul>
+<li><dl class="simple">
+<dt>’ra’<span class="classifier">float</span></dt><dd><p>The right-ascention of the event.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’dec’<span class="classifier">float</span></dt><dd><p>The declination of the event.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+<li><p><strong>retidxs</strong> (<em>bool</em>) – Flag if also the indices of of the selected events should get
+returned as 1d ndarray.
+Default is False.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The optional instance of TimeLord that should be used to collect
+timing information about this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>selected_events</strong> (<em>instance of DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding only the selected
+events.</p></li>
+<li><p><strong>idxs</strong> (<em>ndarray of ints</em>) – The indices of the selected events, in case <cite>retidxs</cite> is set to
+True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.optimize.SpatialBoxEventSelectionMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.optimize.</code><code class="sig-name descname">SpatialBoxEventSelectionMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em>, <em class="sig-param"><span class="n">delta_angle</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.SpatialBoxEventSelectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.optimize.SpatialEventSelectionMethod" title="skyllh.core.optimize.SpatialEventSelectionMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.optimize.SpatialEventSelectionMethod</span></code></a></p>
+<p>This event selection method selects events within a spatial box in
+right-ascention and declination around a list of point-like source
+positions.</p>
+<p>Creates and configures a spatial box event selection method object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The instance of SourceHypoGroupManager that defines the list of
+sources, i.e. the list of SourceModel instances.</p></li>
+<li><p><strong>delta_angle</strong> (<em>float</em>) – The half-opening angle around the source for which events should
+get selected.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.optimize.SpatialBoxEventSelectionMethod.delta_angle">
+<em class="property">property </em><code class="sig-name descname">delta_angle</code><a class="headerlink" href="#skyllh.core.optimize.SpatialBoxEventSelectionMethod.delta_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The half-opening angle around the source in declination and
+right-ascention for which events should get selected.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.SpatialBoxEventSelectionMethod.select_events">
+<code class="sig-name descname">select_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events</span></em>, <em class="sig-param"><span class="n">retidxs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.SpatialBoxEventSelectionMethod.select_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the events within the spatial box in right-ascention and
+declination.</p>
+<p>The solid angle dOmega = dRA * dSinDec = dRA * dDec * cos(dec) is a
+function of declination, i.e. for a constant dOmega, the right-ascension
+value has to change with declination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>instance of DataFieldRecordArray</em>) – <p>The instance of DataFieldRecordArray that holds the event data.
+The following data fields must exist:</p>
+<ul>
+<li><dl class="simple">
+<dt>’ra’<span class="classifier">float</span></dt><dd><p>The right-ascention of the event.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’dec’<span class="classifier">float</span></dt><dd><p>The declination of the event.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+<li><p><strong>retidxs</strong> (<em>bool</em>) – Flag if also the indices of of the selected events should get
+returned as 1d ndarray.
+Default is False.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The optional instance of TimeLord that should be used to collect
+timing information about this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>selected_events</strong> (<em>instance of DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding only the selected
+events.</p></li>
+<li><p><strong>idxs</strong> (<em>ndarray of ints</em>) – The indices of the selected events, in case <cite>retidxs</cite> is set to
+True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.optimize.PsiFuncEventSelectionMethod">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.core.optimize.</code><code class="sig-name descname">PsiFuncEventSelectionMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em>, <em class="sig-param"><span class="n">psi_name</span></em>, <em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">axis_name_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.PsiFuncEventSelectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.optimize.EventSelectionMethod" title="skyllh.core.optimize.EventSelectionMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.optimize.EventSelectionMethod</span></code></a></p>
+<p>This event selection method selects events whose psi value, i.e. the
+great circle distance of the event to the source, is smaller than the value
+of the provided function.</p>
+<p>Creates a new PsiFuncEventSelectionMethod instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_hypo_group_manager</strong> (<em>SourceHypoGroupManager instance</em>) – The instance of SourceHypoGroupManager that defines the list of
+sources, i.e. the list of SourceModel instances.</p></li>
+<li><p><strong>psi_name</strong> (<em>str</em>) – The name of the data field that provides the psi value of the event.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – The function that should get evaluated for each event. The call
+signature must be <code class="docutils literal notranslate"><span class="pre">func(*axis_data)</span></code>, where <code class="docutils literal notranslate"><span class="pre">*axis_data</span></code> is the
+event data of each required axis. The number of axes must match the
+provided axis names through the <code class="docutils literal notranslate"><span class="pre">axis_name_list</span></code>.</p></li>
+<li><p><strong>axis_name_list</strong> (<em>list of str</em>) – The list of data field names for each axis of the function <code class="docutils literal notranslate"><span class="pre">func</span></code>.
+All field names must be valid field names of the trial data’s
+DataFieldRecordArray instance.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.optimize.PsiFuncEventSelectionMethod.psi_name">
+<em class="property">property </em><code class="sig-name descname">psi_name</code><a class="headerlink" href="#skyllh.core.optimize.PsiFuncEventSelectionMethod.psi_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the data field that provides the psi value of the event.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.PsiFuncEventSelectionMethod.func">
+<em class="property">property </em><code class="sig-name descname">func</code><a class="headerlink" href="#skyllh.core.optimize.PsiFuncEventSelectionMethod.func" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function that should get evaluated for each event. The call
+signature must be <code class="docutils literal notranslate"><span class="pre">func(*axis_data)</span></code>, where <code class="docutils literal notranslate"><span class="pre">*axis_data</span></code> is the
+event data of each required axis. The number of axes must match the
+provided axis names through the <code class="docutils literal notranslate"><span class="pre">axis_name_list</span></code> property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.PsiFuncEventSelectionMethod.axis_name_list">
+<em class="property">property </em><code class="sig-name descname">axis_name_list</code><a class="headerlink" href="#skyllh.core.optimize.PsiFuncEventSelectionMethod.axis_name_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of data field names for each axis of the function defined
+through the <code class="docutils literal notranslate"><span class="pre">func</span></code> property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.PsiFuncEventSelectionMethod.source_to_array">
+<code class="sig-name descname">source_to_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sources</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.PsiFuncEventSelectionMethod.source_to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given sequence of SourceModel instances into a
+structured numpy ndarray holding the necessary source information needed
+for this event selection method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sources</strong> (<em>sequence of SourceModel</em>) – The sequence of source models containing the necessary information
+of the source.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>arr</strong> (<em>None</em>) – Because this event selection method does not depend directly on the
+source (only indirectly through the psi values), no source array
+is required.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.optimize.PsiFuncEventSelectionMethod.select_events">
+<code class="sig-name descname">select_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">events</span></em>, <em class="sig-param"><span class="n">retidxs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.optimize.PsiFuncEventSelectionMethod.select_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the events whose psi value is smaller than the value of the
+predefined function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>instance of DataFieldRecordArray</em>) – <p>The instance of DataFieldRecordArray that holds the event data.
+The following data fields must exist:</p>
+<ul>
+<li><dl class="simple">
+<dt>&lt;psi_name&gt;<span class="classifier">float</span></dt><dd><p>The great circle distance of the event with the source.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>&lt;<a href="#id1"><span class="problematic" id="id2">*</span></a>axis_name_list&gt;<span class="classifier">float</span></dt><dd><p>The name of the axis required for the function <code class="docutils literal notranslate"><span class="pre">func</span></code> to be
+evaluated.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+<li><p><strong>retidxs</strong> (<em>bool</em>) – Flag if also the indices of of the selected events should get
+returned as 1d ndarray.
+Default is False.</p></li>
+<li><p><strong>tl</strong> (<em>instance of TimeLord | None</em>) – The optional instance of TimeLord that should be used to collect
+timing information about this method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>selected_events</strong> (<em>instance of DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding only the selected
+events.</p></li>
+<li><p><strong>idxs</strong> (<em>ndarray of ints</em>) – The indices of the selected events, in case <cite>retidxs</cite> is set to
+True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.parameters.html" class="btn btn-neutral float-right" title="skyllh.core.parameters module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.multiproc.html" class="btn btn-neutral float-left" title="skyllh.core.multiproc module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

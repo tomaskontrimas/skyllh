@@ -1,0 +1,7 @@
+skyllh.cluster.master\_node module
+==================================
+
+.. automodule:: skyllh.cluster.master_node
+   :members:
+   :undoc-members:
+   :show-inheritance:

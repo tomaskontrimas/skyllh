@@ -1,0 +1,7 @@
+skyllh.core.model module
+========================
+
+.. automodule:: skyllh.core.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

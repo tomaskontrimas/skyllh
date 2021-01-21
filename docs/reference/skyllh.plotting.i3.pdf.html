@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.plotting.i3.pdf module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.plotting.i3.pdfratio module" href="skyllh.plotting.i3.pdfratio.html" />
+    <link rel="prev" title="skyllh.plotting.i3.backgroundpdf module" href="skyllh.plotting.i3.backgroundpdf.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.plotting.html#subpackages">Subpackages</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.plotting.html">skyllh.plotting package</a> &raquo;</li>
+        
+          <li><a href="skyllh.plotting.i3.html">skyllh.plotting.i3 package</a> &raquo;</li>
+        
+      <li>skyllh.plotting.i3.pdf module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.plotting.i3.pdf.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.plotting.i3.pdf">
+<span id="skyllh-plotting-i3-pdf-module"></span><h1>skyllh.plotting.i3.pdf module<a class="headerlink" href="#module-skyllh.plotting.i3.pdf" title="Permalink to this headline">¶</a></h1>
+<p>Plotting module to plot IceCube specific PDF objects.</p>
+<dl class="py class">
+<dt id="skyllh.plotting.i3.pdf.I3EnergyPDFPlotter">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.plotting.i3.pdf.</code><code class="sig-name descname">I3EnergyPDFPlotter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tdm</span></em>, <em class="sig-param"><span class="n">pdf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.plotting.i3.pdf.I3EnergyPDFPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Plotter class to plot an I3EnergyPDF object.</p>
+<p>Creates a new plotter object for plotting an I3EnergyPDF object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<em>instance of TrialDataManager</em>) – The instance of TrialDataManager that provides the data for the
+PDF evaluation.</p></li>
+<li><p><strong>pdf</strong> (<a class="reference internal" href="skyllh.i3.pdf.html#skyllh.i3.pdf.I3EnergyPDF" title="skyllh.i3.pdf.I3EnergyPDF"><em>I3EnergyPDF</em></a>) – The PDF object to plot.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.plotting.i3.pdf.I3EnergyPDFPlotter.pdf">
+<em class="property">property </em><code class="sig-name descname">pdf</code><a class="headerlink" href="#skyllh.plotting.i3.pdf.I3EnergyPDFPlotter.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PDF object to plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.plotting.i3.pdf.I3EnergyPDFPlotter.tdm">
+<em class="property">property </em><code class="sig-name descname">tdm</code><a class="headerlink" href="#skyllh.plotting.i3.pdf.I3EnergyPDFPlotter.tdm" title="Permalink to this definition">¶</a></dt>
+<dd><p>The TrialDataManager that provides the data for the PDF evaluation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.plotting.i3.pdf.I3EnergyPDFPlotter.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_hypo_group_manager</span></em>, <em class="sig-param"><span class="n">axes</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.plotting.i3.pdf.I3EnergyPDFPlotter.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the PDF object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_hypo_group_manager</strong> (<em>instance of SourceHypoGroupManager</em>) – The instance of SourceHypoGroupManager that defines the source
+hypotheses.</p></li>
+<li><p><strong>axes</strong> (<em>mpl.axes.Axes</em>) – The matplotlib Axes object on which the PDF ratio should get drawn
+to.</p></li>
+<li><p><strong>fitparams</strong> (<em>dict</em>) – The dictionary with the set of fit paramater values.</p></li>
+<li><p><strong>Keyword Arguments</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>----------------------------</strong> – </p></li>
+<li><p><strong>additional keyword arguments will be passed to the mpl.imshow</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>function.</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>img</strong> (<em>instance of mpl.AxesImage</em>) – The AxesImage instance showing the PDF ratio image.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.plotting.i3.pdfratio.html" class="btn btn-neutral float-right" title="skyllh.plotting.i3.pdfratio module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.plotting.i3.backgroundpdf.html" class="btn btn-neutral float-left" title="skyllh.plotting.i3.backgroundpdf module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

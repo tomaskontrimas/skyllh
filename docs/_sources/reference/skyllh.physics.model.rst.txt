@@ -1,0 +1,7 @@
+skyllh.physics.model module
+===========================
+
+.. automodule:: skyllh.physics.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

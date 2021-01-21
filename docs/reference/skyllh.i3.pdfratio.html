@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.i3.pdfratio module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.i3.scrambling module" href="skyllh.i3.scrambling.html" />
+    <link rel="prev" title="skyllh.i3.pdf module" href="skyllh.i3.pdf.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.i3.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.i3.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.i3.html">skyllh.i3 package</a> &raquo;</li>
+        
+      <li>skyllh.i3.pdfratio module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.i3.pdfratio.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.i3.pdfratio">
+<span id="skyllh-i3-pdfratio-module"></span><h1>skyllh.i3.pdfratio module<a class="headerlink" href="#module-skyllh.i3.pdfratio" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline">
+<em class="property">class </em><code class="sig-prename descclassname">skyllh.i3.pdfratio.</code><code class="sig-name descname">I3EnergySigSetOverBkgPDFRatioSpline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">signalpdfset</span></em>, <em class="sig-param"><span class="n">backgroundpdf</span></em>, <em class="sig-param"><span class="n">fillmethod</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">interpolmethod</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ncpu</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ppbar</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.pdfratio.html#skyllh.core.pdfratio.SigSetOverBkgPDFRatio" title="skyllh.core.pdfratio.SigSetOverBkgPDFRatio"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdfratio.SigSetOverBkgPDFRatio</span></code></a>, <a class="reference internal" href="skyllh.core.multiproc.html#skyllh.core.multiproc.IsParallelizable" title="skyllh.core.multiproc.IsParallelizable"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.multiproc.IsParallelizable</span></code></a></p>
+<p>This class implements a signal over background PDF ratio spline for
+I3EnergyPDF enegry PDFs. It takes an object, which is derived from PDFSet
+for I3EnergyPDF PDF types, and which is derived from IsSignalPDF, as signal
+PDF. Furthermore, it takes an object, which is derived from I3EnergyPDF and
+IsBackgroundPDF, as background PDF, and creates a spline for the ratio of
+the signal and background PDFs for a grid of different discrete energy
+signal fit parameters, which are defined by the signal PDF set.</p>
+<p>Creates a new IceCube signal-over-background energy PDF ratio object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signalpdfset</strong> (<em>class instance derived from PDFSet</em><em> (</em><em>for PDF type</em>) – I3EnergyPDF), IsSignalPDF, and UsesBinning
+The PDF set, which provides signal energy PDFs for a set of
+discrete signal parameters.</p></li>
+<li><p><strong>backgroundpdf</strong> (<em>class instance derived from I3EnergyPDF</em><em>, </em><em>and</em>) – IsBackgroundPDF
+The background energy PDF object.</p></li>
+<li><p><strong>fillmethod</strong> (<em>instance of PDFRatioFillMethod | None</em>) – An instance of class derived from PDFRatioFillMethod that implements
+the desired ratio fill method.
+If set to None (default), the default ratio fill method
+MostSignalLikePDFRatioFillMethod will be used.</p></li>
+<li><p><strong>interpolmethod</strong> (<em>class of GridManifoldInterpolationMethod</em>) – The class implementing the fit parameter interpolation method for
+the PDF ratio manifold grid.</p></li>
+<li><p><strong>ncpu</strong> (<em>int | None</em>) – The number of CPUs to use to create the ratio splines for the
+different sets of signal parameters.</p></li>
+<li><p><strong>ppbar</strong> (<em>ProgressBar instance | None</em>) – The instance of ProgressBar of the optional parent progress bar.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the signal and background PDFs use different binning.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline.fillmethod">
+<em class="property">property </em><code class="sig-name descname">fillmethod</code><a class="headerlink" href="#skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline.fillmethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PDFRatioFillMethod object, which should be used for filling the
+PDF ratio bins.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline.get_ratio">
+<code class="sig-name descname">get_ratio</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tdm</span></em>, <em class="sig-param"><span class="n">fitparams</span></em>, <em class="sig-param"><span class="n">tl</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline.get_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the PDF ratio values for each given trial event data, given
+the given set of fit parameters. This method is called during the
+likelihood maximization process.
+For computational efficiency reasons, the gradients are calculated as
+well and will be cached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<em>instance of TrialDataManager</em>) – The TrialDataManager instance holding the trial event data for which
+the PDF ratio values should get calculated.</p></li>
+<li><p><strong>fitparams</strong> (<em>dict</em>) – The dictionary with the fit parameter values.</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord instance | None</em>) – The optional TimeLord instance that should be used to measure
+timing information.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ratio</strong> (<em>1d ndarray of float</em>) – The PDF ratio value for each given event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline.get_gradient">
+<code class="sig-name descname">get_gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tdm</span></em>, <em class="sig-param"><span class="n">fitparams</span></em>, <em class="sig-param"><span class="n">fitparam_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.pdfratio.I3EnergySigSetOverBkgPDFRatioSpline.get_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the PDF ratio gradient for the pidx’th fit parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<em>instance of TrialDataManager</em>) – The TrialDataManager instance holding the trial event data for which
+the PDF ratio gradient values should get calculated.</p></li>
+<li><p><strong>fitparams</strong> (<em>dict</em>) – The dictionary with the fit parameter values.</p></li>
+<li><p><strong>fitparam_name</strong> (<em>str</em>) – The name of the fit parameter for which the gradient should get
+calculated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.i3.scrambling.html" class="btn btn-neutral float-right" title="skyllh.i3.scrambling module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.i3.pdf.html" class="btn btn-neutral float-left" title="skyllh.i3.pdf module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

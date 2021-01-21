@@ -1,0 +1,7 @@
+skyllh.core.utils.multidimgridpdf module
+========================================
+
+.. automodule:: skyllh.core.utils.multidimgridpdf
+   :members:
+   :undoc-members:
+   :show-inheritance:

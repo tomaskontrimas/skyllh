@@ -1,0 +1,19 @@
+skyllh.physics package
+======================
+
+.. automodule:: skyllh.physics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   skyllh.physics.flux
+   skyllh.physics.flux_model
+   skyllh.physics.model
+   skyllh.physics.source
+   skyllh.physics.time_profile
