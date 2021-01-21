@@ -16,7 +16,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-import sphinx.apidoc
+import sphinx.ext.apidoc
 def setup(app):
     sphinx.apidoc.main(['-f', #Overwrite existing files
                         '-T', #Create table of contents
