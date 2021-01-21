@@ -18,7 +18,7 @@
 
 import sphinx.ext.apidoc
 def setup(app):
-    sphinx.apidoc.main(['-f', #Overwrite existing files
+    sphinx.ext.apidoc.main(['-f', #Overwrite existing files
                         '-T', #Create table of contents
                         '-e', #Give modules their own pages
                         #'-E', #user docstring headers
