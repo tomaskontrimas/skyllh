@@ -16,6 +16,18 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import sphinx.apidoc
+def setup(app):
+    sphinx.apidoc.main(['-f', #Overwrite existing files
+                        '-T', #Create table of contents
+                        '-e', #Give modules their own pages
+                        #'-E', #user docstring headers
+                        '-M', #Modules first
+                        '-o', #Output the files to:
+                        './reference', #Output Directory
+                        './../../skyllh', #Main Module directory
+                        ]
+    )
 
 # -- Project information -----------------------------------------------------
 
