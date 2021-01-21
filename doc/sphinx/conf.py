@@ -16,6 +16,8 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('./../../'))
 
+# -- apidoc setup ------------------------------------------------------------
+
 import sphinx.ext.apidoc
 def setup(app):
     sphinx.ext.apidoc.main(['-f', #Overwrite existing files
@@ -31,8 +33,11 @@ def setup(app):
 
 # -- Project information -----------------------------------------------------
 
+from datetime import date
+
+year = date.today().year
 project = u'SkyLLH'
-copyright = u'2019, The IceCube Collaboration, T. Kontrimas, M. Wolf'
+copyright = u'%s, The IceCube Collaboration, T. Kontrimas, M. Wolf' % year
 author = u'The IceCube Collaboration'
 
 # The short X.Y version
