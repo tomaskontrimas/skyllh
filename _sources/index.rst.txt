@@ -11,6 +11,8 @@ Hence with SkyLLH it is supposed to be easy to perform an entire maximum
 likelihood ratio test once the user (likelihood developer) defined the
 mathematical likelihood function.
 
+test auto deploy config
+
 .. _user-docs:
 
 .. toctree::
