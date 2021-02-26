@@ -467,7 +467,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>from i3skyllh.analyses.IC170922A_wGFU.analysis import create_analysis
+<span></span><span class="kn">from</span> <span class="nn">i3skyllh.analyses.IC170922A_wGFU.analysis</span> <span class="kn">import</span> <span class="n">create_analysis</span>
 </pre></div>
 </div>
 </div>
@@ -477,26 +477,26 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>import logging
-import numpy as np
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-# Classes to define the source hypothesis.
-from skyllh.physics.source import PointLikeSource
+<span class="c1"># Classes to define the source hypothesis.</span>
+<span class="kn">from</span> <span class="nn">skyllh.physics.source</span> <span class="kn">import</span> <span class="n">PointLikeSource</span>
 
-# Classes for utility functionality.
-from skyllh.core.config import CFG
-from skyllh.core.random import RandomStateService
-from skyllh.core.timing import TimeLord
+<span class="c1"># Classes for utility functionality.</span>
+<span class="kn">from</span> <span class="nn">skyllh.core.config</span> <span class="kn">import</span> <span class="n">CFG</span>
+<span class="kn">from</span> <span class="nn">skyllh.core.random</span> <span class="kn">import</span> <span class="n">RandomStateService</span>
+<span class="kn">from</span> <span class="nn">skyllh.core.timing</span> <span class="kn">import</span> <span class="n">TimeLord</span>
 
-# Logging setup utilities.
-from skyllh.core.debugging import (
-    setup_logger,
-    setup_console_handler,
-    setup_file_handler
-)
+<span class="c1"># Logging setup utilities.</span>
+<span class="kn">from</span> <span class="nn">skyllh.core.debugging</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">setup_logger</span><span class="p">,</span>
+    <span class="n">setup_console_handler</span><span class="p">,</span>
+    <span class="n">setup_file_handler</span>
+<span class="p">)</span>
 
-# The pre-defined data samples.
-from i3skyllh.datasets import data_samples
+<span class="c1"># The pre-defined data samples.</span>
+<span class="kn">from</span> <span class="nn">i3skyllh.datasets</span> <span class="kn">import</span> <span class="n">data_samples</span>
 </pre></div>
 </div>
 </div>
@@ -506,10 +506,10 @@ from i3skyllh.datasets import data_samples
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>def TXS_location():
-    src_ra  = np.radians(77.358)
-    src_dec = np.radians(5.693)
-    return (src_ra, src_dec)
+<span></span><span class="k">def</span> <span class="nf">TXS_location</span><span class="p">():</span>
+    <span class="n">src_ra</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">77.358</span><span class="p">)</span>
+    <span class="n">src_dec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">5.693</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">src_ra</span><span class="p">,</span> <span class="n">src_dec</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -519,11 +519,11 @@ from i3skyllh.datasets import data_samples
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>setup_logger(&#39;skyllh&#39;, logging.DEBUG)
-log_format = &#39;%(asctime)s %(processName)s %(name)s %(levelname)s: &#39;\
-             &#39;%(message)s&#39;
-setup_console_handler(&#39;skyllh&#39;, logging.INFO, log_format)
-#setup_file_handler(&#39;skyllh&#39;, logging.DEBUG, log_format, &#39;debug.log&#39;)
+<span></span><span class="n">setup_logger</span><span class="p">(</span><span class="s1">&#39;skyllh&#39;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">log_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(processName)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1">: &#39;</span>\
+             <span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+<span class="n">setup_console_handler</span><span class="p">(</span><span class="s1">&#39;skyllh&#39;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">log_format</span><span class="p">)</span>
+<span class="c1">#setup_file_handler(&#39;skyllh&#39;, logging.DEBUG, log_format, &#39;debug.log&#39;)</span>
 </pre></div>
 </div>
 </div>
@@ -533,7 +533,7 @@ setup_console_handler(&#39;skyllh&#39;, logging.INFO, log_format)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>CFG[&#39;multiproc&#39;][&#39;ncpu&#39;] = 16
+<span></span><span class="n">CFG</span><span class="p">[</span><span class="s1">&#39;multiproc&#39;</span><span class="p">][</span><span class="s1">&#39;ncpu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">16</span>
 </pre></div>
 </div>
 </div>
@@ -543,19 +543,19 @@ setup_console_handler(&#39;skyllh&#39;, logging.INFO, log_format)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>sample_seasons = [
-    (&quot;PointSourceTracks&quot;, &quot;IC40&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC59&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC79&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC86, 2011&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC86, 2012&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC86, 2013&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC86, 2014&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC86, 2015&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC86, 2016&quot;),
-    (&quot;PointSourceTracks&quot;, &quot;IC86, 2017&quot;),
-    (&quot;GFU&quot;, &quot;IC86, 2015-2018&quot;)
-]
+<span></span><span class="n">sample_seasons</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC40&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC59&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC79&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2011&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2012&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2013&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2014&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2015&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2016&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;PointSourceTracks&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2017&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;GFU&quot;</span><span class="p">,</span> <span class="s2">&quot;IC86, 2015-2018&quot;</span><span class="p">)</span>
+<span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -565,11 +565,11 @@ setup_console_handler(&#39;skyllh&#39;, logging.INFO, log_format)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>datasets = []
-for (sample, season) in sample_seasons:
-    # Get the dataset from the correct dataset collection.
-    dsc = data_samples[sample].create_dataset_collection()
-    datasets.append(dsc.get_dataset(season))
+<span></span><span class="n">datasets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">season</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sample_seasons</span><span class="p">:</span>
+    <span class="c1"># Get the dataset from the correct dataset collection.</span>
+    <span class="n">dsc</span> <span class="o">=</span> <span class="n">data_samples</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset_collection</span><span class="p">()</span>
+    <span class="n">datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dsc</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">season</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -579,8 +579,8 @@ for (sample, season) in sample_seasons:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>rss_seed = 1
-rss = RandomStateService(rss_seed)
+<span></span><span class="n">rss_seed</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">rss</span> <span class="o">=</span> <span class="n">RandomStateService</span><span class="p">(</span><span class="n">rss_seed</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -590,7 +590,7 @@ rss = RandomStateService(rss_seed)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>source = PointLikeSource(*TXS_location())
+<span></span><span class="n">source</span> <span class="o">=</span> <span class="n">PointLikeSource</span><span class="p">(</span><span class="o">*</span><span class="n">TXS_location</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -600,7 +600,7 @@ rss = RandomStateService(rss_seed)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>tl = TimeLord()
+<span></span><span class="n">tl</span> <span class="o">=</span> <span class="n">TimeLord</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -610,12 +610,12 @@ rss = RandomStateService(rss_seed)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>with tl.task_timer(&#39;Creating analysis.&#39;):
-    ana = create_analysis(
-        datasets, source,
-        data_base_path=None,
-        compress_data=False,
-        tl=tl)
+<span></span><span class="k">with</span> <span class="n">tl</span><span class="o">.</span><span class="n">task_timer</span><span class="p">(</span><span class="s1">&#39;Creating analysis.&#39;</span><span class="p">):</span>
+    <span class="n">ana</span> <span class="o">=</span> <span class="n">create_analysis</span><span class="p">(</span>
+        <span class="n">datasets</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span>
+        <span class="n">data_base_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">compress_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">tl</span><span class="o">=</span><span class="n">tl</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -634,11 +634,11 @@ rss = RandomStateService(rss_seed)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>with tl.task_timer(&#39;Unblinding data.&#39;):
-    (TS, fitparam_dict, status) = ana.unblind(rss)
-print(&#39;TS = %g&#39;%(TS))
-print(&#39;ns_fit = %g&#39;%(fitparam_dict[&#39;ns&#39;]))
-print(&#39;gamma_fit = %g&#39;%(fitparam_dict[&#39;gamma&#39;]))
+<span></span><span class="k">with</span> <span class="n">tl</span><span class="o">.</span><span class="n">task_timer</span><span class="p">(</span><span class="s1">&#39;Unblinding data.&#39;</span><span class="p">):</span>
+    <span class="p">(</span><span class="n">TS</span><span class="p">,</span> <span class="n">fitparam_dict</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">unblind</span><span class="p">(</span><span class="n">rss</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TS = </span><span class="si">%g</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">TS</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ns_fit = </span><span class="si">%g</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">fitparam_dict</span><span class="p">[</span><span class="s1">&#39;ns&#39;</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;gamma_fit = </span><span class="si">%g</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">fitparam_dict</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
@@ -658,10 +658,10 @@ gamma_fit = 1.98958
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>with tl.task_timer(&#39;Generating signal events.&#39;):
-    (n_sig, signal_events_dict) = ana.sig_generator.generate_signal_events(rss, 100)
-print(&#39;n_sig: %d&#39;, n_sig)
-print(&#39;signal datasets: &#39;+str(signal_events_dict.keys()))
+<span></span><span class="k">with</span> <span class="n">tl</span><span class="o">.</span><span class="n">task_timer</span><span class="p">(</span><span class="s1">&#39;Generating signal events.&#39;</span><span class="p">):</span>
+    <span class="p">(</span><span class="n">n_sig</span><span class="p">,</span> <span class="n">signal_events_dict</span><span class="p">)</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">sig_generator</span><span class="o">.</span><span class="n">generate_signal_events</span><span class="p">(</span><span class="n">rss</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n_sig: </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">n_sig</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;signal datasets: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">signal_events_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 </pre></div>
 </div>
 </div>
@@ -680,7 +680,7 @@ signal datasets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>print(tl)
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">tl</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
