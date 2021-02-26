@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.times module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.timing module" href="skyllh.core.timing.html" />
+    <link rel="prev" title="skyllh.core.test_statistic module" href="skyllh.core.test_statistic.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.times module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.times.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.times">
+<span id="skyllh-core-times-module"></span><h1>skyllh.core.times module<a class="headerlink" href="#module-skyllh.core.times" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skyllh.core.times.TimeGenerationMethod">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.times.</span></code><code class="sig-name descname"><span class="pre">TimeGenerationMethod</span></code><a class="headerlink" href="#skyllh.core.times.TimeGenerationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class (type) for implementing a method to generate times.</p>
+<dl class="py method">
+<dt id="skyllh.core.times.TimeGenerationMethod.generate_times">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">generate_times</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.times.TimeGenerationMethod.generate_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">generate_times</span></code> method implements the actual generation of
+times, which is method dependent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<em>instance of RandomStateService</em>) – The random state service providing the random number
+generator (RNG).</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – The number of times that should get generated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>times</strong> (<em>ndarray</em>) – The 1d numpy ndarray holding the generated times.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.times.LivetimeTimeGenerationMethod">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.times.</span></code><code class="sig-name descname"><span class="pre">LivetimeTimeGenerationMethod</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">livetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.times.LivetimeTimeGenerationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.times.TimeGenerationMethod" title="skyllh.core.times.TimeGenerationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.times.TimeGenerationMethod</span></code></a></p>
+<p>The LivetimeTimeGenerationMethod provides the method to generate times
+from a Livetime object. It will uniformely generate times that will coincide
+with the on-time intervals of the detector, by calling the <cite>draw_ontimes</cite>
+method of the Livetime class.</p>
+<p>Creates a new LivetimeTimeGeneration instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>livetime</strong> (<a class="reference internal" href="skyllh.core.livetime.html#skyllh.core.livetime.Livetime" title="skyllh.core.livetime.Livetime"><em>Livetime</em></a>) – The Livetime instance that should be used to generate times from.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.times.LivetimeTimeGenerationMethod.livetime">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">livetime</span></code><a class="headerlink" href="#skyllh.core.times.LivetimeTimeGenerationMethod.livetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Livetime instance used to draw times from.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.times.LivetimeTimeGenerationMethod.generate_times">
+<code class="sig-name descname"><span class="pre">generate_times</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.times.LivetimeTimeGenerationMethod.generate_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates <cite>size</cite> MJD times according to the detector on-times
+provided by the Livetime instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<em>instance of RandomStateService</em>) – The random state service providing the random number
+generator (RNG).</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – The number of times that should get generated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>times</strong> (<em>ndarray</em>) – The 1d (<cite>size</cite>,)-shaped numpy ndarray holding the generated times.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.times.TimeGenerator">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.times.</span></code><code class="sig-name descname"><span class="pre">TimeGenerator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.times.TimeGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates a time generator instance with a given defined time
+generation method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference internal" href="#skyllh.core.times.TimeGenerationMethod" title="skyllh.core.times.TimeGenerationMethod"><em>TimeGenerationMethod</em></a>) – The instance of TimeGenerationMethod that defines the method of
+generating times.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.times.TimeGenerator.method">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">method</span></code><a class="headerlink" href="#skyllh.core.times.TimeGenerator.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The TimeGenerationMethod object that should be used to generate
+the times.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.times.TimeGenerator.generate_times">
+<code class="sig-name descname"><span class="pre">generate_times</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.times.TimeGenerator.generate_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates <code class="docutils literal notranslate"><span class="pre">size</span></code> amount of times by calling the <code class="docutils literal notranslate"><span class="pre">generate_times</span></code>
+method of the TimeGenerationMethod class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<a class="reference internal" href="skyllh.core.random.html#skyllh.core.random.RandomStateService" title="skyllh.core.random.RandomStateService"><em>RandomStateService</em></a>) – The random state service providing the random number
+generator (RNG).</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – The number of time that should get generated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>times</strong> (<em>ndarray</em>) – The 1d (<cite>size</cite>,)-shaped ndarray holding the generated times.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.timing.html" class="btn btn-neutral float-right" title="skyllh.core.timing module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.test_statistic.html" class="btn btn-neutral float-left" title="skyllh.core.test_statistic module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

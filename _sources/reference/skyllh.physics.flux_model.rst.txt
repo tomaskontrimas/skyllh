@@ -1,0 +1,7 @@
+skyllh.physics.flux\_model module
+=================================
+
+.. automodule:: skyllh.physics.flux_model
+   :members:
+   :undoc-members:
+   :show-inheritance:

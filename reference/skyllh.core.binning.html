@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.binning module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.config module" href="skyllh.core.config.html" />
+    <link rel="prev" title="skyllh.core.backgroundpdf module" href="skyllh.core.backgroundpdf.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.binning module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.binning.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.binning">
+<span id="skyllh-core-binning-module"></span><h1>skyllh.core.binning module<a class="headerlink" href="#module-skyllh.core.binning" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skyllh.core.binning.BinningDefinition">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.binning.</span></code><code class="sig-name descname"><span class="pre">BinningDefinition</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binedges</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.binning.BinningDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The BinningDefinition class provides a structure to hold histogram
+binning definitions for an analyis.</p>
+<p>Creates a new binning definition object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the binning definition.</p></li>
+<li><p><strong>binedges</strong> (<em>sequence</em>) – The sequence of the bin edges, which should be used for the binning.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the binning setting. This must be an unique name
+for all the different binning settings used within a season.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.binedges">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">binedges</span></code><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.binedges" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numpy.ndarray holding the bin edges.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.nbins">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">nbins</span></code><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.nbins" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of bins, based on the number of bin edges (minus 1).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.bincenters">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">bincenters</span></code><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.bincenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>The center values of the bins.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.lower_edge">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">lower_edge</span></code><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.lower_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>The lowest bin edge of the binning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.upper_edge">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">upper_edge</span></code><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.upper_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>The upper most edge of the binning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.range">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">range</span></code><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.range" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tuple (lower_edge, upper_edge) of the binning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.any_data_out_of_binning_range">
+<code class="sig-name descname"><span class="pre">any_data_out_of_binning_range</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.any_data_out_of_binning_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if any of the given data is outside of the binning range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>1d ndarray</em>) – The array with the data values to check.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>outofrange</strong> (<em>bool</em>) – True if any data value is outside the binning range.
+False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.BinningDefinition.get_subset">
+<code class="sig-name descname"><span class="pre">get_subset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_edge</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.binning.BinningDefinition.get_subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new BinningDefinition instance which contains only a subset
+of the bins of this BinningDefinition instance. The range of the subset
+is given by a lower and upper edge value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lower_edge</strong> (<em>float</em>) – The lower edge value of the subset.</p></li>
+<li><p><strong>upper_edge</strong> (<em>float</em>) – The upper edge value of the subset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>new_binning</strong> (<em>BinningDefinition instance</em>) – The new BinningDefinition instance holding the binning subset.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.binning.UsesBinning">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.binning.</span></code><code class="sig-name descname"><span class="pre">UsesBinning</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.binning.UsesBinning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is a classifier class that can be used to define, that a class uses
+binning information for one or more dimensions.</p>
+<p>This class defines the property <code class="docutils literal notranslate"><span class="pre">binnings</span></code>, which is a list of
+BinningDefinition objects.</p>
+<p>This class provides the method <code class="docutils literal notranslate"><span class="pre">has_same_binning_as(obj)</span></code> to determine if
+a given object (that also uses binning) has the same binning.</p>
+<dl class="py method">
+<dt id="skyllh.core.binning.UsesBinning.binnings">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">binnings</span></code><a class="headerlink" href="#skyllh.core.binning.UsesBinning.binnings" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of BinningDefinition objects, one for each
+dimension.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.UsesBinning.binning_ndim">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">binning_ndim</span></code><a class="headerlink" href="#skyllh.core.binning.UsesBinning.binning_ndim" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of dimensions that uses binning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.UsesBinning.has_same_binning_as">
+<code class="sig-name descname"><span class="pre">has_same_binning_as</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.binning.UsesBinning.has_same_binning_as" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if this object has the same binning as the given object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>class instance derived from UsesBinning</em>) – The object that should be checked for same binning.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – True if <code class="docutils literal notranslate"><span class="pre">obj</span></code> uses the same binning, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.UsesBinning.add_binning">
+<code class="sig-name descname"><span class="pre">add_binning</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binning</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.binning.UsesBinning.add_binning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given binning definition to the list of binnings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>binning</strong> (<a class="reference internal" href="#skyllh.core.binning.BinningDefinition" title="skyllh.core.binning.BinningDefinition"><em>BinningDefinition</em></a>) – The binning definition to add.</p></li>
+<li><p><strong>name</strong> (<em>str |</em><em> (</em><em>default</em><em>) </em><em>None</em>) – The name of the binning. If not None and it’s different to the
+name of the given binning definition, a copy of the
+BinningDefinition object is made and the new name is set.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.binning.UsesBinning.get_binning">
+<code class="sig-name descname"><span class="pre">get_binning</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.binning.UsesBinning.get_binning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the binning definition of the given name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str | int</em>) – The name of the binning definition. A string specifies the name and
+an integer the dimension index.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>binning</strong> (<em>BinningDefinition</em>) – The binning definition of the given name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.config.html" class="btn btn-neutral float-right" title="skyllh.core.config module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.backgroundpdf.html" class="btn btn-neutral float-left" title="skyllh.core.backgroundpdf module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

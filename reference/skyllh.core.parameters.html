@@ -1,0 +1,1833 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.parameters module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.pdf module" href="skyllh.core.pdf.html" />
+    <link rel="prev" title="skyllh.core.optimize module" href="skyllh.core.optimize.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.parameters module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.parameters.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.parameters">
+<span id="skyllh-core-parameters-module"></span><h1>skyllh.core.parameters module<a class="headerlink" href="#module-skyllh.core.parameters" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="skyllh.core.parameters.make_linear_parameter_grid_1d">
+<code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">make_linear_parameter_grid_1d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.make_linear_parameter_grid_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to create a ParameterGrid object for a 1-dimensional
+linear parameter grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the parameter.</p></li>
+<li><p><strong>low</strong> (<em>float</em>) – The lowest value of the parameter.</p></li>
+<li><p><strong>high</strong> (<em>float</em>) – The highest value of the parameter.</p></li>
+<li><p><strong>delta</strong> (<em>float</em>) – The constant distance between the grid values. By definition this
+defines also the precision of the parameter values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong> (<em>ParameterGrid</em>) – The ParameterGrid object holding the discrete parameter grid values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="skyllh.core.parameters.make_params_hash">
+<code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">make_params_hash</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.make_params_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to create a hash value for a given parameter dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict | None</em>) – The dictionary holding the parameter (name: value) pairs.
+If set to None, an empty dictionary is used.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>hash</strong> (<em>int</em>) – The hash of the parameter dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.Parameter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">Parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isfixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.Parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class describes a parameter of a mathematical function, like a PDF,
+or source flux function. A parameter has a name, a value range, and an
+initial value. Furthermore, it has a flag that determines whether this
+parameter has a fixed value or not.</p>
+<p>Creates a new Parameter instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the parameter.</p></li>
+<li><p><strong>initial</strong> (<em>float</em>) – The initial value of the parameter.</p></li>
+<li><p><strong>valmin</strong> (<em>float | None</em>) – The minimum value of the parameter in case this parameter is
+mutable.</p></li>
+<li><p><strong>valmax</strong> (<em>float | None</em>) – The maximum value of the parameter in case this parameter is
+mutable.</p></li>
+<li><p><strong>isfixed</strong> (<em>bool | None</em>) – Flag if the value of this parameter is mutable (False), or not
+(True). If set to <cite>True</cite>, the value of the parameter will always be
+the <cite>initial</cite> value.
+If set to None, the parameter will be mutable if valmin and valmax
+were specified. Otherwise, the parameter is fixed.
+The default is None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#skyllh.core.parameters.Parameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.initial">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">initial</span></code><a class="headerlink" href="#skyllh.core.parameters.Parameter.initial" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initial value of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.isfixed">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">isfixed</span></code><a class="headerlink" href="#skyllh.core.parameters.Parameter.isfixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>The flag if the parameter is mutable (False) or not (True).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.valmin">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">valmin</span></code><a class="headerlink" href="#skyllh.core.parameters.Parameter.valmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum bound value of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.valmax">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">valmax</span></code><a class="headerlink" href="#skyllh.core.parameters.Parameter.valmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>The maximum bound value of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.value">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">value</span></code><a class="headerlink" href="#skyllh.core.parameters.Parameter.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current value of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.as_linear_grid">
+<code class="sig-name descname"><span class="pre">as_linear_grid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.Parameter.as_linear_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a ParameterGrid instance with a linear grid with constant
+grid value distances delta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>delta</strong> (<em>float</em>) – The constant distance between the grid values. By definition this
+defines also the precision of the parameter values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> (<em>ParameterGrid instance</em>) – The ParameterGrid instance holding the grid values.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If this Parameter instance represents a fixed parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.change_fixed_value">
+<code class="sig-name descname"><span class="pre">change_fixed_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.Parameter.change_fixed_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the value of this fixed parameter to the given value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – The parameter’s new value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>value</strong> (<em>float</em>) – The parameter’s new value.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If this parameter is not a fixed parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.make_fixed">
+<code class="sig-name descname"><span class="pre">make_fixed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.Parameter.make_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixes this parameter to the given initial value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>initial</strong> (<em>float | None</em>) – The new fixed initial value of the Parameter. If set to None, the
+parameter’s current value will be used as initial value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>value</strong> (<em>float</em>) – The parameter’s new value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.Parameter.make_floating">
+<code class="sig-name descname"><span class="pre">make_floating</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.Parameter.make_floating" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines this parameter as floating with the given initial, minimal,
+and maximal value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial</strong> (<em>float | None</em>) – The initial value of the parameter. If set to <cite>None</cite>, the
+parameter’s current value will be used as initial value.</p></li>
+<li><p><strong>valmin</strong> (<em>float | None</em>) – The minimal value the parameter’s value can take.
+If set to <cite>None</cite>, the parameter’s current minimal value will be
+used.</p></li>
+<li><p><strong>valmax</strong> (<em>float | None</em>) – The maximal value the parameter’s value can take.
+If set to <cite>None</cite>, the parameter’s current maximal value will be
+used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>value</strong> (<em>float</em>) – The parameter’s new value.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If valmin is set to None and this parameter has no valmin defined.
+    If valmax is set to None and this parameter has no valmax defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.ParameterSet">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">ParameterSet</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class holds a set of Parameter instances.</p>
+<p>Constructs a new ParameterSet instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>instance of Parameter | sequence of Parameter instances | None</em>) – The initial sequence of Parameter instances of this ParameterSet
+instance.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.union">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">union</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">paramsets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.union" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a ParameterSet instance that is the union of the given
+ParameterSet instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*paramsets</strong> (<em>ParameterSet instances</em>) – The sequence of ParameterSet instances.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>paramset</strong> (<em>ParameterSet instance</em>) – The newly created ParameterSet instance that holds the union of the
+parameters provided by all the ParameterSet instances.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D ndarray holding the Parameter instances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.fixed_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fixed_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.fixed_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D ndarray holding the Parameter instances, whose
+values are fixed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.fixed_params_mask">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fixed_params_mask</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.fixed_params_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D ndarray holding the mask for the fixed parameters
+of this parameter set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.floating_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">floating_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.floating_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D ndarray holding the Parameter instances,
+whose values are floating.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.floating_params_mask">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">floating_params_mask</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.floating_params_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D ndarray holding the mask for the floating
+parameters of this parameter set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.n_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.n_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of parameters this ParameterSet has.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.n_fixed_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_fixed_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.n_fixed_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of fixed parameters defined in this parameter
+set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.n_floating_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_floating_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.n_floating_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of floating parameters defined in this
+parameter set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.fixed_param_name_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fixed_param_name_list</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.fixed_param_name_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of the fixed parameter names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.floating_param_name_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">floating_param_name_list</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.floating_param_name_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of the floating parameter names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.fixed_param_values">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fixed_param_values</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.fixed_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The (n_fixed_params,)-shaped ndarray holding values of
+the fixed parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.floating_param_initials">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">floating_param_initials</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.floating_param_initials" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D (n_floating_params,)-shaped ndarray holding the
+initial values of all the global floating parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.floating_param_bounds">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">floating_param_bounds</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.floating_param_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 2D (n_floating_params,2)-shaped ndarray holding the
+boundaries for all the floating parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.get_fixed_pidx">
+<code class="sig-name descname"><span class="pre">get_fixed_pidx</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.get_fixed_pidx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the parameter index of the given fixed parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param_name</strong> (<em>str</em>) – The name of the parameter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pidx</strong> (<em>int</em>) – The index of the fixed parameter.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the given parameter is not part of the set of fixed parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.get_floating_pidx">
+<code class="sig-name descname"><span class="pre">get_floating_pidx</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.get_floating_pidx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the parameter index of the given floating parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param_name</strong> (<em>str</em>) – The name of the parameter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pidx</strong> (<em>int</em>) – The index of the floating parameter.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the given parameter is not part of the set of floating
+    parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.has_fixed_param">
+<code class="sig-name descname"><span class="pre">has_fixed_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.has_fixed_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if this ParameterSet instance has a fixed parameter named
+<code class="docutils literal notranslate"><span class="pre">param_name</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param_name</strong> (<em>str</em>) – The name of the parameter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> if this ParameterSet instance has a fixed parameter
+of the given name, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.has_floating_param">
+<code class="sig-name descname"><span class="pre">has_floating_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.has_floating_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if this ParameterSet instance has a floating parameter named
+<code class="docutils literal notranslate"><span class="pre">param_name</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param_name</strong> (<em>str</em>) – The name of the parameter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> if this ParameterSet instance has a floating parameter
+of the given name, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.make_params_fixed">
+<code class="sig-name descname"><span class="pre">make_params_fixed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fix_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.make_params_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixes the given parameters to the given values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fix_params</strong> (<em>dict</em>) – The dictionary defining the parameters that should get fixed to the
+given dictionary entry values.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If one of the given parameters is already a fixed parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.make_params_floating">
+<code class="sig-name descname"><span class="pre">make_params_floating</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.make_params_floating" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes the given parameters floating with the given initial value and
+within the given bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>float_params</strong> (<em>dict</em>) – <p>The dictionary defining the parameters that should get set to be
+floating. The format of a dictionary’s entry can be one of the
+following formats:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>None</dt><dd><p>The parameter’s initial, minimal and maximal value should be
+taken from the parameter’s current settings.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>initial<span class="classifier">float</span></dt><dd><p>The parameter’s initial value should be set to the given
+value. The minimal and maximal values of the parameter will
+be taken from the parameter’s current settings.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(initial, valmin, valmax)</dt><dd><p>The parameter’s initial value, minimal and maximal value
+should be set to the given values. If <cite>initial</cite> is set to
+<cite>None</cite>, the parameter’s current value will be used as
+initial value.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If one of the given parameters is already a floating parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.update_fixed_param_value_cache">
+<code class="sig-name descname"><span class="pre">update_fixed_param_value_cache</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.update_fixed_param_value_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the internal cache of the fixed parameter values. This method
+has to be called whenever the values of the fixed Parameter instances
+change.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.copy">
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a deep copy of this ParameterSet instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>copy</strong> (<em>ParameterSet instance</em>) – The copied instance of this ParameterSet instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.add_param">
+<code class="sig-name descname"><span class="pre">add_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atfront</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.add_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given Parameter instance to this set of parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> (<em>instance of Parameter</em>) – The parameter, which should get added.</p></li>
+<li><p><strong>atfront</strong> (<em>bool</em>) – Flag if the parameter should be added at the front of the parameter
+list. If set to False (default), it will be added at the back.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> (<em>instance of ParameterSet</em>) – This ParameterSet instance so that multiple add_param calls can just
+be concatenated.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – If param is not an instance of Parameter.</p></li>
+<li><p><strong>KeyError</strong> – If given parameter is already present in the set. The check is
+    performed based on the parameter name.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.has_param">
+<code class="sig-name descname"><span class="pre">has_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.has_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given Parameter is already present in this ParameterSet
+instance. The check is performed based on the parameter name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param</strong> (<em>Parameter instance</em>) – The Parameter instance that should be checked.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>check</strong> (<em>bool</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> if the given parameter is present in this parameter set,
+<code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSet.floating_param_values_to_dict">
+<code class="sig-name descname"><span class="pre">floating_param_values_to_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">floating_param_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSet.floating_param_values_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given floating parameter values into a dictionary with
+the floating parameter names and values and also adds the fixed
+parameter names and their values to this dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>floating_param_values</strong> (<em>1D ndarray</em>) – The ndarray holding the values of the floating parameters in the
+order that the floating parameters are defined.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>param_dict</strong> (<em>dict</em>) – The dictionary with the floating and fixed parameter names and
+values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.ParameterSetArray">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">ParameterSetArray</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paramsets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class provides a data holder for an array of ParameterSet instances.
+Given an array of global floating parameter values, it can split that array
+into floating parameter value sub arrays, one for each ParameterSet instance
+of this ParameterSetArray instance. This functionality is required in
+order to be able to map the global floating parameter values from the
+minimizer to their parameter names.</p>
+<p>Creates a new ParameterSetArray instance, which will hold a list of
+constant ParameterSet instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>paramsets</strong> (<em>const instance of ParameterSet | sequence of const instances</em>) – of ParameterSet
+The sequence of constant ParameterSet instances holding the global
+parameters.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the given paramsets argument ist not a sequence of constant
+    instances of ParameterSet.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.paramset_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">paramset_list</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.paramset_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of ParameterSet instances holding the global
+parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.n_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.n_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The total number of parameters hold by this
+ParameterSetArray instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.n_fixed_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_fixed_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.n_fixed_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The total number of fixed parameters hold by this
+ParameterSetArray instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.n_floating_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_floating_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.n_floating_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The total number of floating parameters hold by this
+ParameterSetArray instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.floating_param_initials">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">floating_param_initials</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.floating_param_initials" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D (n_floating_params,)-shaped ndarray holding the
+initial values of all the floating parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.floating_param_bounds">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">floating_param_bounds</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.floating_param_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 2D (n_floating_params,2)-shaped ndarray holding the
+boundaries for all the floating parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.generate_random_initials">
+<code class="sig-name descname"><span class="pre">generate_random_initials</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rss</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.generate_random_initials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of random initials for all global floating
+parameters.
+A new random initial is defined as</p>
+<blockquote>
+<div><p>lower_bound + RAND * (upper_bound - lower_bound),</p>
+</div></blockquote>
+<p>where RAND is a uniform random variable between 0 and 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rss</strong> (<em>RandomStateService instance</em>) – The RandomStateService instance that should be used for drawing
+random numbers from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.split_floating_param_values">
+<code class="sig-name descname"><span class="pre">split_floating_param_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">floating_param_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.split_floating_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the given floating parameter values into their specific
+ParameterSet part.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>floating_param_values</strong> (<em>(</em><em>n_floating_params</em><em>,</em><em>)</em><em>-shaped 1D ndarray</em>) – The ndarray holding the values of all the floating parameters for
+all ParameterSet instances. The order must match the order of
+ParameterSet instances and their order of floating parameters.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>floating_param_values_list</strong> (<em>list of (n_floating_params,)-shaped 1D</em>) –     ndarray
+The list of ndarray objects, where each ndarray holds only the
+floating values of the particular ParameterSet instance. The order
+matches the order of ParameterSet instances defined for this
+ParameterSetArray.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterSetArray.update_fixed_param_value_cache">
+<code class="sig-name descname"><span class="pre">update_fixed_param_value_cache</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterSetArray.update_fixed_param_value_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the internal cache of the fixed parameter values. This method
+has to be called whenever the values of the fixed Parameter instances
+change.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.ParameterGrid">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">ParameterGrid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class provides a data holder for a parameter that has a set of
+discrete values on a grid. Thus, the parameter has a value grid.
+This class represents a one-dimensional grid.</p>
+<p>Creates a new parameter grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the parameter.</p></li>
+<li><p><strong>grid</strong> (<em>sequence of float</em>) – The sequence of float values defining the discrete grid values of
+the parameter.</p></li>
+<li><p><strong>delta</strong> (<em>float | None</em>) – The width between the grid values.
+If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, the width is taken from the equal-distant
+<code class="docutils literal notranslate"><span class="pre">grid</span></code> values.</p></li>
+<li><p><strong>decimals</strong> (<em>int | None</em>) – The number of decimals the grid values should get rounded to.
+The maximal number of decimals is 16.
+If set to None, the number of decimals will be the maximum of the
+number of decimals of the first grid value and the number of
+decimals of the delta value.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.from_BinningDefinition">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_BinningDefinition</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binning</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.from_BinningDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a ParameterGrid instance from a BinningDefinition instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>binning</strong> (<em>BinningDefinition instance</em>) – The BinningDefinition instance that should be used to create the
+ParameterGrid instance from.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>param_grid</strong> (<em>ParameterGrid instance</em>) – The created ParameterGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.decimals">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">decimals</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.decimals" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of significant decimals of the grid values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.grid">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">grid</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numpy.ndarray with the grid values of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.delta">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">delta</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The width (float) between the grid values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.lower_bound">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">lower_bound</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.lower_bound" title="Permalink to this definition">¶</a></dt>
+<dd><p>The lower bound of the parameter grid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.ndim">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ndim</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.ndim" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dimensionality of the parameter grid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.add_extra_lower_and_upper_bin">
+<code class="sig-name descname"><span class="pre">add_extra_lower_and_upper_bin</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.add_extra_lower_and_upper_bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an extra lower and upper bin to this parameter grid. This is
+usefull when interpolation or gradient methods require an extra bin on
+each side of the grid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.copy">
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies this ParameterGrid object and returns the copy.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.round_to_nearest_grid_point">
+<code class="sig-name descname"><span class="pre">round_to_nearest_grid_point</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.round_to_nearest_grid_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rounds the given value to the nearest grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float | ndarray of float</em>) – The value(s) to round.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid_point</strong> (<em>float | ndarray of float</em>) – The calculated grid point(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.round_to_lower_grid_point">
+<code class="sig-name descname"><span class="pre">round_to_lower_grid_point</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.round_to_lower_grid_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rounds the given value to the nearest grid point that is lower than
+the given value.</p>
+<dl class="simple">
+<dt>Note: If the given value is a grid point, that grid point will be</dt><dd><p>returned!</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float | ndarray of float</em>) – The value(s) to round.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid_point</strong> (<em>float | ndarray of float</em>) – The calculated grid point(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGrid.round_to_upper_grid_point">
+<code class="sig-name descname"><span class="pre">round_to_upper_grid_point</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGrid.round_to_upper_grid_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rounds the given value to the nearest grid point that is larger than
+the given value.</p>
+<dl class="simple">
+<dt>Note: If the given value is a grid point, the next grid point will be</dt><dd><p>returned!</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float | ndarray of float</em>) – The value(s) to round.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid_point</strong> (<em>ndarray of float</em>) – The calculated grid point(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.ParameterGridSet">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">ParameterGridSet</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_grids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGridSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.py.html#skyllh.core.py.NamedObjectCollection" title="skyllh.core.py.NamedObjectCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.py.NamedObjectCollection</span></code></a></p>
+<p>Describes a set of parameter grids.</p>
+<p>Constructs a new ParameterGridSet object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param_grids</strong> (<em>sequence of ParameterGrid instances |</em>) – ParameterGrid instance | None
+The ParameterGrid instances this ParameterGridSet instance should
+get initialized with.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGridSet.ndim">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ndim</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGridSet.ndim" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dimensionality of this parameter grid set. By definition it’s the
+number of parameters of the set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGridSet.parameter_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">parameter_names</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGridSet.parameter_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of the parameter names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGridSet.parameter_permutation_dict_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">parameter_permutation_dict_list</span></code><a class="headerlink" href="#skyllh.core.parameters.ParameterGridSet.parameter_permutation_dict_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of parameter dictionaries constructed from all
+permutations of all the parameter values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGridSet.add_extra_lower_and_upper_bin">
+<code class="sig-name descname"><span class="pre">add_extra_lower_and_upper_bin</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGridSet.add_extra_lower_and_upper_bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an extra lower and upper bin to all the parameter grids. This is
+usefull when interpolation or gradient methods require an extra bin on
+each side of the grid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ParameterGridSet.copy">
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ParameterGridSet.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies this ParameterGridSet object and returns the copy.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.ModelParameterMapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">ModelParameterMapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This abstract base class defines the interface of a model parameter
+mapper. A model parameter mapper provides the functionality to map a global
+parameter, usually a fit parameter, to a local parameter of a model, e.g.
+to a source, or a background model parameter.</p>
+<p>Constructor of the parameter mapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the model parameter mapper. In practice this is a
+representative name for the set of global parameters this model
+parameter mapper holds. For a two-component signal-background
+likelihood model, “signal”, or “background” could be useful names.</p></li>
+<li><p><strong>models</strong> (<em>sequence of Model instances.</em>) – The sequence of Model instances the parameter mapper can map global
+parameters to.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of this ModelParameterMapper instance. In practice this is
+a representative name for the set of global parameters this mapper
+holds.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.models">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">models</span></code><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.models" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ModelCollection instance defining the models the mapper can
+map global parameters to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.global_paramset">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">global_paramset</span></code><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.global_paramset" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The ParameterSet instance holding the list of global
+parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.n_models">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_models</span></code><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.n_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of models the mapper knows about.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.n_global_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_global_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.n_global_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of defined global parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.n_global_fixed_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_global_fixed_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.n_global_fixed_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of defined global fixed parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.n_global_floating_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_global_floating_params</span></code><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.n_global_floating_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of defined global floating parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.finalize">
+<code class="sig-name descname"><span class="pre">finalize</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finalizes this ModelParameterMapper instance by declaring its
+ParameterSet instance as constant. No new global parameters can be added
+after calling this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.def_param">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">def_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.def_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to add the given Parameter instance to the
+parameter mapper and maps the global parameter to the given sequence of
+models the parameter mapper knows about.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> (<em>instance of Parameter</em>) – The global parameter which should get mapped to one or more models.</p></li>
+<li><p><strong>model_param_name</strong> (<em>str | None</em>) – The name of the parameter of the model. Hence, the global
+parameter name can be different to the parameter name of the model.
+If <cite>None</cite>, the name of the global parameter will be used as model
+parameter name.</p></li>
+<li><p><strong>models</strong> (<em>sequence of Model instances</em>) – The sequence of Model instances the parameter should get
+mapped to. The instances in the sequence must match Model instances
+specified at construction of this mapper.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.ModelParameterMapper.get_model_param_dict">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_model_param_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_floating_param_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.ModelParameterMapper.get_model_param_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to create a dictionary with the fixed and
+floating parameter names and their values for the given model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>global_floating_param_values</strong> (<em>1D ndarray instance</em>) – The ndarray instance holding the current values of the global
+floating parameters.</p></li>
+<li><p><strong>model_idx</strong> (<em>int | None</em>) – The index of the model as it was defined at construction
+time of this ModelParameterMapper instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>model_param_dict</strong> (<em>dict</em>) – The dictionary holding the fixed and floating parameter names and
+values of the specified model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.SingleModelParameterMapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">SingleModelParameterMapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SingleModelParameterMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.parameters.ModelParameterMapper" title="skyllh.core.parameters.ModelParameterMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.parameters.ModelParameterMapper</span></code></a></p>
+<p>This class provides a model parameter mapper for a single model, like a
+single source, or a single background model.</p>
+<p>Constructs a new model parameter mapper for a single model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the model parameter mapper. In practice this is a
+representative name for the set of global parameters this model
+parameter mapper holds. For a two-component signal-background
+likelihood model, “signal”, or “background” could be useful names.</p></li>
+<li><p><strong>model</strong> (<em>instance of Model</em>) – The instance of Model the parameter mapper can map global
+parameters to.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.SingleModelParameterMapper.def_param">
+<code class="sig-name descname"><span class="pre">def_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SingleModelParameterMapper.def_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given Parameter instance to the parameter mapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> (<em>instance of Parameter</em>) – The global parameter which should get mapped to the single model.</p></li>
+<li><p><strong>model_param_name</strong> (<em>str | None</em>) – The parameter name of the model. Hence, the global parameter name
+can be different to the parameter name of the model.
+If set to <cite>None</cite>, the name of the global parameter will be used as
+model parameter name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> (<em>SingleModelParameterMapper</em>) – The instance of this SingleModelParameterMapper, so that several
+<cite>def_param</cite> calls can be concatenated.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If there is already a model parameter with the given name defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SingleModelParameterMapper.get_model_param_dict">
+<code class="sig-name descname"><span class="pre">get_model_param_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_floating_param_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SingleModelParameterMapper.get_model_param_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a dictionary with the fixed and floating parameter names and
+their values for the single model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>global_floating_param_values</strong> (<em>1D ndarray instance</em>) – The ndarray instance holding the current values of the global
+floating parameters. The values must be in the same order as the
+floating parameters were defined.</p></li>
+<li><p><strong>model_idx</strong> (<em>None</em>) – The index of the model as it was defined at construction
+time of this ModelParameterMapper instance. Since this is a
+ModelParameterMapper for a single model, this argument is
+ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>model_param_dict</strong> (<em>dict</em>) – The dictionary holding the fixed and floating parameter names and
+values of the single model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.MultiModelParameterMapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">MultiModelParameterMapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.MultiModelParameterMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.parameters.ModelParameterMapper" title="skyllh.core.parameters.ModelParameterMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.parameters.ModelParameterMapper</span></code></a></p>
+<p>This class provides a model parameter mapper for multiple models, like
+multiple sources, or multiple background models.</p>
+<p>Constructs a new multi model parameter mapper for mapping global
+parameters to the given models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the model parameter mapper. In practice this is a
+representative name for the set of global parameters this model
+parameter mapper holds. For a two-component signal-background
+likelihood model, “signal”, or “background” could be useful names.</p></li>
+<li><p><strong>models</strong> (<em>sequence of Model instances.</em>) – The sequence of Model instances the parameter mapper can
+map global parameters to.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.MultiModelParameterMapper.def_param">
+<code class="sig-name descname"><span class="pre">def_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.MultiModelParameterMapper.def_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given Parameter instance to this parameter mapper and maps
+the parameter to the given sequence of models this model parameter
+mapper knows about.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> (<em>instance of Parameter</em>) – The global parameter which should get mapped to one or multiple
+models.</p></li>
+<li><p><strong>model_param_name</strong> (<em>str | None</em>) – The parameter name of the models. The parameter name of the models
+must be the same for all the models this global parameter should get
+mapped to. The global parameter name can be different to the
+parameter name of the models.
+If set to <cite>None</cite>, the name of the global parameter will be used as
+model parameter name.</p></li>
+<li><p><strong>models</strong> (<em>sequence of Model instances | None</em>) – The sequence of Model instances the parameter should get mapped to.
+The instances in the sequence must match Model instances specified
+at construction of this mapper.
+If set to <cite>None</cite> the global parameter will be mapped to all known
+models.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> (<em>MultiModelParameterMapper</em>) – The instance of this MultiModelParameterMapper, so that several
+<cite>def_param</cite> calls can be concatenated.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If there is already a model parameter of the same name defined for
+    any of the given to-be-applied models.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.MultiModelParameterMapper.get_model_param_dict">
+<code class="sig-name descname"><span class="pre">get_model_param_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_floating_param_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.MultiModelParameterMapper.get_model_param_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a dictionary with the fixed and floating parameter names and
+their values for the given model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>global_floating_param_values</strong> (<em>1D ndarray instance</em>) – The ndarray instance holding the current values of the global
+floating parameters.</p></li>
+<li><p><strong>model_idx</strong> (<em>int</em>) – The index of the model as it was defined at construction
+time of this ModelParameterMapper instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>model_param_dict</strong> (<em>dict</em>) – The dictionary holding the fixed and floating parameter names and
+values of the specified model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.HypoParameterDefinition">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">HypoParameterDefinition</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_param_mappers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.HypoParameterDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.py.html#skyllh.core.py.NamedObjectCollection" title="skyllh.core.py.NamedObjectCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.py.NamedObjectCollection</span></code></a></p>
+<p>This class provides a data holder for a list of model parameter mappers,
+where each parameter mapper defines a set of global parameters for the
+likelihood function, and their mapping to local model parameters.
+In addition this class provides a method to create a copy of itself, where
+floating parameters can get fixed to a certain values.</p>
+<p>Creates a new instance of HypoParameterDefinition with the given list
+of ModelParameterMapper instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model_param_mappers</strong> (<em>instance of ModelParameterMapper | sequence of</em>) – ModelParameterMapper instances
+The list of ModelParameterMapper instances defining the global
+parameters and their mapping to local parameters of individual
+models.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.HypoParameterDefinition.model_param_mapper_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">model_param_mapper_list</span></code><a class="headerlink" href="#skyllh.core.parameters.HypoParameterDefinition.model_param_mapper_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of ModelParameterMapper instances defining the
+global parameters and their mapping to the individual local model
+parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.HypoParameterDefinition.copy">
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fix_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.HypoParameterDefinition.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a deep copy of this HypoParameterDefinition instance and
+fixes the given global parameters to the given values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fix_params</strong> (<em>dict | None</em>) – The dictionary defining the global parameters that should get fixed
+in the copy.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>copy</strong> (<em>instance of HypoParameterDefinition</em>) – The copy of this HypoParameterDefinition instance with the given
+global parameters fixed to the given values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.HypoParameterDefinition.create_ParameterSetArray">
+<code class="sig-name descname"><span class="pre">create_ParameterSetArray</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.HypoParameterDefinition.create_ParameterSetArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a ParameterSetArray instance for all the ModelParameterMapper
+instances of this HypoParameterDefinition instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>paramsetarray</strong> (<em>ParameterSetArray</em>) – The instance of ParameterSetArray holding references to the
+ParameterSet instances of all the ModelParameterMapper instances of
+this HypoParameterDefinition instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.FitParameter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">FitParameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.FitParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is DEPRECATED! Use class Parameter instead!</p>
+<p>This class describes a single fit parameter. A fit parameter has a name,
+a value range, an initial value, and a current value. The current value will
+be updated in the fitting process.</p>
+<p>Creates a new fit parameter object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the fit parameter.</p></li>
+<li><p><strong>valmin</strong> (<em>float</em>) – The minimal bound value of the fit parameter.</p></li>
+<li><p><strong>valmax</strong> (<em>float</em>) – The maximal bound value of the fit parameter.</p></li>
+<li><p><strong>initial</strong> (<em>float</em>) – The (initial) value (guess) of the parameter, which will be used as
+start point for the fitting procedure.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameter.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the fit parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameter.valmin">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">valmin</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameter.valmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimal bound value of the fit parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameter.valmax">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">valmax</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameter.valmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>The maximal bound value of the fit parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameter.initial">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">initial</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameter.initial" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initial value of the fit parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameter.as_linear_grid">
+<code class="sig-name descname"><span class="pre">as_linear_grid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.FitParameter.as_linear_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a ParameterGrid instance with a linear grid with constant
+grid value distances delta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>delta</strong> (<em>float</em>) – The constant distance between the grid values. By definition this
+defines also the precision of the parameter values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> (<em>ParameterGrid instance</em>) – The ParameterGrid instance holding the grid values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.FitParameterSet">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">FitParameterSet</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is DEPRECATED, use ParameterSet instead!</p>
+<p>This class describes a set of FitParameter instances.</p>
+<p>Constructs a fit parameter set instance.</p>
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.fitparams">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fitparams</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.fitparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>The 1D ndarray holding the FitParameter instances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.fitparam_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fitparam_list</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.fitparam_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of the global FitParameter instances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.fitparam_name_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fitparam_name_list</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.fitparam_name_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of the fit parameter names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.initials">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">initials</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.initials" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 1D ndarray holding the initial values of all the
+global fit parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.bounds">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">bounds</span></code><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The 2D (N_fitparams,2)-shaped ndarray holding the
+boundaries for all the global fit parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.copy">
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a deep copy of this FitParameterSet instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>copy</strong> (<em>FitParameterSet instance</em>) – The copied instance of this FitParameterSet instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.add_fitparam">
+<code class="sig-name descname"><span class="pre">add_fitparam</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atfront</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.add_fitparam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given FitParameter instance to the list of fit parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitparam</strong> (<em>instance of FitParameter</em>) – The fit parameter, which should get added.</p></li>
+<li><p><strong>atfront</strong> (<em>bool</em>) – Flag if the fit parameter should be added at the front of the
+parameter list. If set to False (default), it will be added at the
+back.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.fitparam_values_to_dict">
+<code class="sig-name descname"><span class="pre">fitparam_values_to_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.fitparam_values_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given fit parameter values into a dictionary with the
+fit parameter names and values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The ndarray holding the fit parameter values in the order that the
+fit parameters are defined.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fitparam_dict</strong> (<em>dict</em>) – The dictionary with the fit parameter names and values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.fitparam_dict_to_values">
+<code class="sig-name descname"><span class="pre">fitparam_dict_to_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.fitparam_dict_to_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given fit parameter dictionary into a 1D ndarray holding
+the fit parameter values in the order the fit parameters are defined.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitparam_dict</strong> (<em>dict</em>) – The dictionary with the fit parameter names and values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The ndarray holding the fit parameter values in the order that the
+fit parameters are defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.FitParameterSet.generate_random_initials">
+<code class="sig-name descname"><span class="pre">generate_random_initials</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rss</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.FitParameterSet.generate_random_initials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of random initials for all global fit parameters.
+A new random initial is defined as</p>
+<blockquote>
+<div><p>lower_bound + RAND * (upper_bound - lower_bound),</p>
+</div></blockquote>
+<p>where RAND is a uniform random variable between 0 and 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rss</strong> (<em>RandomStateService instance</em>) – The RandomStateService instance that should be used for drawing
+random numbers from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.SourceFitParameterMapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">SourceFitParameterMapper</span></code><a class="headerlink" href="#skyllh.core.parameters.SourceFitParameterMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This abstract base class defines the interface of the source fit
+parameter mapper. This mapper provides the functionality to map a global fit
+parameter to a source fit parameter.</p>
+<p>Constructor of the source fit parameter mapper.</p>
+<dl class="py method">
+<dt id="skyllh.core.parameters.SourceFitParameterMapper.fitparamset">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fitparamset</span></code><a class="headerlink" href="#skyllh.core.parameters.SourceFitParameterMapper.fitparamset" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The FitParameterSet instance holding the list of global
+fit parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SourceFitParameterMapper.n_global_fitparams">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_global_fitparams</span></code><a class="headerlink" href="#skyllh.core.parameters.SourceFitParameterMapper.n_global_fitparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of defined global fit parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SourceFitParameterMapper.get_src_fitparam_name">
+<code class="sig-name descname"><span class="pre">get_src_fitparam_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SourceFitParameterMapper.get_src_fitparam_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the source fit parameter for the given global fit
+parameter index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitparam_idx</strong> (<em>int</em>) – The index of the global fit parameter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>src_fitparam_name</strong> (<em>str</em>) – The name of the source fit parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SourceFitParameterMapper.def_fit_parameter">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">def_fit_parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SourceFitParameterMapper.def_fit_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to define a new fit parameter that maps to a
+given source fit parameter for a list of sources. If no list of sources
+is given, it maps to all sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fit_param</strong> (<a class="reference internal" href="#skyllh.core.parameters.FitParameter" title="skyllh.core.parameters.FitParameter"><em>FitParameter</em></a>) – The FitParameter instance defining the fit parameter.</p></li>
+<li><p><strong>src_param_name</strong> (<em>str | None</em>) – The name of the source parameter. It must match the name of a source
+model property. If set to None (default) the name of the fit
+parameter will be used.</p></li>
+<li><p><strong>sources</strong> (<em>sequence of SourceModel | None</em>) – The sequence of SourceModel instances for which the fit parameter
+applies. If None (the default) is specified, the fit parameter will
+apply to all sources.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SourceFitParameterMapper.get_src_fitparams">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_src_fitparams</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SourceFitParameterMapper.get_src_fitparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to create a dictionary of source fit
+parameter names and values for the requested source based on the given
+fit parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The array holding the current global fit parameter values.</p></li>
+<li><p><strong>src_idx</strong> (<em>int</em>) – The index of the source for which the parameters should get
+retrieved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>src_fitparams</strong> (<em>dict</em>) – The dictionary holding the translated source parameters that are
+beeing fitted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SourceFitParameterMapper.get_fitparams_array">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_fitparams_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SourceFitParameterMapper.get_fitparams_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to create a numpy record ndarray holding the
+unique source fit parameter names as key and their value for each
+source. The returned array must be (N_sources,)-shaped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The array holding the current global fit parameter values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fitparams_arr</strong> (<em>(N_sources,)-shaped numpy record ndarray | None</em>) – The numpy record ndarray holding the fit parameter names as keys
+and their value for each source in each row.
+None must be returned if no global fit parameters were defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.SingleSourceFitParameterMapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">SingleSourceFitParameterMapper</span></code><a class="headerlink" href="#skyllh.core.parameters.SingleSourceFitParameterMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.parameters.SourceFitParameterMapper" title="skyllh.core.parameters.SourceFitParameterMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.parameters.SourceFitParameterMapper</span></code></a></p>
+<p>This class provides the functionality to map the global fit parameters to
+the source fit parameters of the single source. This class assumes a single
+source, hence the mapping can be performed faster than in the multi-source
+case.</p>
+<p>Constructs a new source fit parameter mapper for a single source.</p>
+<dl class="py method">
+<dt id="skyllh.core.parameters.SingleSourceFitParameterMapper.def_fit_parameter">
+<code class="sig-name descname"><span class="pre">def_fit_parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SingleSourceFitParameterMapper.def_fit_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define a new fit parameter that maps to a given source fit parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitparam</strong> (<a class="reference internal" href="#skyllh.core.parameters.FitParameter" title="skyllh.core.parameters.FitParameter"><em>FitParameter</em></a>) – The FitParameter instance defining the fit parameter.</p></li>
+<li><p><strong>src_param_name</strong> (<em>str | None</em>) – The name of the source parameter. It must match the name of a source
+model property. If set to None (default) the name of the fit
+parameter will be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SingleSourceFitParameterMapper.get_src_fitparams">
+<code class="sig-name descname"><span class="pre">get_src_fitparams</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SingleSourceFitParameterMapper.get_src_fitparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dictionary of source fit parameter names and values based on
+the given fit parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The array holding the current global fit parameter values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>src_fitparams</strong> (<em>dict</em>) – The dictionary holding the translated source parameters that are
+beeing fitted.
+An empty dictionary is returned if no fit parameters were defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.SingleSourceFitParameterMapper.get_fitparams_array">
+<code class="sig-name descname"><span class="pre">get_fitparams_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.SingleSourceFitParameterMapper.get_fitparams_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a numpy record ndarray holding the fit parameters names as
+key and their value for each source. The returned array is (1,)-shaped
+since there is only one source defined for this mapper class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The array holding the current global fit parameter values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fitparams_arr</strong> (<em>(1,)-shaped numpy record ndarray | None</em>) – The numpy record ndarray holding the fit parameter names as keys
+and their value for the one single source.
+None is returned if no fit parameters were defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.parameters.MultiSourceFitParameterMapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.parameters.</span></code><code class="sig-name descname"><span class="pre">MultiSourceFitParameterMapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sources</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.MultiSourceFitParameterMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.parameters.SourceFitParameterMapper" title="skyllh.core.parameters.SourceFitParameterMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.parameters.SourceFitParameterMapper</span></code></a></p>
+<p>This class provides the functionality to map the global fit parameters to
+the source fit parameters of the sources.
+Sometimes it’s necessary to define a global fit parameter, which relates to
+a source model fit parameter for a set of sources, while another global fit
+parameter relates to the same source model fit parameter, but for another
+set of sources.</p>
+<p>At construction time this manager takes the collection of sources. Each
+source gets an index, which is defined as the position of the source within
+the collection.</p>
+<p>Constructs a new source fit parameter mapper for multiple sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sources</strong> (<em>sequence of SourceModel</em>) – The sequence of SourceModel instances defining the list of sources.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.parameters.MultiSourceFitParameterMapper.sources">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sources</span></code><a class="headerlink" href="#skyllh.core.parameters.MultiSourceFitParameterMapper.sources" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SourceCollection defining the sources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.MultiSourceFitParameterMapper.N_sources">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">N_sources</span></code><a class="headerlink" href="#skyllh.core.parameters.MultiSourceFitParameterMapper.N_sources" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The number of sources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.MultiSourceFitParameterMapper.def_fit_parameter">
+<code class="sig-name descname"><span class="pre">def_fit_parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_param_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.MultiSourceFitParameterMapper.def_fit_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a new fit parameter that maps to a given source parameter
+for a list of sources. If no list of sources is given, it maps to all
+sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitparam</strong> (<a class="reference internal" href="#skyllh.core.parameters.FitParameter" title="skyllh.core.parameters.FitParameter"><em>FitParameter</em></a>) – The FitParameter instance defining the fit parameter.</p></li>
+<li><p><strong>src_param_name</strong> (<em>str | None</em>) – The name of the source parameter. It must match the name of a source
+model property. If set to None (default) the name of the fit
+parameter will be used.</p></li>
+<li><p><strong>sources</strong> (<em>SourceCollection | None</em>) – The instance of SourceCollection with the sources for which the fit
+parameter applies. If None (the default) is specified, the fit
+parameter will apply to all sources.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.MultiSourceFitParameterMapper.get_src_fitparams">
+<code class="sig-name descname"><span class="pre">get_src_fitparams</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.MultiSourceFitParameterMapper.get_src_fitparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a dictionary with the source parameters that are beeing
+fitted. As values the given global fit parameter values will be used.
+Hence, this method translates the global fit parameter values into the
+source parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The array holding the current global fit parameter values.</p></li>
+<li><p><strong>src_idx</strong> (<em>int</em>) – The index of the source for which the parameters should get
+retieved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>src_fitparams</strong> (<em>dict</em>) – The dictionary holding the translated source parameters that are
+beeing fitted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.parameters.MultiSourceFitParameterMapper.get_fitparams_array">
+<code class="sig-name descname"><span class="pre">get_fitparams_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitparam_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.parameters.MultiSourceFitParameterMapper.get_fitparams_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a numpy record ndarray holding the fit parameters names as
+key and their value for each source. The returned array is
+(N_sources,)-shaped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitparam_values</strong> (<em>1D ndarray</em>) – The array holding the current global fit parameter values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fitparams_arr</strong> (<em>(N_sources,)-shaped numpy record ndarray | None</em>) – The numpy record ndarray holding the unique source fit parameter
+names as keys and their value for each source per row.
+None is returned if no fit parameters were defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.pdf.html" class="btn btn-neutral float-right" title="skyllh.core.pdf module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.optimize.html" class="btn btn-neutral float-left" title="skyllh.core.optimize module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

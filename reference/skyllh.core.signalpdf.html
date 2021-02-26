@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.signalpdf module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.smoothing module" href="skyllh.core.smoothing.html" />
+    <link rel="prev" title="skyllh.core.signal_generator module" href="skyllh.core.signal_generator.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.signalpdf module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.signalpdf.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.signalpdf">
+<span id="skyllh-core-signalpdf-module"></span><h1>skyllh.core.signalpdf module<a class="headerlink" href="#module-skyllh.core.signalpdf" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">signalpdf</span></code> module contains possible signal PDF models for the
+likelihood function.</p>
+<dl class="py class">
+<dt id="skyllh.core.signalpdf.GaussianPSFPointLikeSourceSignalSpatialPDF">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.signalpdf.</span></code><code class="sig-name descname"><span class="pre">GaussianPSFPointLikeSourceSignalSpatialPDF</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.GaussianPSFPointLikeSourceSignalSpatialPDF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.SpatialPDF" title="skyllh.core.pdf.SpatialPDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.SpatialPDF</span></code></a>, <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.IsSignalPDF" title="skyllh.core.pdf.IsSignalPDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.IsSignalPDF</span></code></a></p>
+<p>This spatial signal PDF model describes the spatial PDF for a point
+source smeared with a 2D gaussian point-spread-function (PSF).
+Mathematically, it’s the convolution of a point in the sky, i.e. the source
+location, with the PSF. The result of this convolution has the gaussian form</p>
+<blockquote>
+<div><p>1/(2*pi*sigma^2) * exp(-1/2*(r / sigma)**2),</p>
+</div></blockquote>
+<p>where sigma is the spatial uncertainty of the event and r the distance on
+the sphere between the source and the data event.</p>
+<p>This PDF requires the <cite>src_array</cite> data field, that is numpy record ndarray
+with the data fields <cite>ra</cite> and <cite>dec</cite> holding the right-ascention and
+declination of the point-like sources, respectively.</p>
+<p>Creates a new spatial signal PDF for point-like sources with a
+gaussian point-spread-function (PSF).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ra_range</strong> (<em>2-element tuple | None</em>) – The range in right-ascention this spatial PDF is valid for.
+If set to None, the range (0, 2pi) is used.</p></li>
+<li><p><strong>dec_range</strong> (<em>2-element tuple | None</em>) – The range in declination this spatial PDF is valid for.
+If set to None, the range (-pi/2, +pi/2) is used.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.signalpdf.GaussianPSFPointLikeSourceSignalSpatialPDF.get_prob">
+<code class="sig-name descname"><span class="pre">get_prob</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tdm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitparams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.GaussianPSFPointLikeSourceSignalSpatialPDF.get_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the spatial signal probability of each event for all given
+sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<em>instance of TrialDataManager</em>) – <p>The TrialDataManager instance holding the trial event data for which
+to calculate the PDF values. The following data fields need to be
+present:</p>
+<dl>
+<dt>’src_array’<span class="classifier">numpy record ndarray</span></dt><dd><p>The numpy record ndarray with the following data fields:</p>
+<dl class="simple">
+<dt><cite>ra</cite>: float</dt><dd><p>The right-ascention of the point-like source.</p>
+</dd>
+<dt><cite>dec</cite>: float</dt><dd><p>The declination of the point-like source.</p>
+</dd>
+</dl>
+</dd>
+<dt>’ra’<span class="classifier">float</span></dt><dd><p>The right-ascention in radian of the data event.</p>
+</dd>
+<dt>’dec’<span class="classifier">float</span></dt><dd><p>The declination in radian of the data event.</p>
+</dd>
+<dt>’ang_err’: float</dt><dd><p>The reconstruction uncertainty in radian of the data event.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>fitparams</strong> (<em>None</em>) – Unused interface argument.</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord instance | None</em>) – The optional TimeLord instance to use for measuring timing
+information.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>prob</strong> (<em>(N_sources,N_events) shaped 2D ndarray</em>) – The ndarray holding the spatial signal probability on the sphere for
+each source and event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.signalpdf.SignalTimePDF">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.signalpdf.</span></code><code class="sig-name descname"><span class="pre">SignalTimePDF</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">livetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_profile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.SignalTimePDF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.TimePDF" title="skyllh.core.pdf.TimePDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.TimePDF</span></code></a>, <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.IsSignalPDF" title="skyllh.core.pdf.IsSignalPDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.IsSignalPDF</span></code></a></p>
+<p>This class provides a time PDF class for a signal source. It consists of
+a Livetime instance and a TimeProfileModel instance. Together they construct
+the actual signal time PDF, which has detector down-time taking into
+account.</p>
+<p>Creates a new signal time PDF instance for a given time profile of
+the source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>livetime</strong> (<em>Livetime instance</em>) – An instance of Livetime, which provides the detector live-time
+information.</p></li>
+<li><p><strong>time_profile</strong> (<em>TimeProfileModel instance</em>) – The time profile of the source.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.signalpdf.SignalTimePDF.livetime">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">livetime</span></code><a class="headerlink" href="#skyllh.core.signalpdf.SignalTimePDF.livetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>The instance of Livetime, which provides the detector live-time
+information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.signalpdf.SignalTimePDF.time_profile">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">time_profile</span></code><a class="headerlink" href="#skyllh.core.signalpdf.SignalTimePDF.time_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>The instance of TimeProfileModel providing the (assumed) physical
+time profile of the source.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.signalpdf.SignalTimePDF.assert_is_valid_for_exp_data">
+<code class="sig-name descname"><span class="pre">assert_is_valid_for_exp_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_exp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.SignalTimePDF.assert_is_valid_for_exp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the time PDF is valid for all the given experimental data.
+It checks if the time of all events is within the defined time axis of
+the PDF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_exp</strong> (<em>numpy record ndarray</em>) – <p>The array holding the experimental data. The following data fields
+must exist:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>’time’<span class="classifier">float</span></dt><dd><p>The MJD time of the data event.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If some of the data is outside the time range of the PDF.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.signalpdf.SignalTimePDF.get_prob">
+<code class="sig-name descname"><span class="pre">get_prob</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tdm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitparams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.SignalTimePDF.get_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the signal time probability of each event for the given
+set of signal time fit parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdm</strong> (<em>instance of TrialDataManager</em>) – <p>The instance of TrialDataManager holding the trial event data for
+which to calculate the PDF value. The following data fields must
+exist:</p>
+<ul>
+<li><dl class="simple">
+<dt>’time’<span class="classifier">float</span></dt><dd><p>The MJD time of the event.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+<li><p><strong>fitparams</strong> (<em>dict</em>) – The dictionary holding the signal time parameter values for which
+the signal time probability should be calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>prob</strong> (<em>array of float</em>) – The (N,)-shaped ndarray holding the probability for each event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.signalpdf.SignalMultiDimGridPDF">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.signalpdf.</span></code><code class="sig-name descname"><span class="pre">SignalMultiDimGridPDF</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis_binnings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_pdf_splinetable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdf_grid_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_factor_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.SignalMultiDimGridPDF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.MultiDimGridPDF" title="skyllh.core.pdf.MultiDimGridPDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.MultiDimGridPDF</span></code></a>, <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.IsSignalPDF" title="skyllh.core.pdf.IsSignalPDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.IsSignalPDF</span></code></a></p>
+<p>This class provides a multi-dimensional signal PDF. The PDF is created
+from pre-calculated PDF data on a grid. The grid data is interpolated using
+a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RegularGridInterpolator.html#scipy.interpolate.RegularGridInterpolator" title="(in SciPy v1.6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.interpolate.RegularGridInterpolator</span></code></a> instance.</p>
+<p>Creates a new signal PDF instance for a multi-dimensional PDF given
+as PDF values on a grid. The grid data is interpolated with a
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RegularGridInterpolator.html#scipy.interpolate.RegularGridInterpolator" title="(in SciPy v1.6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.interpolate.RegularGridInterpolator</span></code></a> instance. As grid
+points the bin edges of the axis binning definitions are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis_binnings</strong> (<em>sequence of BinningDefinition</em>) – The sequence of BinningDefinition instances defining the binning of
+the PDF axes. The name of each BinningDefinition instance defines
+the event field name that should be used for querying the PDF.</p></li>
+<li><p><strong>path_to_pdf_splinetable</strong> (<em>str</em>) – The path to the file containing the spline table.
+The spline table contains a  pre-computed fit to pdf_grid_data.</p></li>
+<li><p><strong>pdf_grid_data</strong> (<em>n-dimensional numpy ndarray</em>) – The n-dimensional numpy ndarray holding the PDF values at given grid
+points. The grid points must match the bin edges of the given
+BinningDefinition instances of the <cite>axis_binnings</cite> argument.</p></li>
+<li><p><strong>norm_factor_func</strong> (<em>callable | None</em>) – The function that calculates a possible required normalization
+factor for the PDF value based on the event properties.
+The call signature of this function
+must be <cite>__call__(pdf, events, fitparams)</cite>, where <cite>pdf</cite> is this PDF
+instance, <cite>events</cite> is a numpy record ndarray holding the events for
+which to calculate the PDF values, and <cite>fitparams</cite> is a dictionary
+with the current fit parameter names and values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.signalpdf.SignalMultiDimGridPDFSet">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.signalpdf.</span></code><code class="sig-name descname"><span class="pre">SignalMultiDimGridPDFSet</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_grid_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridparams_pdfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolmethod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.SignalMultiDimGridPDFSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.MultiDimGridPDFSet" title="skyllh.core.pdf.MultiDimGridPDFSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.MultiDimGridPDFSet</span></code></a>, <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.IsSignalPDF" title="skyllh.core.pdf.IsSignalPDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.IsSignalPDF</span></code></a></p>
+<p>This class extends the MultiDimGridPDFSet PDF class to be a signal PDF.
+See the documentation of the <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.MultiDimGridPDFSet" title="skyllh.core.pdf.MultiDimGridPDFSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.MultiDimGridPDFSet</span></code></a>
+class for what this PDF provides.</p>
+<p>Creates a new SignalMultiDimGridPDFSet instance, which holds a set of
+MultiDimGridPDF instances, one for each point of a parameter grid set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param_set</strong> (<em>Parameter instance | sequence of Parameter instances |</em>) – ParameterSet instance
+The set of parameters defining the model parameters of this PDF.</p></li>
+<li><p><strong>param_grid_set</strong> (<em>ParameterGrid instance | ParameterGridSet instance</em>) – The set of ParameterGrid instances, which define the grid values of
+the model parameters, the given MultiDimGridPDF instances belong to.</p></li>
+<li><p><strong>gridparams_pdfs</strong> (<em>sequence of</em><em> (</em><em>dict</em><em>, </em><a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.MultiDimGridPDF" title="skyllh.core.pdf.MultiDimGridPDF"><em>MultiDimGridPDF</em></a><em>) </em><em>tuples</em>) – The sequence of 2-element tuples which define the mapping of grid
+values to PDF instances.</p></li>
+<li><p><strong>interpolmethod</strong> (<em>subclass of GridManifoldInterpolationMethod</em>) – The class specifying the interpolation method. This must be a
+subclass of <code class="docutils literal notranslate"><span class="pre">GridManifoldInterpolationMethod</span></code>.
+If set to None, the default grid manifold interpolation method
+<code class="docutils literal notranslate"><span class="pre">Linear1DGridManifoldInterpolationMethod</span></code> will be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.signalpdf.SignalNDPhotosplinePDF">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.signalpdf.</span></code><code class="sig-name descname"><span class="pre">SignalNDPhotosplinePDF</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis_binnings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_pdf_splinefit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_factor_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.signalpdf.SignalNDPhotosplinePDF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.NDPhotosplinePDF" title="skyllh.core.pdf.NDPhotosplinePDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.NDPhotosplinePDF</span></code></a>, <a class="reference internal" href="skyllh.core.pdf.html#skyllh.core.pdf.IsSignalPDF" title="skyllh.core.pdf.IsSignalPDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.pdf.IsSignalPDF</span></code></a></p>
+<p>This class provides a multi-dimensional signal PDF created from a
+n-dimensional photospline fit. The photospline package is used to evaluate
+the PDF fit.</p>
+<p>Creates a new signal PDF instance for a n-dimensional photospline PDF
+fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis_binnings</strong> (<em>BinningDefinition | sequence of BinningDefinition</em>) – The sequence of BinningDefinition instances defining the binning of
+the PDF axes. The name of each BinningDefinition instance defines
+the event field name that should be used for querying the PDF.</p></li>
+<li><p><strong>param_set</strong> (<em>Parameter | ParameterSet</em>) – The Parameter instance or ParameterSet instance defining the
+parameters of this PDF. The ParameterSet holds the information
+which parameters are fixed and which are floating (i.e. fitted).</p></li>
+<li><p><strong>path_to_pdf_splinefit</strong> (<em>str</em>) – The path to the file containing the photospline fit.</p></li>
+<li><p><strong>norm_factor_func</strong> (<em>callable | None</em>) – The function that calculates a possible required normalization
+factor for the PDF value based on the event properties.
+The call signature of this function must be
+<cite>__call__(pdf, tdm, params)</cite>, where <cite>pdf</cite> is this PDF
+instance, <cite>tdm</cite> is an instance of TrialDataManager holding the
+event data for which to calculate the PDF values, and <cite>params</cite> is a
+dictionary with the current parameter names and values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.smoothing.html" class="btn btn-neutral float-right" title="skyllh.core.smoothing module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.signal_generator.html" class="btn btn-neutral float-left" title="skyllh.core.signal_generator module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

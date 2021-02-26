@@ -1,0 +1,7 @@
+skyllh.i3.config module
+=======================
+
+.. automodule:: skyllh.i3.config
+   :members:
+   :undoc-members:
+   :show-inheritance:

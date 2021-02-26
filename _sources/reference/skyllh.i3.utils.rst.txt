@@ -1,0 +1,15 @@
+skyllh.i3.utils package
+=======================
+
+.. automodule:: skyllh.i3.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   skyllh.i3.utils.sensitivity

@@ -1,0 +1,7 @@
+skyllh.plotting.utils.trials module
+===================================
+
+.. automodule:: skyllh.plotting.utils.trials
+   :members:
+   :undoc-members:
+   :show-inheritance:

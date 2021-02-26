@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.i3.dataset module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.i3.detsigyield module" href="skyllh.i3.detsigyield.html" />
+    <link rel="prev" title="skyllh.i3.coords module" href="skyllh.i3.coords.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.i3.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.i3.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.i3.html">skyllh.i3 package</a> &raquo;</li>
+        
+      <li>skyllh.i3.dataset module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.i3.dataset.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.i3.dataset">
+<span id="skyllh-i3-dataset-module"></span><h1>skyllh.i3.dataset module<a class="headerlink" href="#module-skyllh.i3.dataset" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skyllh.i3.dataset.I3Dataset">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.i3.dataset.</span></code><code class="sig-name descname"><span class="pre">I3Dataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grl_pathfilenames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.dataset.html#skyllh.core.dataset.Dataset" title="skyllh.core.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.dataset.Dataset</span></code></a></p>
+<p>The I3Dataset class is an IceCube specific Dataset class that adds
+IceCube specific properties to the Dataset class. These additional
+properties are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>good-run-list (GRL)</p></li>
+</ul>
+</div></blockquote>
+<p>Creates a new IceCube specific dataset, that also can hold a list
+of GRL data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>grl_pathfilenames</strong> (<em>str | sequence of str</em>) – </p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.get_combined_grl_pathfilenames">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_combined_grl_pathfilenames</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.get_combined_grl_pathfilenames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the combined list of grl pathfilenames of all the given
+datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>datasets</strong> (<em>sequence of I3Dataset</em>) – The sequence of I3Dataset instances.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grl_pathfilenames</strong> (<em>list</em>) – The combined list of grl pathfilenames.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.grl_pathfilename_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">grl_pathfilename_list</span></code><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.grl_pathfilename_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of file names of the good-run-list data files for this
+dataset.
+If a file name is given with a relative path, it will be relative to the
+root_dir property of this Dataset instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.grl_abs_pathfilename_list">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">grl_abs_pathfilename_list</span></code><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.grl_abs_pathfilename_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) The list of absolute path file names of the good-run-list
+data files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.grl_field_name_renaming_dict">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">grl_field_name_renaming_dict</span></code><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.grl_field_name_renaming_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dictionary specifying the field names of the good-run-list data
+which need to get renamed just after loading the data. The dictionary
+keys are the old names and their values are the new names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.exists">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">exists</span></code><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>(read-only) Flag if all the data files of this data set exists. It is
+<code class="docutils literal notranslate"><span class="pre">True</span></code> if all data files exist and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.load_grl">
+<code class="sig-name descname"><span class="pre">load_grl</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">efficiency_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.load_grl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the good-run-list and returns a structured numpy ndarray with
+the following data fields:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>run<span class="classifier">int</span></dt><dd><p>The run number.</p>
+</dd>
+<dt>start<span class="classifier">float</span></dt><dd><p>The MJD start time of the run.</p>
+</dd>
+<dt>stop<span class="classifier">float</span></dt><dd><p>The MJD stop time of the run.</p>
+</dd>
+<dt>livetime<span class="classifier">float</span></dt><dd><p>The livetime in days of the run.</p>
+</dd>
+<dt>events<span class="classifier">int</span></dt><dd><p>The number of experimental events in the run.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>efficiency_mode</strong> (<em>str | None</em>) – <p>The efficiency mode the data should get loaded with. Possible values
+are:</p>
+<blockquote>
+<div><ul>
+<li><dl class="simple">
+<dt>’memory’:</dt><dd><p>The data will be load in a memory efficient way. This will
+require more time, because all data records of a file will
+be loaded sequentially.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’time’</dt><dd><p>The data will be loaded in a time efficient way. This will
+require more memory, because each data file gets loaded in
+memory at once.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>The default value is <code class="docutils literal notranslate"><span class="pre">'time'</span></code>. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default
+value will be used.</p>
+</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord instance | None</em>) – The TimeLord instance to use to time the data loading procedure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grl_data</strong> (<em>instance of DataFieldRecordArray</em>) – The DataFieldRecordArray instance holding the good-run-list
+information of the dataset.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.load_data">
+<code class="sig-name descname"><span class="pre">load_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">livetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtc_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtc_except_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">efficiency_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the data, which is described by the dataset. If a good-run-list
+(GRL) is provided for this dataset, only experimental data will be
+selected which matches the GRL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keep_fields</strong> (<em>list of str | None</em>) – The list of user-defined data fields that should get loaded and kept
+in addition to the analysis required data fields.</p></li>
+<li><p><strong>livetime</strong> (<em>float | None</em>) – If not None, uses this livetime (in days) as livetime for the
+DatasetData instance, otherwise uses the live time from the Dataset
+instance or, if available, the livetime from the good-run-list
+(GRL).</p></li>
+<li><p><strong>dtc_dict</strong> (<em>dict | None</em>) – This dictionary defines how data fields of specific
+data types should get converted into other data types.
+This can be used to use less memory. If set to None, no data
+convertion is performed.</p></li>
+<li><p><strong>dtc_except_fields</strong> (<em>str | sequence of str | None</em>) – The sequence of field names whose data type should not get
+converted.</p></li>
+<li><p><strong>efficiency_mode</strong> (<em>str | None</em>) – <p>The efficiency mode the data should get loaded with. Possible values
+are:</p>
+<blockquote>
+<div><ul>
+<li><dl class="simple">
+<dt>’memory’:</dt><dd><p>The data will be load in a memory efficient way. This will
+require more time, because all data records of a file will
+be loaded sequentially.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’time’</dt><dd><p>The data will be loaded in a time efficient way. This will
+require more memory, because each data file gets loaded in
+memory at once.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>The default value is <code class="docutils literal notranslate"><span class="pre">'time'</span></code>. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default
+value will be used.</p>
+</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord instance | None</em>) – The TimeLord instance that should be used to time the data load
+operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong> (<em>instance of DatasetData</em>) – A DatasetData instance holding the experimental and monte-carlo
+data of this data set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3Dataset.prepare_data">
+<code class="sig-name descname"><span class="pre">prepare_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.dataset.I3Dataset.prepare_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares the data for IceCube by pre-calculating the following
+experimental data fields:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>sin_dec: float</dt><dd><p>The sin value of the declination coordinate.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>and monte-carlo data fields:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>sin_true_dec: float</dt><dd><p>The sin value of the true declination coordinate.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DatasetData instance</em>) – The DatasetData instance holding the data as numpy record ndarray.</p></li>
+<li><p><strong>tl</strong> (<em>TimeLord instance | None</em>) – The TimeLord instance that should be used to time the data
+preparation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.i3.dataset.I3DatasetData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.i3.dataset.</span></code><code class="sig-name descname"><span class="pre">I3DatasetData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_grl</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.i3.dataset.I3DatasetData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skyllh.core.dataset.html#skyllh.core.dataset.DatasetData" title="skyllh.core.dataset.DatasetData"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.dataset.DatasetData</span></code></a></p>
+<p>The class provides the container for the loaded experimental and
+monto-carlo data of a data set. It’s the IceCube specific class that also
+holds the good-run-list (GRL) data.</p>
+<p>Creates a new DatasetData instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_exp</strong> (<em>instance of DataFieldRecordArray | None</em>) – The instance of DataFieldRecordArray holding the experimental data.
+This can be None for a MC-only study.</p></li>
+<li><p><strong>data_mc</strong> (<em>instance of DataFieldRecordArray</em>) – The instance of DataFieldRecordArray holding the monto-carlo data.</p></li>
+<li><p><strong>livetime</strong> (<em>float</em>) – The integrated livetime in days of the data.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.i3.dataset.I3DatasetData.grl">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">grl</span></code><a class="headerlink" href="#skyllh.i3.dataset.I3DatasetData.grl" title="Permalink to this definition">¶</a></dt>
+<dd><p>The DataFieldRecordArray instance holding the good-run-list (GRL)
+data of the IceCube data set. It is None, if there is no GRL data
+available for this IceCube data set.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.i3.detsigyield.html" class="btn btn-neutral float-right" title="skyllh.i3.detsigyield module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.i3.coords.html" class="btn btn-neutral float-left" title="skyllh.i3.coords module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

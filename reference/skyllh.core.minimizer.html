@@ -1,0 +1,896 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>skyllh.core.minimizer module &mdash; SkyLLH  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="skyllh.core.model module" href="skyllh.core.model.html" />
+    <link rel="prev" title="skyllh.core.math module" href="skyllh.core.math.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SkyLLH
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hypothesis/index.html">Hypothesis Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit tests</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="skyllh.html">skyllh package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="skyllh.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="skyllh.cluster.html">skyllh.cluster package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="skyllh.core.html">skyllh.core package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="skyllh.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="skyllh.core.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.i3.html">skyllh.i3 package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.physics.html">skyllh.physics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.plotting.html">skyllh.plotting package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skyllh.utils.html">skyllh.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes.html">Notes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_docs/logging.html">Logging</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SkyLLH</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="skyllh.html">skyllh package</a> &raquo;</li>
+        
+          <li><a href="skyllh.core.html">skyllh.core package</a> &raquo;</li>
+        
+      <li>skyllh.core.minimizer module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/reference/skyllh.core.minimizer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-skyllh.core.minimizer">
+<span id="skyllh-core-minimizer-module"></span><h1>skyllh.core.minimizer module<a class="headerlink" href="#module-skyllh.core.minimizer" title="Permalink to this headline">¶</a></h1>
+<p>The minimizer module provides functionality for the minimization process of
+a function.</p>
+<dl class="py class">
+<dt id="skyllh.core.minimizer.MinimizerImpl">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.minimizer.</span></code><code class="sig-name descname"><span class="pre">MinimizerImpl</span></code><a class="headerlink" href="#skyllh.core.minimizer.MinimizerImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class for a minimizer implementation. It defines the
+interface between the implementation and the Minimizer class.</p>
+<dl class="py method">
+<dt id="skyllh.core.minimizer.MinimizerImpl.minimize">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">minimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initials</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.MinimizerImpl.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to minimize the given function with the given
+initials.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initials</strong> (<em>1D</em><em> (</em><em>N_fitparams</em><em>)</em><em>-shaped numpy ndarray</em>) – The ndarray holding the initial values of all the fit parameters.</p></li>
+<li><p><strong>bounds</strong> (<em>2D</em><em> (</em><em>N_fitparams</em><em>,</em><em>2</em><em>)</em><em>-shaped numpy ndarray</em>) – The ndarray holding the boundary values (vmin, vmax) of the fit
+parameters.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – <p>The function that should get minimized.
+The call signature must be</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(x,</span> <span class="pre">*args)</span></code></p>
+</div></blockquote>
+<p>The return value of <code class="docutils literal notranslate"><span class="pre">func</span></code> is minimizer implementation dependent.</p>
+</p></li>
+<li><p><strong>func_args</strong> (<em>sequence | None</em>) – Optional sequence of arguments for <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></li>
+<li><p><strong>Keyword Arguments</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>----------------------------</strong> – </p></li>
+<li><p><strong>keyword arguments include options for this minimizer</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>These are implementation dependent.</strong> (<em>implementation.</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xmin</strong> (<em>1D ndarray</em>) – The array containing the function parameter values at the function’s
+minimum.</p></li>
+<li><p><strong>fmin</strong> (<em>float</em>) – The function value at its minimum.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The status dictionary with information about the minimization
+process.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.MinimizerImpl.get_niter">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_niter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.MinimizerImpl.get_niter" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to return the number of iterations that were
+required to find the minimum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the last
+minimization process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>niter</strong> (<em>int</em>) – The number of iterations needed to find the minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.MinimizerImpl.has_converged">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">has_converged</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.MinimizerImpl.has_converged" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to analyze the status information dictionary
+if the last minimization process has converged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the last
+minimization process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>converged</strong> (<em>bool</em>) – The flag if the minimization has converged (True), or not (False).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.MinimizerImpl.is_repeatable">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">is_repeatable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.MinimizerImpl.is_repeatable" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to analyze the status information dictionary
+if the last minimization process can be repeated to obtain a better
+minimum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the last
+minimization process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>repeatable</strong> (<em>bool</em>) – The flag if the minimization process can be repeated to obtain a
+better minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.minimizer.ScipyMinimizerImpl">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.minimizer.</span></code><code class="sig-name descname"><span class="pre">ScipyMinimizerImpl</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.ScipyMinimizerImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.minimizer.MinimizerImpl" title="skyllh.core.minimizer.MinimizerImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.minimizer.MinimizerImpl</span></code></a></p>
+<p>Wrapper for <cite>scipy.optimize.minimize</cite></p>
+<dl class="py method">
+<dt id="skyllh.core.minimizer.ScipyMinimizerImpl.minimize">
+<code class="sig-name descname"><span class="pre">minimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initials</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.ScipyMinimizerImpl.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimizes the given function <code class="docutils literal notranslate"><span class="pre">func</span></code> with the given initial function
+argument values <code class="docutils literal notranslate"><span class="pre">initials</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initials</strong> (<em>1D numpy ndarray</em>) – The ndarray holding the initial values of all the fit parameters.</p></li>
+<li><p><strong>bounds</strong> (<em>2D</em><em> (</em><em>N_fitparams</em><em>,</em><em>2</em><em>)</em><em>-shaped numpy ndarray</em>) – The ndarray holding the boundary values (vmin, vmax) of the fit
+parameters.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – <p>The function that should get minimized.
+The call signature must be</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(x,</span> <span class="pre">*args)</span></code></p>
+</div></blockquote>
+<p>The return value of <code class="docutils literal notranslate"><span class="pre">func</span></code> must be (f, grads), the function value
+at the function arguments <code class="docutils literal notranslate"><span class="pre">x</span></code> and the ndarray with the values of
+the function gradient for each fit parameter, if the
+<code class="docutils literal notranslate"><span class="pre">func_provides_grads</span></code> keyword argument option is set to True.
+If set to False, <code class="docutils literal notranslate"><span class="pre">func</span></code> must return only the function value.</p>
+</p></li>
+<li><p><strong>func_args</strong> (<em>sequence | None</em>) – Optional sequence of arguments for <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></li>
+<li><p><strong>Keyword Arguments</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>----------------------------</strong> – </p></li>
+<li><p><strong>keyword arguments include options for this minimizer</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>Possible options are</strong> (<em>implementation.</em>) – <dl class="simple">
+<dt>func_provides_grads<span class="classifier">bool</span></dt><dd><p>Flag if the function <code class="docutils literal notranslate"><span class="pre">func</span></code> also returns its gradients.
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>additional keyword arguments are passed on to the underlaying</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p>:param <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#scipy.optimize.minimize" title="(in SciPy v1.6.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.minimize()</span></code></a> minimization function.:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>xmin</strong> (<em>1D ndarray</em>) – The array containing the function arguments at the function’s
+minimum.</p></li>
+<li><p><strong>fmin</strong> (<em>float</em>) – The function value at its minimum.</p></li>
+<li><p><strong>res</strong> (<em>scipy.optimize.OptimizeResult</em>) – Scipy OptimizeResult</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.ScipyMinimizerImpl.get_niter">
+<code class="sig-name descname"><span class="pre">get_niter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.ScipyMinimizerImpl.get_niter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of iterations needed to find the minimum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the minimization
+process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>niter</strong> (<em>int</em>) – The number of iterations needed to find the minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.ScipyMinimizerImpl.has_converged">
+<code class="sig-name descname"><span class="pre">has_converged</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.ScipyMinimizerImpl.has_converged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyzes the status information dictionary if the minimization
+process has converged. By definition the minimization process has
+converged if <code class="docutils literal notranslate"><span class="pre">status['warnflag']</span></code> equals 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the minimization
+process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>converged</strong> (<em>bool</em>) – The flag if the minimization has converged (True), or not (False).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.ScipyMinimizerImpl.is_repeatable">
+<code class="sig-name descname"><span class="pre">is_repeatable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.ScipyMinimizerImpl.is_repeatable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the minimization process can be repeated to get a better
+result.</p>
+<p>TODO: Method specific checks. For now just return False</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the last
+minimization process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>repeatable</strong> (<em>bool</em>) – The flag if the minimization process can be repeated to obtain a
+better minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.minimizer.LBFGSMinimizerImpl">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.minimizer.</span></code><code class="sig-name descname"><span class="pre">LBFGSMinimizerImpl</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ftol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pgtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.LBFGSMinimizerImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.minimizer.MinimizerImpl" title="skyllh.core.minimizer.MinimizerImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.minimizer.MinimizerImpl</span></code></a></p>
+<p>The LBFGSMinimizerImpl class provides the minimizer implementation for
+L-BFG-S minimizer used from the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/optimize.html#module-scipy.optimize" title="(in SciPy v1.6.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.optimize</span></code></a> module.</p>
+<p>Creates a new L-BGF-S minimizer instance to minimize the given
+likelihood function with its given partial derivatives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ftol</strong> (<em>float</em>) – The function value tolerance.</p></li>
+<li><p><strong>pgtol</strong> (<em>float</em>) – The gradient value tolerance.</p></li>
+<li><p><strong>maxls</strong> (<em>int</em>) – The maximum number of line search steps for an interation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.minimizer.LBFGSMinimizerImpl.minimize">
+<code class="sig-name descname"><span class="pre">minimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initials</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.LBFGSMinimizerImpl.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimizes the given function <code class="docutils literal notranslate"><span class="pre">func</span></code> with the given initial function
+argument values <code class="docutils literal notranslate"><span class="pre">initials</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initials</strong> (<em>1D numpy ndarray</em>) – The ndarray holding the initial values of all the fit parameters.</p></li>
+<li><p><strong>bounds</strong> (<em>2D</em><em> (</em><em>N_fitparams</em><em>,</em><em>2</em><em>)</em><em>-shaped numpy ndarray</em>) – The ndarray holding the boundary values (vmin, vmax) of the fit
+parameters.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – <p>The function that should get minimized.
+The call signature must be</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(x,</span> <span class="pre">*args)</span></code></p>
+</div></blockquote>
+<p>The return value of <code class="docutils literal notranslate"><span class="pre">func</span></code> must be (f, grads), the function value
+at the function arguments <code class="docutils literal notranslate"><span class="pre">x</span></code> and the ndarray with the values of
+the function gradient for each fit parameter, if the
+<code class="docutils literal notranslate"><span class="pre">func_provides_grads</span></code> keyword argument option is set to True.
+If set to False, <code class="docutils literal notranslate"><span class="pre">func</span></code> must return only the function value.</p>
+</p></li>
+<li><p><strong>func_args</strong> (<em>sequence | None</em>) – Optional sequence of arguments for <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></li>
+<li><p><strong>Keyword Arguments</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>----------------------------</strong> – </p></li>
+<li><p><strong>keyword arguments include options for this minimizer</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>Possible options are</strong> (<em>implementation.</em>) – <dl class="simple">
+<dt>func_provides_grads<span class="classifier">bool</span></dt><dd><p>Flag if the function <code class="docutils literal notranslate"><span class="pre">func</span></code> also returns its gradients.
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>additional keyword arguments are passed on to the underlaying</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p>:param <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin_l_bfgs_b.html#scipy.optimize.fmin_l_bfgs_b" title="(in SciPy v1.6.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.fmin_l_bfgs_b()</span></code></a> minimization function.:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul>
+<li><p><strong>xmin</strong> (<em>1D ndarray</em>) – The array containing the function arguments at the function’s
+minimum.</p></li>
+<li><p><strong>fmin</strong> (<em>float</em>) – The function value at its minimum.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The status dictionary with information about the minimization
+process. The following information are provided:</p>
+<dl>
+<dt>niter<span class="classifier">int</span></dt><dd><p>The number of iterations needed to find the minimum.</p>
+</dd>
+<dt>warnflag<span class="classifier">int</span></dt><dd><p>The warning flag indicating if the minimization did converge.
+The possible values are:</p>
+<blockquote>
+<div><p>0: The minimization converged.</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.LBFGSMinimizerImpl.get_niter">
+<code class="sig-name descname"><span class="pre">get_niter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.LBFGSMinimizerImpl.get_niter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of iterations needed to find the minimum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the minimization
+process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>niter</strong> (<em>int</em>) – The number of iterations needed to find the minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.LBFGSMinimizerImpl.has_converged">
+<code class="sig-name descname"><span class="pre">has_converged</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.LBFGSMinimizerImpl.has_converged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyzes the status information dictionary if the minimization
+process has converged. By definition the minimization process has
+converged if <code class="docutils literal notranslate"><span class="pre">status['warnflag']</span></code> equals 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the minimization
+process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>converged</strong> (<em>bool</em>) – The flag if the minimization has converged (True), or not (False).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.LBFGSMinimizerImpl.is_repeatable">
+<code class="sig-name descname"><span class="pre">is_repeatable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.LBFGSMinimizerImpl.is_repeatable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the minimization process can be repeated to get a better
+result. It’s repeatable if</p>
+<blockquote>
+<div><p><cite>status[‘warnflag’] == 2 and ‘FACTR’ in str(status[‘task’])</cite></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the last
+minimization process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>repeatable</strong> (<em>bool</em>) – The flag if the minimization process can be repeated to obtain a
+better minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.minimizer.NR1dNsMinimizerImpl">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.minimizer.</span></code><code class="sig-name descname"><span class="pre">NR1dNsMinimizerImpl</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ns_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.NR1dNsMinimizerImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.minimizer.MinimizerImpl" title="skyllh.core.minimizer.MinimizerImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.minimizer.MinimizerImpl</span></code></a></p>
+<p>The NR1dNsMinimizerImpl class provides a minimizer implementation for the
+Newton-Raphson method for finding the minimum of a one-dimensional R1-&gt;R1
+function, i.e. a function that depends solely on one parameter, the number of
+signal events ns.</p>
+<p>Creates a new NRNs minimizer instance to minimize the given
+likelihood function with its given partial derivatives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ns_tol</strong> (<em>float</em>) – The tolerance / precision for the ns parameter value.</p></li>
+<li><p><strong>max_steps</strong> (<em>int</em>) – The maximum number of NR steps. If max_step is reached,
+the fit is considered NOT converged.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.minimizer.NR1dNsMinimizerImpl.minimize">
+<code class="sig-name descname"><span class="pre">minimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initials</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.NR1dNsMinimizerImpl.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimizes the given function <code class="docutils literal notranslate"><span class="pre">func</span></code> with the given initial function
+argument values <code class="docutils literal notranslate"><span class="pre">initials</span></code>. This minimizer implementation will only
+vary the first parameter. All other parameters will be set to their
+initial value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initials</strong> (<em>1D numpy ndarray</em>) – The ndarray holding the initial values of all the fit parameters.</p></li>
+<li><p><strong>bounds</strong> (<em>2D</em><em> (</em><em>N_fitparams</em><em>,</em><em>2</em><em>)</em><em>-shaped numpy ndarray</em>) – The ndarray holding the boundary values (vmin, vmax) of the fit
+parameters.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – <p>The function that should get minimized.
+The call signature must be</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(x,</span> <span class="pre">*args)</span></code></p>
+</div></blockquote>
+<p>The return value of <code class="docutils literal notranslate"><span class="pre">func</span></code> must be (f, grad, grad2), i.e. the
+function value at the function arguments <code class="docutils literal notranslate"><span class="pre">x</span></code>, the value of the
+function first derivative for the one fit parameter, and the value
+of the second derivative for the one fit parameter.</p>
+</p></li>
+<li><p><strong>func_args</strong> (<em>sequence | None</em>) – Optional sequence of arguments for <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></li>
+<li><p><strong>Keyword Arguments</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>----------------------------</strong> – </p></li>
+<li><p><strong>are no additional options defined for this minimization</strong> (<em>There</em>) – </p></li>
+<li><p><strong>implementation.</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>xmin</strong> (<em>1D ndarray</em>) – The array containing the function parameter values at the function’s
+minimum.</p></li>
+<li><p><strong>fmin</strong> (<em>float</em>) – The function value at its minimum.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The status dictionary with information about the minimization
+process. The following information are provided:</p>
+<dl>
+<dt>niter<span class="classifier">int</span></dt><dd><p>The number of iterations needed to find the minimum.</p>
+</dd>
+<dt>last_nr_step<span class="classifier">float</span></dt><dd><p>The Newton-Raphson step size of the last iteration.</p>
+</dd>
+<dt>warnflag<span class="classifier">int</span></dt><dd><p>The warning flag indicating if the minimization did converge.
+The possible values are:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>-1: The function minimum is above the upper bound of the</dt><dd><p>parameter value. Convergence forced at upper bound.</p>
+</dd>
+<dt>-2: The function minimum is below the lower bound of the</dt><dd><p>parameter value. Convergence forced at lower bound.</p>
+</dd>
+<dt>0: The minimization converged with a iteration step size</dt><dd><p>smaller than the specified precision.</p>
+</dd>
+<dt>1: The minimization did NOT converge within self.max_steps</dt><dd><p>number of steps</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>warnreason: str</dt><dd><p>The description for the set warn flag.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.NR1dNsMinimizerImpl.get_niter">
+<code class="sig-name descname"><span class="pre">get_niter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.NR1dNsMinimizerImpl.get_niter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of iterations needed to find the minimum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the minimization
+process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>niter</strong> (<em>int</em>) – The number of iterations needed to find the minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.NR1dNsMinimizerImpl.has_converged">
+<code class="sig-name descname"><span class="pre">has_converged</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.NR1dNsMinimizerImpl.has_converged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyzes the status information dictionary if the minimization
+process has converged. By definition the minimization process has
+converged if <code class="docutils literal notranslate"><span class="pre">status['warnflag']</span></code> is smaller or equal to 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>dict</em>) – The dictionary with the status information about the minimization
+process.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>converged</strong> (<em>bool</em>) – The flag if the minimization has converged (True), or not (False).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.NR1dNsMinimizerImpl.is_repeatable">
+<code class="sig-name descname"><span class="pre">is_repeatable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.NR1dNsMinimizerImpl.is_repeatable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the minimization process can be repeated to get a better
+result. By definition of this minimization method, this method will
+always return <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.minimizer.NRNsScan2dMinimizerImpl">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.minimizer.</span></code><code class="sig-name descname"><span class="pre">NRNsScan2dMinimizerImpl</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p2_scan_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ns_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.NRNsScan2dMinimizerImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skyllh.core.minimizer.NR1dNsMinimizerImpl" title="skyllh.core.minimizer.NR1dNsMinimizerImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">skyllh.core.minimizer.NR1dNsMinimizerImpl</span></code></a></p>
+<p>The NRNsScan2dMinimizerImpl class provides a minimizer implementation for
+the R2-&gt;R1 function where the first dimension is minimized using the
+Newton-Raphson minimization method and the second dimension is scanned.</p>
+<p>Creates a new minimizer implementation instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p2_scan_step</strong> (<em>float</em>) – The step size for the scan of the second parameter of the function
+to minimize.</p></li>
+<li><p><strong>ns_tol</strong> (<em>float</em>) – The tolerance / precision for the ns parameter value.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.minimizer.NRNsScan2dMinimizerImpl.minimize">
+<code class="sig-name descname"><span class="pre">minimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initials</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.NRNsScan2dMinimizerImpl.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimizes the given function <code class="docutils literal notranslate"><span class="pre">func</span></code> with the given initial function
+argument values <code class="docutils literal notranslate"><span class="pre">initials</span></code>. This minimizer implementation will only
+vary the first two parameters. The first parameter is the number of
+signal events, ns, and it is minimized using the Newton-Rapson method.
+The second parameter is scanned through its boundaries in step sizes of
+<code class="docutils literal notranslate"><span class="pre">p2_scan_step</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initials</strong> (<em>1D numpy ndarray</em>) – The ndarray holding the initial values of all the fit parameters.</p></li>
+<li><p><strong>bounds</strong> (<em>2D</em><em> (</em><em>N_fitparams</em><em>,</em><em>2</em><em>)</em><em>-shaped numpy ndarray</em>) – The ndarray holding the boundary values (vmin, vmax) of the fit
+parameters.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – <p>The function that should get minimized.
+The call signature must be</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(x,</span> <span class="pre">*args)</span></code></p>
+</div></blockquote>
+<p>The return value of <code class="docutils literal notranslate"><span class="pre">func</span></code> must be (f, grad, grad2), i.e. the
+function value at the function arguments <code class="docutils literal notranslate"><span class="pre">x</span></code>, the value of the
+function first derivative for the first fit parameter, and the value
+of the second derivative for the first fit parameter.</p>
+</p></li>
+<li><p><strong>func_args</strong> (<em>sequence | None</em>) – Optional sequence of arguments for <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></li>
+<li><p><strong>Keyword Arguments</strong> (<em>Additional</em>) – </p></li>
+<li><p><strong>----------------------------</strong> – </p></li>
+<li><p><strong>are no additional options defined for this minimization</strong> (<em>There</em>) – </p></li>
+<li><p><strong>implementation.</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>xmin</strong> (<em>1D ndarray</em>) – The array containing the function parameter values at the function’s
+minimum.</p></li>
+<li><p><strong>fmin</strong> (<em>float</em>) – The function value at its minimum.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The status dictionary with information about the minimization
+process. The following information are provided:</p>
+<dl>
+<dt>niter<span class="classifier">int</span></dt><dd><p>The number of iterations needed to find the minimum.</p>
+</dd>
+<dt>last_nr_step<span class="classifier">float</span></dt><dd><p>The Newton-Raphson step size of the last iteration.</p>
+</dd>
+<dt>p2_n_steps<span class="classifier">int</span></dt><dd><p>The number of scanning steps performed for the 2nd parameter.</p>
+</dd>
+<dt>warnflag<span class="classifier">int</span></dt><dd><p>The warning flag indicating if the minimization did converge.
+The possible values are:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>0: The minimization converged with a iteration step size</dt><dd><p>smaller than the specified precision.</p>
+</dd>
+<dt>1: The function minimum is below the minimum bound of the</dt><dd><p>parameter value. The last iteration’s step size did not
+achieve the specified precision.</p>
+</dd>
+<dt>2: The function minimum is above the maximum bound of the</dt><dd><p>parameter value. The last iteration’s step size did not
+achieve the specified precision.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>warnreason: str</dt><dd><p>The description for the set warn flag.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="skyllh.core.minimizer.Minimizer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">skyllh.core.minimizer.</span></code><code class="sig-name descname"><span class="pre">Minimizer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minimizer_impl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_repetitions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.Minimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Minimizer class provides the general interface for minimizing a
+function. The class takes an instance of MinimizerImpl for a specific
+minimizer implementation.</p>
+<p>Creates a new Minimizer instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minimizer_impl</strong> (<em>instance of MinimizerImpl</em>) – The minimizer implementation for a specific minimizer algorithm.</p></li>
+<li><p><strong>max_repetitions</strong> (<em>int</em>) – In case the minimization process did not converge at the first time
+this option specifies the maximum number of repetitions with
+different initials.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="skyllh.core.minimizer.Minimizer.minimizer_impl">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">minimizer_impl</span></code><a class="headerlink" href="#skyllh.core.minimizer.Minimizer.minimizer_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>The instance of MinimizerImpl, which provides the implementation of
+the minimizer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.Minimizer.max_repetitions">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">max_repetitions</span></code><a class="headerlink" href="#skyllh.core.minimizer.Minimizer.max_repetitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>In case the minimization process did not converge at the first time
+this option specifies the maximum number of repetitions with
+different initials.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skyllh.core.minimizer.Minimizer.minimize">
+<code class="sig-name descname"><span class="pre">minimize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitparamset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skyllh.core.minimizer.Minimizer.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimizes the the given function <code class="docutils literal notranslate"><span class="pre">func</span></code> by calling the <code class="docutils literal notranslate"><span class="pre">minimize</span></code>
+method of the minimizer implementation.</p>
+<p>After the minimization process it calls the <code class="docutils literal notranslate"><span class="pre">has_converged</span></code> and
+<code class="docutils literal notranslate"><span class="pre">is_repeatable</span></code> methods of the minimizer implementation to determine
+if an additional minimization attempt has to be performed.
+This is repeated until the minimization process did converge or if the
+maximal number of repetitions has occurred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rss</strong> (<em>RandomStateService instance</em>) – The RandomStateService instance to draw random numbers from.</p></li>
+<li><p><strong>fitparamset</strong> (<em>instance of FitParameterSet</em>) – The set of FitParameter instances defining fit parameters of the
+function <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></li>
+<li><p><strong>func</strong> (callable <code class="docutils literal notranslate"><span class="pre">f(x,</span> <span class="pre">*args)</span></code>) – <p>The function to be minimized. It must have the call signature</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">__call__(x,</span> <span class="pre">*args)</span></code></p>
+</div></blockquote>
+<p>The return value of <code class="docutils literal notranslate"><span class="pre">func</span></code> is minimizer implementation dependent.</p>
+</p></li>
+<li><p><strong>args</strong> (sequence of arguments for <code class="docutils literal notranslate"><span class="pre">func</span></code> | None) – The optional sequence of arguments for <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict | None</em>) – The optional dictionary with keyword arguments for the minimizer
+implementation minimize method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xmin</strong> (<em>1d numpy ndarray</em>) – The array holding the parameter values for which the function has
+a minimum.</p></li>
+<li><p><strong>fmin</strong> (<em>float</em>) – The function value at its minimum.</p></li>
+<li><p><strong>status</strong> (<em>dict</em>) – The status dictionary with information about the minimization
+process.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="skyllh.core.model.html" class="btn btn-neutral float-right" title="skyllh.core.model module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skyllh.core.math.html" class="btn btn-neutral float-left" title="skyllh.core.math module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The IceCube Collaboration, T. Kontrimas, M. Wolf.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
