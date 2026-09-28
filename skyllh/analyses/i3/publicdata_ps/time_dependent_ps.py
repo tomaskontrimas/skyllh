@@ -43,6 +43,7 @@ from skyllh.core.backgroundpdf import (
 )
 from skyllh.core.config import (
     Config,
+    resolve_config,
 )
 from skyllh.core.dataset import Dataset
 from skyllh.core.event_selection import (
@@ -150,8 +151,8 @@ TXS_0506_PLUS056_ALERT_TIME = 58018.8711856
 
 
 def create_signal_time_pdf(
-    cfg: Config,
-    grl: np.ndarray,
+    cfg: Config | None = None,
+    grl: np.ndarray | None = None,
     gauss: dict | None = None,
     box: dict | None = None,
 ) -> PDF:
@@ -160,7 +161,9 @@ def create_signal_time_pdf(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the current Config instance is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     grl
         The structured numpy ndarray holding the good-run-list data.
     gauss
@@ -173,6 +176,11 @@ def create_signal_time_pdf(
     pdf
         The created time PDF instance.
     """
+
+    if grl is None:
+        raise TypeError('create_signal_time_pdf() missing required arguments: grl')
+
+    cfg = resolve_config(cfg)
 
     livetime = I3Livetime.from_grl_data(grl_data=grl)
 
@@ -723,9 +731,9 @@ def do_trials_with_em(
 
 
 def create_analysis(
-    cfg: Config,
-    datasets: list[Dataset],
-    source: PointLikeSource,
+    cfg: Config | None = None,
+    datasets: list[Dataset] | None = None,
+    source: PointLikeSource | None = None,
     box=None,
     gauss=None,
     refplflux_Phi0: float = 1,
@@ -753,7 +761,9 @@ def create_analysis(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the Config instance of the datasets is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     datasets
         The list of Dataset instances, which should be used in the
         analysis.
@@ -820,6 +830,11 @@ def create_analysis(
     ana
         The Analysis instance for this analysis.
     """
+    if datasets is None or source is None:
+        raise TypeError('create_analysis() missing required arguments: datasets, source')
+
+    cfg = resolve_config(cfg, objs=datasets)
+
     add_icecube_specific_analysis_required_data_fields(cfg)
 
     # Remove run number from the dataset data field requirements.

@@ -9,7 +9,7 @@ from typing import cast
 
 import numpy as np
 
-from skyllh.core.config import Config, HasConfig
+from skyllh.core.config import Config, HasConfig, resolve_config
 from skyllh.core.logging import (
     get_logger,
 )
@@ -28,8 +28,8 @@ from skyllh.core.timing import (
 
 
 def get_ncpu(
-    cfg: Config,
-    local_ncpu: int | None,
+    cfg: Config | None = None,
+    local_ncpu: int | None = None,
 ) -> int:
     """Determines the number of CPUs to use for functions that support
     multi-processing.
@@ -37,7 +37,9 @@ def get_ncpu(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the current Config instance is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     local_ncpu
         The local setting of the number of CPUs to use.
 
@@ -51,7 +53,7 @@ def get_ncpu(
     """
     ncpu = local_ncpu
     if ncpu is None:
-        ncpu = cfg['multiproc']['ncpu']
+        ncpu = resolve_config(cfg)['multiproc']['ncpu']
     if ncpu is None:
         ncpu = 1
 

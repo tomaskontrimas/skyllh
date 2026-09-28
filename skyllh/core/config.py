@@ -5,6 +5,9 @@ convenience utility functions to set different configuration settings.
 import copy
 import os.path
 import sys
+from collections.abc import Iterable, Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from pathlib import Path
 from typing import (
     Any,
@@ -385,6 +388,139 @@ class Config(
         return pathfilename
 
 
+# The Config instance, which is used when no Config instance is passed
+# explicitly. It is set via the ``use_config`` context manager.
+_CURRENT_CONFIG: ContextVar[Config | None] = ContextVar('skyllh_current_config', default=None)
+
+# The process-wide default Config instance, which is used when no Config
+# instance is passed explicitly and no Config instance is set as the current
+# one. It is created on first use.
+_DEFAULT_CONFIG: Config | None = None
+
+
+def get_default_config() -> Config:
+    """Returns the process-wide default Config instance, which is used when no
+    Config instance is passed explicitly and no Config instance is set via the
+    :func:`use_config` context manager. It is created on first use.
+
+    Returns
+    -------
+    cfg
+        The default instance of Config.
+    """
+    global _DEFAULT_CONFIG
+
+    if _DEFAULT_CONFIG is None:
+        _DEFAULT_CONFIG = Config()
+
+    return _DEFAULT_CONFIG
+
+
+def set_default_config(cfg: Config) -> None:
+    """Sets the process-wide default Config instance, which is used when no
+    Config instance is passed explicitly and no Config instance is set via the
+    :func:`use_config` context manager. This is convenient for scripts and
+    notebooks, where the configuration should be defined only once.
+
+    Parameters
+    ----------
+    cfg
+        The instance of Config that should be used as default.
+    """
+    global _DEFAULT_CONFIG
+
+    if not isinstance(cfg, Config):
+        raise TypeError(f'The cfg argument must be an instance of Config! Currently its type is {classname(cfg)}!')
+
+    _DEFAULT_CONFIG = cfg
+
+
+@contextmanager
+def use_config(cfg: Config) -> Iterator[Config]:
+    """Context manager, which sets the given Config instance as the current
+    one. All SkyLLH objects and functions that are created or called within the
+    context without an explicit Config instance, will use this Config instance.
+
+    Worker processes of :func:`skyllh.core.multiproc.parallelize` inherit the
+    current Config instance of the main process.
+
+    Parameters
+    ----------
+    cfg
+        The instance of Config that should be used within the context.
+
+    Yields
+    ------
+    cfg
+        The given instance of Config.
+    """
+    if not isinstance(cfg, Config):
+        raise TypeError(f'The cfg argument must be an instance of Config! Currently its type is {classname(cfg)}!')
+
+    token = _CURRENT_CONFIG.set(cfg)
+    try:
+        yield cfg
+    finally:
+        _CURRENT_CONFIG.reset(token)
+
+
+def get_current_config() -> Config:
+    """Returns the Config instance set via the :func:`use_config` context
+    manager, or the process-wide default Config instance, if no Config instance
+    is set.
+
+    Returns
+    -------
+    cfg
+        The current instance of Config.
+    """
+    cfg = _CURRENT_CONFIG.get()
+    if cfg is None:
+        cfg = get_default_config()
+
+    return cfg
+
+
+def resolve_config(
+    cfg: Config | None = None,
+    objs: Iterable[Any] | None = None,
+) -> Config:
+    """Determines the Config instance to use. The following order of precedence
+    applies:
+
+        1. The given ``cfg`` instance, if not ``None``.
+        2. The Config instance of the first object in ``objs`` that holds a
+           Config instance, i.e. is an instance of :class:`HasConfig`.
+        3. The Config instance set via the :func:`use_config` context manager.
+        4. The process-wide default Config instance, see
+           :func:`get_default_config`.
+
+    Parameters
+    ----------
+    cfg
+        The explicitly given instance of Config, or ``None``.
+    objs
+        The optional iterable of objects, e.g. Dataset instances, whose Config
+        instance should be used if ``cfg`` is ``None``.
+
+    Returns
+    -------
+    cfg
+        The instance of Config to use.
+    """
+    if cfg is not None:
+        if not isinstance(cfg, Config):
+            raise TypeError(f'The cfg argument must be an instance of Config! Currently its type is {classname(cfg)}!')
+        return cfg
+
+    if objs is not None:
+        for obj in objs:
+            if isinstance(obj, HasConfig):
+                return obj.cfg
+
+    return get_current_config()
+
+
 class HasConfig:
     """Classifier class defining the cfg property. Classes that derive from
     this class indicate, that they hold an instance of Config.
@@ -392,7 +528,7 @@ class HasConfig:
 
     def __init__(
         self,
-        cfg: 'Config',
+        cfg: Config | None = None,
         *args,
         **kwargs,
     ):
@@ -401,14 +537,16 @@ class HasConfig:
         Parameters
         ----------
         cfg
-            The instance of Config holding the local configuration.
+            The instance of Config holding the local configuration. If set to
+            ``None``, the current Config instance is used, see
+            :func:`resolve_config`.
         """
         super().__init__(*args, **kwargs)
 
-        self.cfg = cfg
+        self.cfg = resolve_config(cfg)
 
     @property
-    def cfg(self):
+    def cfg(self) -> Config:
         """The instance of Config holding the local configuration."""
         return self._cfg
 

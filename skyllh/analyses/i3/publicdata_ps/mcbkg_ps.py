@@ -34,6 +34,8 @@ from skyllh.analyses.i3.publicdata_ps.utils import (
 from skyllh.core.analysis import SingleSourceMultiDatasetLLHRatioAnalysis
 from skyllh.core.config import (
     Config,
+    resolve_config,
+    use_config,
 )
 from skyllh.core.dataset import Dataset
 from skyllh.core.event_selection import (
@@ -140,6 +142,7 @@ def create_analysis(
     tl: TimeLord | None = None,
     ppbar: ProgressBar | None = None,
     logger_name: str | None = None,
+    cfg: Config | None = None,
 ) -> SingleSourceMultiDatasetLLHRatioAnalysis:
     """Creates the Analysis instance for this particular analysis.
 
@@ -208,184 +211,193 @@ def create_analysis(
     logger_name
         The name of the logger to be used. If set to ``None``, ``__name__`` will
         be used.
+    cfg
+        The instance of Config holding the local configuration. If set to
+        ``None``, the Config instance of the datasets is used, see
+        :func:`~skyllh.core.config.resolve_config`.
 
     Returns
     -------
     ana
         The Analysis instance for this analysis.
     """
-    if logger_name is None:
-        logger_name = __name__
-    logger = get_logger(logger_name)
+    cfg = resolve_config(cfg, objs=datasets)
 
-    # Create the minimizer instance.
-    if minimizer_impl == 'LBFGS':
+    with use_config(cfg):
+        if logger_name is None:
+            logger_name = __name__
+        logger = get_logger(logger_name)
+
+        # Create the minimizer instance.
+        if minimizer_impl == 'LBFGS':
+            minimizer = Minimizer(LBFGSMinimizerImpl())
+        elif minimizer_impl == 'minuit':
+            minimizer = Minimizer(IMinuitMinimizerImpl(ftol=1e-8))
+        else:
+            raise NameError(
+                f'Minimizer implementation `{minimizer_impl}` is not supported Please use `LBFGS` or `minuit`.'
+            )
+
+        dtc_dict = None
+        dtc_except_fields = None
+        if compress_data is True:
+            dtc_dict = {np.dtype(np.float64): np.dtype(np.float32)}
+            dtc_except_fields = ['mcweight', 'time']
+
+        # Define the flux model.
+        fluxmodel = SteadyPointlikeFFM(
+            Phi0=refplflux_Phi0, energy_profile=PowerLawEnergyFluxProfile(E0=refplflux_E0, gamma=refplflux_gamma)
+        )
+
+        # Define the fit parameter ns.
+        param_ns = Parameter(name='ns', initial=ns_seed, valmin=ns_min, valmax=ns_max)
+
+        # Define the fit parameter gamma.
+        if gamma_seed is None:
+            gamma_seed = refplflux_gamma
+        param_gamma = Parameter(name='gamma', initial=gamma_seed, valmin=gamma_min, valmax=gamma_max)
+
+        # Define the detector signal efficiency implementation method for the
+        # IceCube detector and this source and flux_model.
+        # The sin(dec) binning will be taken by the implementation method
+        # automatically from the Dataset instance.
+        gamma_grid = param_gamma.as_linear_grid(delta=0.1)
+        detsigyield_builder = PDSingleParamFluxPointLikeSourceI3DetSigYieldBuilder(param_grid=gamma_grid)
+
+        # Create a source hypothesis group manager.
+        shg_mgr = SourceHypoGroupManager(
+            SourceHypoGroup(
+                sources=source, fluxmodel=fluxmodel, detsigyield_builders=detsigyield_builder, sig_gen_method=None
+            )
+        )
+
+        # Define a detector model for the ns fit parameter.
+        detector_model = DetectorModel('IceCube')
+
+        # Define the parameter model mapper for the analysis, which will map global
+        # parameters to local source parameters.
+        pmm = ParameterModelMapper(models=[detector_model, source])
+        pmm.map_param(param_ns, models=detector_model)
+        pmm.map_param(param_gamma, models=source)
+
+        logger.info(str(pmm))
+
+        # Define the test statistic.
+        test_statistic = WilksTestStatistic()
+
+        # Define the data scrambler with its data scrambling method, which is used
+        # for background generation.
+        data_scrambler = DataScrambler(UniformRAScramblingMethod())
+
+        # Create background generation method.
+        bkg_gen_method = FixedScrambledExpDataI3BkgGenMethod(data_scrambler)
+
+        # Create the minimizer instance.
         minimizer = Minimizer(LBFGSMinimizerImpl())
-    elif minimizer_impl == 'minuit':
-        minimizer = Minimizer(IMinuitMinimizerImpl(ftol=1e-8))
-    else:
-        raise NameError(f'Minimizer implementation `{minimizer_impl}` is not supported Please use `LBFGS` or `minuit`.')
 
-    dtc_dict = None
-    dtc_except_fields = None
-    if compress_data is True:
-        dtc_dict = {np.dtype(np.float64): np.dtype(np.float32)}
-        dtc_except_fields = ['mcweight', 'time']
-
-    # Define the flux model.
-    fluxmodel = SteadyPointlikeFFM(
-        Phi0=refplflux_Phi0, energy_profile=PowerLawEnergyFluxProfile(E0=refplflux_E0, gamma=refplflux_gamma)
-    )
-
-    # Define the fit parameter ns.
-    param_ns = Parameter(name='ns', initial=ns_seed, valmin=ns_min, valmax=ns_max)
-
-    # Define the fit parameter gamma.
-    if gamma_seed is None:
-        gamma_seed = refplflux_gamma
-    param_gamma = Parameter(name='gamma', initial=gamma_seed, valmin=gamma_min, valmax=gamma_max)
-
-    # Define the detector signal efficiency implementation method for the
-    # IceCube detector and this source and flux_model.
-    # The sin(dec) binning will be taken by the implementation method
-    # automatically from the Dataset instance.
-    gamma_grid = param_gamma.as_linear_grid(delta=0.1)
-    detsigyield_builder = PDSingleParamFluxPointLikeSourceI3DetSigYieldBuilder(param_grid=gamma_grid)
-
-    # Create a source hypothesis group manager.
-    shg_mgr = SourceHypoGroupManager(
-        SourceHypoGroup(
-            sources=source, fluxmodel=fluxmodel, detsigyield_builders=detsigyield_builder, sig_gen_method=None
-        )
-    )
-
-    # Define a detector model for the ns fit parameter.
-    detector_model = DetectorModel('IceCube')
-
-    # Define the parameter model mapper for the analysis, which will map global
-    # parameters to local source parameters.
-    pmm = ParameterModelMapper(models=[detector_model, source])
-    pmm.map_param(param_ns, models=detector_model)
-    pmm.map_param(param_gamma, models=source)
-
-    logger.info(str(pmm))
-
-    # Define the test statistic.
-    test_statistic = WilksTestStatistic()
-
-    # Define the data scrambler with its data scrambling method, which is used
-    # for background generation.
-    data_scrambler = DataScrambler(UniformRAScramblingMethod())
-
-    # Create background generation method.
-    bkg_gen_method = FixedScrambledExpDataI3BkgGenMethod(data_scrambler)
-
-    # Create the minimizer instance.
-    minimizer = Minimizer(LBFGSMinimizerImpl())
-
-    # Create the Analysis instance.
-    ana = SingleSourceMultiDatasetLLHRatioAnalysis(
-        shg_mgr=shg_mgr,
-        pmm=pmm,
-        test_statistic=test_statistic,
-        bkg_gen_method=bkg_gen_method,
-        sig_generator_cls=MultiDatasetSignalGenerator,
-    )
-
-    # Define the event selection method for pure optimization purposes.
-    # We will use the same method for all datasets.
-    event_selection_method = SpatialBoxEventSelectionMethod(
-        shg_mgr=shg_mgr, delta_angle=np.deg2rad(evt_sel_delta_angle_deg)
-    )
-
-    # Prepare the spline parameters for the signal generator.
-    if cut_sindec is None:
-        cut_sindec = np.sin(np.radians([-2, 0, -3, 0, 0]))
-    if spl_smooth is None:
-        spl_smooth = [0.0, 0.005, 0.05, 0.2, 0.3]
-    if len(spl_smooth) < len(datasets) or len(cut_sindec) < len(datasets):
-        raise AssertionError(
-            'The length of the spl_smooth and of the cut_sindec must be equal '
-            f'to the length of datasets: {len(datasets)}.'
-        )
-
-    # Add the data sets to the analysis.
-    pbar = ProgressBar(len(datasets), parent=ppbar).start()
-    for ds_idx, ds in enumerate(datasets):
-        # Load the data of the data set.
-        data = ds.load_and_prepare_data(
-            keep_fields=keep_data_fields,
-            dtc_dict=dtc_dict,
-            dtc_except_fields=dtc_except_fields,
-            efficiency_mode=efficiency_mode,
-            tl=tl,
-        )
-        assert data.exp is not None
-
-        sin_dec_binning = ds.get_binning_definition('sin_dec')
-
-        # Create the spatial PDF ratio instance for this dataset.
-        spatial_sigpdf = RayleighPSFPointSourceSignalSpatialPDF(dec_range=tuple(np.arcsin(sin_dec_binning.range)))
-        spatial_bkgpdf = DataBackgroundI3SpatialPDF(data_exp=data.exp, sin_dec_binning=sin_dec_binning)
-        spatial_pdfratio = SigOverBkgPDFRatio(sig_pdf=spatial_sigpdf, bkg_pdf=spatial_bkgpdf)
-
-        sm = PDSmearingMatrix(
-            pathfilenames=ds.get_abs_pathfilename_list(ds.get_aux_data_definition('smearing_datafile'))
-        )
-
-        # Create the energy PDF ratio instance for this dataset.
-        energy_sigpdfset = PDSignalEnergyPDFSet(
-            ds=ds, src_dec=source.dec, fluxmodel=fluxmodel, param_grid_set=gamma_grid, ppbar=ppbar, sm=sm
-        )
-
-        bkg_pdf_pathfilename = ds.get_abs_pathfilename_list(ds.get_aux_data_definition('pdf_bkg_datafile'))[0]
-        with open(bkg_pdf_pathfilename, 'rb') as f:
-            bkg_pdf_data = pickle.load(f)
-        energy_bkgpdf = PDMCBackgroundI3EnergyPDF(
-            pdf_log10emu_sindecmu=bkg_pdf_data['pdf'],
-            log10emu_binning=bkg_pdf_data['log10emu_binning'],
-            sindecmu_binning=bkg_pdf_data['sindecmu_binning'],
-        )
-
-        energy_pdfratio = PDSigSetOverBkgPDFRatio(sig_pdf_set=energy_sigpdfset, bkg_pdf=energy_bkgpdf)
-
-        pdfratio = spatial_pdfratio * energy_pdfratio
-
-        # Create a trial data manager and add the required data fields.
-        tdm = TrialDataManager()
-        tdm.add_source_data_field(name='src_array', func=pointlikesource_to_data_field_array)
-        tdm.add_data_field(name='psi', func=get_tdm_field_func_psi(), dt='dec', is_srcevt_data=True)
-
-        energy_cut_spline = create_energy_cut_spline(ds, data.exp, spl_smooth[ds_idx])
-
-        sig_generator = PDDatasetSignalGenerator(
+        # Create the Analysis instance.
+        ana = SingleSourceMultiDatasetLLHRatioAnalysis(
             shg_mgr=shg_mgr,
-            ds=ds,
-            ds_idx=ds_idx,
-            energy_cut_spline=energy_cut_spline,
-            cut_sindec=cut_sindec[ds_idx],
-            sm=sm,
+            pmm=pmm,
+            test_statistic=test_statistic,
+            bkg_gen_method=bkg_gen_method,
+            sig_generator_cls=MultiDatasetSignalGenerator,
         )
 
-        ana.add_dataset(
-            dataset=ds,
-            data=data,
-            pdfratio=pdfratio,
-            tdm=tdm,
-            event_selection_method=event_selection_method,
-            sig_generator=sig_generator,
+        # Define the event selection method for pure optimization purposes.
+        # We will use the same method for all datasets.
+        event_selection_method = SpatialBoxEventSelectionMethod(
+            shg_mgr=shg_mgr, delta_angle=np.deg2rad(evt_sel_delta_angle_deg)
         )
 
-        pbar.increment()
-    pbar.finish()
+        # Prepare the spline parameters for the signal generator.
+        if cut_sindec is None:
+            cut_sindec = np.sin(np.radians([-2, 0, -3, 0, 0]))
+        if spl_smooth is None:
+            spl_smooth = [0.0, 0.005, 0.05, 0.2, 0.3]
+        if len(spl_smooth) < len(datasets) or len(cut_sindec) < len(datasets):
+            raise AssertionError(
+                'The length of the spl_smooth and of the cut_sindec must be equal '
+                f'to the length of datasets: {len(datasets)}.'
+            )
 
-    ana.construct_services(ppbar=ppbar)
+        # Add the data sets to the analysis.
+        pbar = ProgressBar(len(datasets), parent=ppbar).start()
+        for ds_idx, ds in enumerate(datasets):
+            # Load the data of the data set.
+            data = ds.load_and_prepare_data(
+                keep_fields=keep_data_fields,
+                dtc_dict=dtc_dict,
+                dtc_except_fields=dtc_except_fields,
+                efficiency_mode=efficiency_mode,
+                tl=tl,
+            )
+            assert data.exp is not None
 
-    ana.llhratio = ana.construct_llhratio(minimizer=minimizer, ppbar=ppbar)
+            sin_dec_binning = ds.get_binning_definition('sin_dec')
 
-    ana.construct_signal_generator()
+            # Create the spatial PDF ratio instance for this dataset.
+            spatial_sigpdf = RayleighPSFPointSourceSignalSpatialPDF(dec_range=tuple(np.arcsin(sin_dec_binning.range)))
+            spatial_bkgpdf = DataBackgroundI3SpatialPDF(data_exp=data.exp, sin_dec_binning=sin_dec_binning)
+            spatial_pdfratio = SigOverBkgPDFRatio(sig_pdf=spatial_sigpdf, bkg_pdf=spatial_bkgpdf)
 
-    return ana
+            sm = PDSmearingMatrix(
+                pathfilenames=ds.get_abs_pathfilename_list(ds.get_aux_data_definition('smearing_datafile'))
+            )
+
+            # Create the energy PDF ratio instance for this dataset.
+            energy_sigpdfset = PDSignalEnergyPDFSet(
+                ds=ds, src_dec=source.dec, fluxmodel=fluxmodel, param_grid_set=gamma_grid, ppbar=ppbar, sm=sm
+            )
+
+            bkg_pdf_pathfilename = ds.get_abs_pathfilename_list(ds.get_aux_data_definition('pdf_bkg_datafile'))[0]
+            with open(bkg_pdf_pathfilename, 'rb') as f:
+                bkg_pdf_data = pickle.load(f)
+            energy_bkgpdf = PDMCBackgroundI3EnergyPDF(
+                pdf_log10emu_sindecmu=bkg_pdf_data['pdf'],
+                log10emu_binning=bkg_pdf_data['log10emu_binning'],
+                sindecmu_binning=bkg_pdf_data['sindecmu_binning'],
+            )
+
+            energy_pdfratio = PDSigSetOverBkgPDFRatio(sig_pdf_set=energy_sigpdfset, bkg_pdf=energy_bkgpdf)
+
+            pdfratio = spatial_pdfratio * energy_pdfratio
+
+            # Create a trial data manager and add the required data fields.
+            tdm = TrialDataManager()
+            tdm.add_source_data_field(name='src_array', func=pointlikesource_to_data_field_array)
+            tdm.add_data_field(name='psi', func=get_tdm_field_func_psi(), dt='dec', is_srcevt_data=True)
+
+            energy_cut_spline = create_energy_cut_spline(ds, data.exp, spl_smooth[ds_idx])
+
+            sig_generator = PDDatasetSignalGenerator(
+                shg_mgr=shg_mgr,
+                ds=ds,
+                ds_idx=ds_idx,
+                energy_cut_spline=energy_cut_spline,
+                cut_sindec=cut_sindec[ds_idx],
+                sm=sm,
+            )
+
+            ana.add_dataset(
+                dataset=ds,
+                data=data,
+                pdfratio=pdfratio,
+                tdm=tdm,
+                event_selection_method=event_selection_method,
+                sig_generator=sig_generator,
+            )
+
+            pbar.increment()
+        pbar.finish()
+
+        ana.construct_services(ppbar=ppbar)
+
+        ana.llhratio = ana.construct_llhratio(minimizer=minimizer, ppbar=ppbar)
+
+        ana.construct_signal_generator()
+
+        return ana
 
 
 if __name__ == '__main__':

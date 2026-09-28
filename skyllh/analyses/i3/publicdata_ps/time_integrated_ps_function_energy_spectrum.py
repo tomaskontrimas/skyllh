@@ -40,6 +40,7 @@ from skyllh.core.background_generator import (
 )
 from skyllh.core.config import (
     Config,
+    resolve_config,
 )
 from skyllh.core.dataset import Dataset
 from skyllh.core.event_selection import (
@@ -203,11 +204,11 @@ def ns_from_flux(analysis: SingleSourceMultiDatasetLLHRatioAnalysis, e_peak: flo
 
 
 def create_analysis(
-    cfg: Config,
-    datasets: list[Dataset],
-    source: PointLikeSource,
-    source_energies: np.ndarray,
-    source_energy_spectrum: np.ndarray,
+    cfg: Config | None = None,
+    datasets: list[Dataset] | None = None,
+    source: PointLikeSource | None = None,
+    source_energies: np.ndarray | None = None,
+    source_energy_spectrum: np.ndarray | None = None,
     refplflux_Phi0: float = 1,
     ns_seed: float = 10.0,
     ns_min: float = 0.0,
@@ -231,7 +232,9 @@ def create_analysis(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the Config instance of the datasets is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     datasets
         The list of Dataset instances, which should be used in the
         analysis.
@@ -289,6 +292,13 @@ def create_analysis(
     ana
         The Analysis instance for this analysis.
     """
+
+    if datasets is None or source is None or source_energies is None or source_energy_spectrum is None:
+        raise TypeError(
+            'create_analysis() missing required arguments: datasets, source, source_energies, source_energy_spectrum'
+        )
+
+    cfg = resolve_config(cfg, objs=datasets)
 
     add_icecube_specific_analysis_required_data_fields(cfg)
 

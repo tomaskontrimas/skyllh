@@ -1,3 +1,4 @@
+from skyllh.core.config import resolve_config
 from skyllh.core.dataset import (
     DatasetOrigin,
     URLRetrieveDatasetTransfer,
@@ -11,7 +12,7 @@ DATASET_NAMES = PublicData_14y_ps.DATASET_NAMES
 
 
 def create_dataset_collection(
-    cfg,
+    cfg=None,
     base_path=None,
     sub_path_fmt=None,
 ):
@@ -35,7 +36,9 @@ def create_dataset_collection(
     Parameters
     ----------
     cfg : instance of Config
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the current Config instance is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     base_path : str | None
         The base path of the data files. The actual path of a data file is
         assumed to be of the structure <base_path>/<sub_path>/<file_name>.
@@ -52,6 +55,8 @@ def create_dataset_collection(
         I3Dataset objects.
     """
     # Reuse the version 1.0 dataset collection definition and only re-point it to the version 2.0 data release.
+    cfg = resolve_config(cfg)
+
     dsc = PublicData_14y_ps.create_dataset_collection(
         cfg=cfg,
         base_path=base_path,
