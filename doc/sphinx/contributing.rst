@@ -77,6 +77,17 @@ To add a new tutorial:
    before committing.
 4. Open a pull request following the steps above.
 
+The stored outputs of all documentation notebooks are kept up to date by the
+weekly *Notebook outputs* GitHub workflow. It executes the notebooks against
+the IceCube public data and opens (or updates) a pull request with the changed
+outputs. Notebooks that fail to execute are listed in that pull request. You
+can execute notebooks the same way locally:
+
+.. code:: bash
+
+    pip install nbclient nbformat ipykernel
+    python .github/scripts/execute_notebooks.py doc/sphinx/tutorials/my_tutorial.ipynb
+
 Tutorials using IceCube's public datasets are especially encouraged, as they
 help new users get started quickly.
 

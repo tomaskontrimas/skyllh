@@ -1,0 +1,117 @@
+# This workflow executes the documentation notebooks (tutorials, examples,
+# concepts) against the IceCube public data and proposes the updated outputs
+# via a pull request, similar to dependency update bots like renovate.
+#
+# It runs weekly, but only if the master branch received new commits during the
+# last week, and it can be triggered manually. The pull request is updated in
+# place by later runs until it is merged or closed. Notebooks whose outputs
+# changed only in volatile content (timestamps, run times, progress bars) are
+# not touched, and notebooks that fail to execute are listed in the pull
+# request and make the workflow fail.
+
+name: Notebook outputs
+
+on:
+  schedule:
+    # Every Monday at 03:17 UTC.
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Execute the notebooks even if master did not change during the last week'
+        type: boolean
+        default: false
+
+concurrency:
+  group: notebook-outputs
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      PR_BRANCH: bot/notebook-outputs
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Check for new commits
+        id: check
+        run: |
+          n_commits=$(git rev-list --count --since='7 days ago' HEAD)
+          echo "New commits on master during the last week: ${n_commits}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${n_commits}" -gt 0 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "No new commits on master during the last week. Skipping." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Set up Python
+        if: steps.check.outputs.run == 'true'
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install dependencies
+        if: steps.check.outputs.run == 'true'
+        run: pip install ".[extras]" nbclient nbformat ipykernel
+
+      # The public datasets are downloaded from dataverse.harvard.edu into the
+      # default data repository of SkyLLH on first use. Cache them between runs.
+      - name: Cache public datasets
+        if: steps.check.outputs.run == 'true'
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/skyllh
+          key: skyllh-public-data-v1
+
+      - name: Execute notebooks
+        id: execute
+        if: steps.check.outputs.run == 'true'
+        continue-on-error: true
+        run: |
+          python .github/scripts/execute_notebooks.py \
+            --summary "${RUNNER_TEMP}/notebook_summary.md" \
+            doc/sphinx/tutorials/*.ipynb \
+            doc/sphinx/examples/*.ipynb \
+            doc/sphinx/concepts/*.ipynb \
+            doc/sphinx/dev_docs/*.ipynb
+          cat "${RUNNER_TEMP}/notebook_summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create pull request body
+        if: steps.check.outputs.run == 'true'
+        run: |
+          {
+            echo "This pull request updates the stored outputs of the documentation notebooks."
+            echo "They were executed by the [Notebook outputs workflow](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) on master (${GITHUB_SHA::8})."
+            echo "Notebooks whose outputs changed only in timestamps, run times, or progress bars were not modified."
+            echo ""
+            cat "${RUNNER_TEMP}/notebook_summary.md" 2>/dev/null || echo "The notebook execution did not produce a summary."
+          } > "${RUNNER_TEMP}/pr_body.md"
+
+      - name: Create or update pull request
+        if: steps.check.outputs.run == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ${{ env.PR_BRANCH }}
+          base: master
+          add-paths: doc/sphinx/**/*.ipynb
+          commit-message: Update the outputs of the documentation notebooks
+          title: Update the outputs of the documentation notebooks
+          body-path: ${{ runner.temp }}/pr_body.md
+          labels: documentation
+          delete-branch: true
+
+      - name: Fail if a notebook could not be executed
+        if: steps.check.outputs.run == 'true' && steps.execute.outcome == 'failure'
+        run: |
+          echo "At least one notebook failed to execute. See the summary of this workflow run."
+          exit 1
