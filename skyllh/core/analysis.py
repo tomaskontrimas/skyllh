@@ -31,6 +31,7 @@ from skyllh.core.logging import (
 )
 from skyllh.core.minimizer import Minimizer
 from skyllh.core.multiproc import (
+    NCpuSetting,
     get_ncpu,
     parallelize,
 )
@@ -1263,7 +1264,7 @@ class Analysis(
         self,
         rss: RandomStateService,
         n: int,
-        ncpu: int | None = None,
+        ncpu: NCpuSetting | None = None,
         tl: TimeLord | None = None,
         ppbar: ProgressBar | None = None,
         **kwargs,
@@ -1304,9 +1305,7 @@ class Analysis(
         args_list = [((), kwargs) for i in range(n)]
         result_list = parallelize(func=self.do_trial, args_list=args_list, ncpu=ncpu, rss=rss, tl=tl, ppbar=ppbar)
 
-        recarray_dtype = result_list[0].dtype
-        recarray = np.empty(n, dtype=recarray_dtype)
-        recarray[:] = np.array(result_list)[:, 0]
+        recarray = np.concatenate(result_list)
 
         return recarray
 

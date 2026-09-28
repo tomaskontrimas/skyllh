@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 from typing import (
     Any,
+    Literal,
 )
 
 import yaml
@@ -27,7 +28,8 @@ _BASECONFIG = {
         # The number of CPUs to use for functions that allow multi-processing.
         # If this setting is set to an int value in the range [1, N] this
         # setting will be used if a function's local ncpu setting is not
-        # specified.
+        # specified. If set to 'auto', the number of CPUs available to the
+        # process (e.g. allocated by the batch system) will be used.
         'ncpu': None,
     },
     'logging': {
@@ -295,7 +297,7 @@ class Config(
 
     def set_ncpu(
         self,
-        ncpu: int,
+        ncpu: int | Literal['auto'],
     ) -> 'Config':
         """Sets the global setting for the number of CPUs to use, when
         parallelization is available.
@@ -303,7 +305,9 @@ class Config(
         Parameters
         ----------
         ncpu
-            The number of CPUs.
+            The number of CPUs. If set to ``'auto'``, the number of CPUs
+            available to the current process will be used, which respects the
+            CPU allocation of batch systems like Slurm.
 
         Returns
         -------

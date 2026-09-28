@@ -9,6 +9,7 @@ from skyllh.core.flux_model import (
 )
 from skyllh.core.multiproc import (
     IsParallelizable,
+    NCpuSetting,
     parallelize,
 )
 from skyllh.core.parameters import (
@@ -53,7 +54,7 @@ class SignalI3EnergyPDFSet(  # pyright: ignore[reportIncompatibleMethodOverride]
         fluxmodel: FluxModel,
         param_grid_set: ParameterGridSet | ParameterGrid,
         smoothing_filter: SmoothingFilter | None = None,
-        ncpu: int | None = None,
+        ncpu: NCpuSetting | None = None,
         ppbar: ProgressBar | None = None,
         **kwargs,
     ):

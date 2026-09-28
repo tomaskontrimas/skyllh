@@ -31,6 +31,7 @@ dependencies = [
     "numpy",
     "pyyaml",
     "scipy<1.18",
+    "threadpoolctl",
     "tqdm",
 ]
 

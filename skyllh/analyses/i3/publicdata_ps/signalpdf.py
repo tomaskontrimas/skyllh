@@ -21,6 +21,7 @@ from skyllh.core.logging import (
 )
 from skyllh.core.multiproc import (
     IsParallelizable,
+    NCpuSetting,
     parallelize,
 )
 from skyllh.core.parameters import (
@@ -182,7 +183,7 @@ class PDSignalEnergyPDFSet(  # pyright: ignore[reportIncompatibleMethodOverride]
         src_dec: float,
         fluxmodel: FactorizedFluxModel,
         param_grid_set: ParameterGrid | ParameterGridSet,
-        ncpu: int | None = None,
+        ncpu: NCpuSetting | None = None,
         ppbar: ProgressBar | None = None,
         sm: PDSmearingMatrix | None = None,
         **kwargs,

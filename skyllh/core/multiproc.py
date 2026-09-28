@@ -1,11 +1,14 @@
 import multiprocessing as mp
+import os
 import queue
 import time
+import traceback
 from collections.abc import Callable
+from contextlib import AbstractContextManager, nullcontext
 from logging.handlers import (
     QueueHandler,
 )
-from typing import cast
+from typing import Literal, cast
 
 import numpy as np
 
@@ -26,10 +29,60 @@ from skyllh.core.timing import (
     TimeLord,
 )
 
+# The type of a number of CPUs setting. The value 'auto' means the number of
+# CPUs available to the current process.
+NCpuSetting = int | Literal['auto']
+
+# The multiprocessing start method used by SkyLLH. The "fork" start method lets
+# the worker processes share the (read-only) memory of the main process via
+# copy-on-write, which avoids pickling and duplicating the analysis data.
+_MP_START_METHOD = 'fork'
+
+# Flag if the current process is a worker process spawned by ``parallelize``.
+# Nested calls to ``parallelize`` within a worker process are executed
+# serially to avoid over-subscribing the CPUs.
+_IS_WORKER_PROCESS = False
+
+# The time in seconds to wait for data from the worker processes before
+# checking their health.
+_POLL_INTERVAL = 0.1
+
+# The time in seconds to wait for the result of a worker process, which exited
+# successfully, before giving up.
+_RESULT_TIMEOUT = 10
+
+
+def get_available_ncpu() -> int:
+    """Determines the number of CPUs the current process is allowed to use.
+
+    In contrast to :func:`os.cpu_count`, which returns the number of CPUs of the
+    entire machine, this function respects the CPU affinity of the process,
+    which is set for example by batch systems like Slurm or HTCondor, or by
+    tools like ``taskset``.
+
+    Returns
+    -------
+    ncpu
+        The number of CPUs available to the current process.
+    """
+    process_cpu_count = getattr(os, 'process_cpu_count', None)
+    if process_cpu_count is not None:
+        # Python >= 3.13
+        ncpu = process_cpu_count()
+    elif hasattr(os, 'sched_getaffinity'):
+        ncpu = len(os.sched_getaffinity(0))
+    else:
+        ncpu = os.cpu_count()
+
+    if ncpu is None or ncpu < 1:
+        ncpu = 1
+
+    return ncpu
+
 
 def get_ncpu(
     cfg: Config,
-    local_ncpu: int | None,
+    local_ncpu: NCpuSetting | None,
 ) -> int:
     """Determines the number of CPUs to use for functions that support
     multi-processing.
@@ -39,7 +92,9 @@ def get_ncpu(
     cfg
         The instance of Config holding the local configuration.
     local_ncpu
-        The local setting of the number of CPUs to use.
+        The local setting of the number of CPUs to use. If set to ``'auto'``,
+        the number of CPUs available to the current process is used, see
+        :func:`get_available_ncpu`.
 
     Returns
     -------
@@ -54,14 +109,149 @@ def get_ncpu(
         ncpu = cfg['multiproc']['ncpu']
     if ncpu is None:
         ncpu = 1
+    if ncpu == 'auto':
+        ncpu = get_available_ncpu()
 
     if not isinstance(ncpu, int):
-        raise TypeError('The ncpu setting must be of type int!')
+        raise TypeError("The ncpu setting must be of type int or 'auto'!")
 
     if ncpu < 1:
         raise ValueError('The ncpu setting must be >= 1!')
 
     return ncpu
+
+
+def _limit_blas_threads(n_threads: int | None) -> AbstractContextManager:
+    """Creates a context manager limiting the number of threads used by the
+    BLAS and OpenMP libraries, e.g. used by numpy and scipy.
+
+    Parameters
+    ----------
+    n_threads
+        The maximum number of threads. If set to ``None``, no limit is applied.
+
+    Returns
+    -------
+    ctx
+        The context manager applying the limit. If the ``threadpoolctl`` package
+        is not available, no limit is applied.
+    """
+    if n_threads is None:
+        return nullcontext()
+
+    try:
+        from threadpoolctl import threadpool_limits
+    except ImportError:
+        return nullcontext()
+
+    return threadpool_limits(limits=n_threads)
+
+
+def _run_tasks(
+    func: Callable,
+    sub_args_list: list[tuple],
+    rss: RandomStateService | None,
+    tl: TimeLord | None,
+    task_done_callback: Callable[[int], None] | None = None,
+) -> list:
+    """Evaluates ``func`` for all the arguments given by ``sub_args_list``.
+
+    Parameters
+    ----------
+    func
+        The function to call.
+    sub_args_list
+        The list of 2-element tuples holding the arguments and keyword arguments
+        of ``func`` for each task.
+    rss
+        The RandomStateService instance that should be passed to ``func`` via
+        the ``rss`` keyword argument. If None, no ``rss`` argument is passed.
+    tl
+        The TimeLord instance that should be passed to ``func`` via the ``tl``
+        keyword argument. If None, no ``tl`` argument is passed.
+    task_done_callback
+        The optional callable that is called with the task index after each
+        finished task.
+
+    Returns
+    -------
+    result_list
+        The list of the results of ``func`` for each task.
+    """
+    result_list = []
+    for task_idx, (args, kwargs) in enumerate(sub_args_list):
+        kwargs = dict(kwargs)
+        if rss is not None:
+            kwargs['rss'] = rss
+        if tl is not None:
+            kwargs['tl'] = tl
+        result_list.append(func(*args, **kwargs))
+
+        if task_done_callback is not None:
+            task_done_callback(task_idx)
+
+    return result_list
+
+
+def _worker_main(
+    func: Callable,
+    sub_args_list: list[tuple],
+    pid: int,
+    rqueue,
+    lqueue,
+    squeue=None,
+    rss: RandomStateService | None = None,
+    tl: TimeLord | None = None,
+    blas_threads: int | None = None,
+):
+    """The main function of a worker process. It evaluates ``func`` for the
+    subset ``sub_args_list`` of all the arguments.
+
+    The worker process inherits the ``QueueHandler`` of the skyllh logger,
+    which sends the log records to the main process via the ``lqueue``.
+
+    Parameters
+    ----------
+    func
+        The function which should be called with different arguments.
+    sub_args_list
+        The list of the different arguments for function ``func``.
+    pid
+        The process ID that identifies the process in order to sort the
+        results to the initial order of the function arguments.
+    rqueue
+        The Queue instance where to put the function results in. The result is
+        a 4-element tuple ``(pid, result_list, tl, error)``, where ``error`` is
+        the formatted traceback string of a raised exception, or ``None``.
+    lqueue
+        The Queue instance for the log records. When the worker is finished,
+        ``None`` is put into the queue to mark the end of its log records.
+    squeue
+        The Queue instance where to put in status information about finished
+        tasks. Can be None to skip sending status information.
+    rss
+        The RandomStateService instance to use for generating random numbers.
+    tl
+        The instance of TimeLord that should be used to time individual tasks.
+    blas_threads
+        The maximum number of BLAS / OpenMP threads for this worker process.
+    """
+    global _IS_WORKER_PROCESS
+    _IS_WORKER_PROCESS = True
+
+    def task_done_callback(task_idx):
+        if squeue is not None:
+            squeue.put((pid, task_idx))
+
+    try:
+        with _limit_blas_threads(blas_threads):
+            result_list = _run_tasks(func, sub_args_list, rss, tl, task_done_callback)
+        rqueue.put((pid, result_list, tl, None))
+    except Exception:  # noqa: BLE001 - Forward any error to the main process.
+        rqueue.put((pid, None, None, traceback.format_exc()))
+    finally:
+        # Mark the end of the log records of this worker process.
+        lqueue.put(None)
 
 
 def parallelize(
@@ -71,8 +261,15 @@ def parallelize(
     rss: RandomStateService | None = None,
     tl: TimeLord | None = None,
     ppbar: ProgressBar | None = None,
+    blas_threads: int | None = 1,
 ) -> list:
     """Parallelizes the execution of the given function for different arguments.
+
+    The main process is used as one of the ``ncpu`` worker processes. The worker
+    processes are created using the "fork" start method, hence they share the
+    memory of the main process via copy-on-write and the function and its
+    arguments do not need to be pickled. Only the results are transferred back
+    to the main process.
 
     Parameters
     ----------
@@ -87,190 +284,71 @@ def parallelize(
         dictionary with the keyword arguments of ``func``. If the `rss` argument
         is not None, `func` argument `rss` has to be omitted.
     ncpu
-        The number of CPUs to use, i.e. the number of subprocesses to spawn.
+        The number of CPUs to use, i.e. the number of processes (including the
+        main process) to use. If this function is called within a worker
+        process of another ``parallelize`` call, the tasks are executed
+        serially.
     rss
         The RandomStateService instance to use for generating random numbers.
     tl
         The instance of TimeLord that should be used to time individual tasks.
     ppbar
         The possible parent ProgressBar instance.
+    blas_threads
+        The maximum number of threads each process may use for BLAS and OpenMP
+        operations, e.g. within numpy and scipy, while running the tasks in
+        parallel. This avoids over-subscribing the CPUs, i.e. using
+        ``ncpu`` times the number of BLAS threads. It requires the
+        ``threadpoolctl`` package. If set to None, no limit is applied.
+        The limit is not applied if ``ncpu`` is 1.
 
     Returns
     -------
     result_list
         The list of the result values of ``func``, where each element of that
         list corresponds to the arguments element in ``args_list``.
+
+    Raises
+    ------
+    RuntimeError
+        If a worker process raised an exception, died, or did not return its
+        result.
     """
+    global _IS_WORKER_PROCESS
 
-    # Define a wrapper function for the multiprocessing module that evaluates
-    # ``func`` for a subset of `args_list` on a worker process.
-    def worker_wrapper(
-        func: Callable,
-        sub_args_list: list[tuple],
-        pid: int,
-        rqueue,
-        lqueue,
-        squeue=None,
-        rss: RandomStateService | None = None,
-        tl: TimeLord | None = None,
-    ):
-        """Wrapper function for the multiprocessing module that evaluates
-        ``func`` for the subset ``sub_args_list`` of ``args_list`` on a worker
-        process.
-
-        Parameters
-        ----------
-        func
-            The function which should be called with different arguments, which
-            are given through the sub_args_list argument. If the `rss` argument
-            is not None `func` requires an argument named `rss`.
-        sub_args_list
-            The list of the different arguments for function ``func``. Each
-            element of that list must be a 2-element tuple, where the first
-            element is a tuple of the arguments of ``func``, and the second
-            element is a dictionary with the keyword arguments of ``func``.
-            If the `rss` argument is not None, `func` argument `rss` has to be
-            omitted.
-        pid
-            The process ID that identifies the process in order to sort the
-            results to the initial order of the function arguments.
-        rqueue
-            The Queue instance where to put the function result in.
-            If set to None, the result list will be returned.
-        lqueue
-            The queue to hold generated log records by a given function.
-        squeue
-            The Queue instance where to put in status information about finished
-            tasks. Can be None to skip sending status information.
-        rss
-            The RandomStateService instance to use for generating random
-            numbers.
-        tl
-            The instance of TimeLord that should be used to time individual
-            tasks.
-        """
-        # Get the `QueueHandler` and update its log records queue.
-        logger = get_logger('skyllh')
-        queue_handler = cast(QueueHandler, list(logger.handlers)[0])  # noqa: RUF015
-        queue_handler.queue = lqueue
-
-        result_list = []
-        for task_idx, (args, kwargs) in enumerate(sub_args_list):
-            if rss is not None:
-                kwargs['rss'] = rss
-            if tl is not None:
-                kwargs['tl'] = tl
-            result_list.append(func(*args, **kwargs))
-
-            if squeue is not None:
-                squeue.put((pid, task_idx))
-
-        rqueue.put((pid, result_list, tl))
-
-        # Put None object as the last log records queue item.
-        lqueue.put_nowait(None)
-
-    # Define a wrapper function that evaluates ``func`` for a subset of
-    # `args_list` on the master process.
-    def master_wrapper(
-        pbar: ProgressBar | None,
-        sarr: np.ndarray,
-        func: Callable,
-        sub_args_list: list[tuple],
-        squeue=None,
-        rss: RandomStateService | None = None,
-        tl: TimeLord | None = None,
-    ):
-        """This is the wrapper function for the master process.
-
-        Parameters
-        ----------
-        pbar
-            The instance of ProgressBar that should be used to display the
-            progress if the current session is interactive.
-        sarr
-            The status numpy record ndarray for all the processes. The length of
-            that array must equal the number of processes, including the master
-            process. Hence, the array index is the process id. The array must
-            contain the following fields:
-                n_finished_tasks
-                    The number of finished tasks.
-        func
-            The function which should be called with different arguments, which
-            are given through the sub_args_list argument. If the `rss` argument
-            is not None `func` requires an argument named `rss`.
-        sub_args_list
-            The list of the different arguments for function ``func``. Each
-            element of that list must be a 2-element tuple, where the first
-            element is a tuple of the arguments of ``func``, and the second
-            element is a dictionary with the keyword arguments of ``func``.
-            If the `rss` argument is not None, `func` argument `rss` has to be
-            omitted.
-        squeue
-            The status queue for the worker processes that should be used to
-            receive status information about finished tasks.
-        rss
-            The RandomStateService instance to use for generating random
-            numbers.
-        tl
-            The instance of TimeLord that should be used to time individual
-            tasks.
-        """
-        result_list = []
-        for master_task_idx, (args, kwargs) in enumerate(sub_args_list):
-            if rss is not None:
-                kwargs['rss'] = rss
-            if tl is not None:
-                kwargs['tl'] = tl
-            result_list.append(func(*args, **kwargs))
-
-            # Skip the rest, if we are not in an interactive session, hence
-            # there is not progress bar.
-            if pbar is None or not pbar.is_shown:
-                continue
-
-            sarr[0]['n_finished_tasks'] = master_task_idx + 1
-
-            # Get possible status information from the worker processes.
-            if squeue is not None:
-                while not squeue.empty():
-                    (pid, worker_task_idx) = squeue.get()
-                    sarr[pid]['n_finished_tasks'] = worker_task_idx + 1
-
-            # Calculate the total number of finished tasks.
-            n_finished_tasks = np.sum(sarr['n_finished_tasks'])
-            pbar.update(n_finished_tasks)
-
-        return result_list
+    if _IS_WORKER_PROCESS:
+        ncpu = 1
 
     # Create the progress bar if we are in an interactive session.
     pbar = ProgressBar(maxval=len(args_list), parent=ppbar).start()
 
     # Return result list if only one CPU is used.
     if ncpu == 1:
-        sarr = np.zeros((1,), dtype=[('n_finished_tasks', np.int64)])
-        result_list = master_wrapper(pbar, sarr, func, args_list, squeue=None, rss=rss, tl=tl)
+
+        def update_pbar(task_idx):
+            if pbar.is_shown:
+                pbar.update(task_idx + 1)
+
+        result_list = _run_tasks(func, args_list, rss, tl, update_pbar)
 
         pbar.finish()
 
         return result_list
 
+    try:
+        mp_ctx = mp.get_context(_MP_START_METHOD)
+    except ValueError as exc:
+        raise RuntimeError(
+            f'The multiprocessing start method "{_MP_START_METHOD}" is not available on this platform! Use ncpu=1.'
+        ) from exc
+
     # Multiple CPUs are used. Split the work across multiple processes.
     # We will use our own process (pid = 0) as a worker too.
-    rqueue = mp.Queue()
-    squeue = None
-    if pbar.is_shown:
-        squeue = mp.Queue()
-
     sub_args_list_list = np.array_split(np.array(args_list, dtype=object), ncpu)
-
-    # Create a multiprocessing queue for each worker process.
-    # Prepend it with None to be able to use `pid` as the list index.
-    lqueue_list = [None] + [mp.Queue() for i in range(ncpu - 1)]
 
     # Create a list of RandomStateService for each process if rss argument is
     # set.
-    rss_list = [rss]
+    rss_list: list[RandomStateService | None] = [rss]
     if rss is None:
         rss_list += [None] * (ncpu - 1)
     else:
@@ -280,7 +358,7 @@ def parallelize(
 
     # Create a list of TimeLord instances, one for each process if tl argument
     # is set.
-    tl_list = [tl]
+    tl_list: list[TimeLord | None] = [tl]
     if tl is None:
         tl_list += [None] * (ncpu - 1)
     else:
@@ -288,95 +366,157 @@ def parallelize(
             raise TypeError('The tl argument must be an instance of TimeLord!')
         tl_list.extend([TimeLord() for i in range(1, ncpu)])
 
-    # Replace all existing main process handlers with the `QueueHandler`.
-    # This allows storing all the log record generated by worker processes at
-    # separate `multiprocessing.Queue` instances. After creating
-    # worker processes revert handlers to the initial state.
-    logger = get_logger('skyllh')
-    orig_handlers = list(logger.handlers)
-    for orig_handler in orig_handlers:
-        logger.removeHandler(orig_handler)
-    queue_handler = QueueHandler(cast(mp.Queue, lqueue_list[0]))
-    logger.addHandler(queue_handler)
+    rqueue = mp_ctx.Queue()
+    lqueue = mp_ctx.Queue()
+    squeue = mp_ctx.Queue() if pbar.is_shown else None
 
-    processes = [
-        mp.Process(
-            target=worker_wrapper,
-            args=(func, sub_args_list, pid, rqueue, lqueue_list[pid]),
-            kwargs={'squeue': squeue, 'rss': rss_list[pid], 'tl': tl_list[pid]},
+    # Replace all existing main process handlers with a `QueueHandler`, which
+    # will be inherited by the worker processes. This sends all the log records
+    # generated by worker processes to the main process, where they are handled
+    # while the tasks are running. After creating the worker processes revert
+    # the handlers to the initial state.
+    skyllh_logger = get_logger('skyllh')
+    orig_handlers = list(skyllh_logger.handlers)
+    for orig_handler in orig_handlers:
+        skyllh_logger.removeHandler(orig_handler)
+    queue_handler = QueueHandler(lqueue)
+    skyllh_logger.addHandler(queue_handler)
+
+    # Create worker processes only for non-empty chunks of work.
+    processes = {
+        pid: mp_ctx.Process(
+            target=_worker_main,
+            args=(func, list(sub_args_list), pid, rqueue, lqueue),
+            kwargs={'squeue': squeue, 'rss': rss_list[pid], 'tl': tl_list[pid], 'blas_threads': blas_threads},
         )
         for (pid, sub_args_list) in enumerate(sub_args_list_list)
-        if pid > 0
-    ]
+        if pid > 0 and len(sub_args_list) > 0
+    }
 
-    # Start the processes.
-    for proc in processes:
-        proc.start()
+    try:
+        for proc in processes.values():
+            proc.start()
+    finally:
+        # Revert main process handlers to the initial state.
+        skyllh_logger.removeHandler(queue_handler)
+        for orig_handler in orig_handlers:
+            skyllh_logger.addHandler(orig_handler)
 
-    # Revert main process handlers to the initial state.
-    logger.removeHandler(queue_handler)
-    for orig_handler in orig_handlers:
-        logger.addHandler(orig_handler)
-
-    # Compute the first chunk in the main process.
-    sarr = np.zeros((len(processes) + 1,), dtype=[('n_finished_tasks', np.int64)])
-    result_list_0 = master_wrapper(
-        pbar, sarr, func, list(sub_args_list_list[0]), squeue=squeue, rss=rss_list[0], tl=tl_list[0]
-    )
-
-    # Initialize logger.
     logger = get_logger(__name__)
 
-    # Gather len(processes) results from the rqueue and join the process's
-    # TimeLord instance with the main TimeLord instance.
-    # Handle log records created by each process.
-    pid_result_list_map = {0: result_list_0}
-    for proc in processes:
-        # Get the result record from the result queue.
-        result_received = False
-        proc_died = False
-        pid: int = -1
-        result_list: list = []
-        proc_tl: TimeLord | None = None
-        while (result_received is False) and (proc_died is False):
-            try:
-                (pid, result_list, proc_tl) = rqueue.get(block=False)
-                result_received = True
-            except queue.Empty:
-                # If this exception is raised, either the child process isn't
-                # finished yet, or it dies due to an exception.
-                if proc.exitcode is None:
-                    # Child process hasn't finish yet.
-                    # We'll wait a short moment.
-                    time.sleep(0.01)
-                elif proc.exitcode != 0:
-                    proc_died = True
-        if proc_died:
-            raise RuntimeError(f'Child process {proc.pid} did not return with 0! Exit code was {proc.exitcode}.')
+    sarr = np.zeros((ncpu,), dtype=[('n_finished_tasks', np.int64)])
+    n_finished_log_streams = 0
 
-        pid_result_list_map[pid] = result_list
-        if tl is not None and proc_tl is not None:
-            tl.join(proc_tl)
-        logger.debug(f'Beginning of worker process (pid={pid}) log records.')
-        lqueue_end = False
-        lqueue_pid = lqueue_list[pid]
-        assert lqueue_pid is not None
-        while not lqueue_end:
-            record = lqueue_pid.get()
+    def poll():
+        """Handles the log records and status information sent by the worker
+        processes and updates the progress bar.
+        """
+        nonlocal n_finished_log_streams
+
+        while True:
+            try:
+                record = lqueue.get_nowait()
+            except queue.Empty:
+                break
             if record is None:
-                lqueue_end = True
+                n_finished_log_streams += 1
             else:
-                lqueue_logger = get_logger(record.name)
-                lqueue_logger.handle(record)
-        logger.debug('Ending of worker process (pid=%d) log records.', pid)
+                get_logger(record.name).handle(record)
+
+        if squeue is not None:
+            while True:
+                try:
+                    (pid, worker_task_idx) = squeue.get_nowait()
+                except queue.Empty:
+                    break
+                sarr[pid]['n_finished_tasks'] = worker_task_idx + 1
+
+        if pbar.is_shown:
+            pbar.update(np.sum(sarr['n_finished_tasks']))
+
+    def master_task_done_callback(task_idx):
+        sarr[0]['n_finished_tasks'] = task_idx + 1
+        poll()
+
+    def terminate_workers():
+        for proc in processes.values():
+            if proc.is_alive():
+                proc.terminate()
+        for proc in processes.values():
+            proc.join()
+
+    try:
+        # Compute the first chunk in the main process. While doing so, the main
+        # process acts as a worker process as well.
+        _IS_WORKER_PROCESS = True
+        try:
+            with _limit_blas_threads(blas_threads):
+                result_list_0 = _run_tasks(
+                    func, list(sub_args_list_list[0]), rss_list[0], tl_list[0], master_task_done_callback
+                )
+        finally:
+            _IS_WORKER_PROCESS = False
+
+        # Gather the results of the worker processes and join their TimeLord
+        # instances with the main TimeLord instance.
+        pid_result_list_map = {0: result_list_0}
+        pending_pids = set(processes.keys())
+        exit_times: dict[int, float] = {}
+        while len(pending_pids) > 0:
+            try:
+                (pid, result_list, proc_tl, error) = rqueue.get(timeout=_POLL_INTERVAL)
+            except queue.Empty:
+                poll()
+                for pid in pending_pids:
+                    proc = processes[pid]
+                    if proc.exitcode is None:
+                        continue
+                    if proc.exitcode != 0:
+                        raise RuntimeError(
+                            f'Worker process {proc.pid} died with exit code {proc.exitcode}! A negative exit code '
+                            'means the process was killed by a signal, e.g. -9 (SIGKILL) by the out-of-memory killer.'
+                        ) from None
+                    # The process exited successfully, but its result was not
+                    # received (yet).
+                    exit_time = exit_times.setdefault(pid, time.monotonic())
+                    if time.monotonic() - exit_time > _RESULT_TIMEOUT:
+                        raise RuntimeError(
+                            f'Worker process {proc.pid} finished without returning its result! '
+                            'Probably the result of the function could not be pickled.'
+                        ) from None
+                continue
+
+            if error is not None:
+                raise RuntimeError(f'Worker process {processes[pid].pid} raised an exception:\n{error}')
+
+            pending_pids.remove(pid)
+            pid_result_list_map[pid] = result_list
+            if tl is not None and proc_tl is not None:
+                tl.join(proc_tl)
+    except BaseException:
+        terminate_workers()
+        raise
+
+    # Wait for the remaining log records of the worker processes.
+    last_record_time = time.monotonic()
+    while n_finished_log_streams < len(processes):
+        n_before = n_finished_log_streams
+        poll()
+        if n_finished_log_streams == n_before:
+            if time.monotonic() - last_record_time > _RESULT_TIMEOUT:
+                logger.warning('Not all log records of the worker processes could be received!')
+                break
+            time.sleep(0.01)
+        else:
+            last_record_time = time.monotonic()
 
     # Join all the processes.
-    for proc in processes:
+    for proc in processes.values():
         proc.join()
 
     # Order the result lists.
     result_list = []
-    for pid in range(len(pid_result_list_map)):
+    for pid in sorted(pid_result_list_map.keys()):
         result_list += pid_result_list_map[pid]
 
     pbar.finish()
@@ -393,7 +533,7 @@ class IsParallelizable:
     def __init__(
         self,
         *args,
-        ncpu=None,
+        ncpu: NCpuSetting | None = None,
         **kwargs,
     ):
         """Creates a new instance of IsParallelizable.
@@ -402,7 +542,8 @@ class IsParallelizable:
         ----------
         ncpu
             The number of CPUs to utilize. If set to ``None``, the global
-            setting will be used.
+            setting will be used. If set to ``'auto'``, the number of CPUs
+            available to the current process will be used.
         """
         super().__init__(*args, **kwargs)
 
@@ -412,7 +553,7 @@ class IsParallelizable:
         self.ncpu = ncpu
 
     @property
-    def ncpu(self):
+    def ncpu(self) -> int:
         """The number (int) of CPUs to utilize. It calls the ``get_ncpu``
         utility function with this property as argument. Hence, if this property
         is set to None, the global NCPU setting will take precedence.
@@ -421,9 +562,9 @@ class IsParallelizable:
 
     @ncpu.setter
     def ncpu(self, n):
-        if n is not None:
+        if n is not None and n != 'auto':
             if not isinstance(n, int):
-                raise TypeError('The ncpu property must be of type int!')
+                raise TypeError("The ncpu property must be of type int or 'auto'!")
             if n < 1:
                 raise ValueError('The ncpu property must be >= 1!')
-        self._ncpu = n
+        self._ncpu: NCpuSetting | None = n

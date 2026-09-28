@@ -29,6 +29,9 @@ from skyllh.core.analysis import Analysis
 from skyllh.core.logging import (
     get_logger,
 )
+from skyllh.core.multiproc import (
+    NCpuSetting,
+)
 from skyllh.core.parameters import ParameterModelMapper
 from skyllh.core.progressbar import (
     ProgressBar,
@@ -1218,7 +1221,7 @@ def create_trial_data_file(
     bkg_kwargs: dict | None = None,
     sig_kwargs: dict | None = None,
     pathfilename: str | None = None,
-    ncpu: int | None = None,
+    ncpu: NCpuSetting | None = None,
     ppbar: ProgressBar | None = None,
     tl: TimeLord | None = None,
 ) -> tuple[int, np.ndarray, np.ndarray, np.ndarray]:

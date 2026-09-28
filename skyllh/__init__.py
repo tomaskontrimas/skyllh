@@ -1,5 +1,4 @@
 import logging
-import multiprocessing as mp
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -20,15 +19,3 @@ def __getattr__(name):
 
         return create_datasets
     raise AttributeError(f"module 'skyllh' has no attribute {name!r}")
-
-
-# Change macOS default multiprocessing start method 'spawn' to 'fork'.
-try:
-    mp.set_start_method('fork')
-except RuntimeError:
-    # It could be already set by another package.
-    if mp.get_start_method() != 'fork':
-        logging.getLogger(__name__).warning(
-            "Couldn't set the multiprocessing start method to 'fork'. "
-            "Parallel calculations using 'ncpu' argument != 1 may break."
-        )

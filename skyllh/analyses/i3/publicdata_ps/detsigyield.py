@@ -55,7 +55,7 @@ class PDSingleParamFluxPointLikeSourceI3DetSigYieldBuilder(
         param_grid: ParameterGrid,
         spline_order_sinDec: int = 2,
         spline_order_param: int = 2,
-        ncpu: int | None = None,
+        ncpu: multiproc.NCpuSetting | None = None,
         **kwargs,
     ):
         """Creates a new IceCube detector signal yield builder instance for

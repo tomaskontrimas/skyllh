@@ -7,6 +7,7 @@ from numpy.lib.recfunctions import (
 from skyllh.core.interpolate import GridManifoldInterpolationMethod
 from skyllh.core.multiproc import (
     IsParallelizable,
+    NCpuSetting,
     parallelize,
 )
 from skyllh.core.pdfratio import (
@@ -41,7 +42,7 @@ class SplinedI3EnergySigSetOverBkgPDFRatio(SigSetOverBkgPDFRatio, IsParallelizab
         bkg_pdf,
         fillmethod: PDFRatioFillMethod | None = None,
         interpolmethod_cls: type[GridManifoldInterpolationMethod] | None = None,
-        ncpu: int | None = None,
+        ncpu: NCpuSetting | None = None,
         ppbar: ProgressBar | None = None,
         **kwargs,
     ):

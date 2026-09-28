@@ -72,6 +72,7 @@ from skyllh.core.model import (
     DetectorModel,
 )
 from skyllh.core.multiproc import (
+    NCpuSetting,
     get_ncpu,
     parallelize,
 )
@@ -595,7 +596,7 @@ def do_trial_with_em(
 def do_trials_with_em(
     ana: SingleSourceMultiDatasetLLHRatioAnalysis,
     n: int = 1000,
-    ncpu: int | None = None,
+    ncpu: NCpuSetting | None = None,
     seed: int = 1,
     mean_n_sig: float = 0,
     gamma_src: float = 2,
