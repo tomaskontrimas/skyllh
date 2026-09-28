@@ -1,3 +1,4 @@
+from skyllh.core.config import resolve_config
 from skyllh.core.logging import get_logger
 
 from .i3 import (
@@ -13,7 +14,7 @@ data_samples = {
 }
 
 
-def create_datasets(sample_name, cfg, names=None, base_path=None, sub_path_fmt=None):
+def create_datasets(sample_name, cfg=None, names=None, base_path=None, sub_path_fmt=None):
     """Creates a list of Dataset instances for a named data sample.
 
     Parameters
@@ -21,8 +22,10 @@ def create_datasets(sample_name, cfg, names=None, base_path=None, sub_path_fmt=N
     sample_name : str
         The name of the data sample. Available samples are the keys of
         ``skyllh.datasets.data_samples``.
-    cfg : instance of Config
-        The instance of Config holding the local configuration.
+    cfg : instance of Config | None
+        The instance of Config holding the local configuration. If set to
+        ``None``, the current Config instance is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     names : sequence of str | None
         The dataset names to return. If None, the module's ``DATASET_NAMES``
         default is used (combined IC86 seasons where applicable).
@@ -40,6 +43,7 @@ def create_datasets(sample_name, cfg, names=None, base_path=None, sub_path_fmt=N
         available = ', '.join(f'"{n}"' for n in data_samples)
         raise KeyError(f'Unknown data sample "{sample_name}". Available samples: {available}')
     module = data_samples[sample_name]
+    cfg = resolve_config(cfg)
     dsc = module.create_dataset_collection(cfg=cfg, base_path=base_path, sub_path_fmt=sub_path_fmt)
     if names is None:
         names = module.DATASET_NAMES

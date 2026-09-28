@@ -2,7 +2,7 @@ from typing import TypedDict
 
 import numpy as np
 
-from skyllh.core.config import Config
+from skyllh.core.config import Config, resolve_config
 from skyllh.core.dataset import (
     DatasetCollection,
     DatasetOrigin,
@@ -31,7 +31,7 @@ class _DsKwargs(TypedDict):
 
 
 def create_dataset_collection(
-    cfg: Config,
+    cfg: Config | None = None,
     base_path: str | None = None,
     sub_path_fmt: str | None = None,
 ) -> DatasetCollection:
@@ -43,7 +43,9 @@ def create_dataset_collection(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the current Config instance is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     base_path
         The base path of the data files. The actual path of a data file is
         assumed to be of the structure <base_path>/<sub_path>/<file_name>.
@@ -61,6 +63,8 @@ def create_dataset_collection(
         I3Dataset objects.
     """
     # Define the version of the data sample (collection).
+    cfg = resolve_config(cfg)
+
     (version, verqualifiers) = (1, {'p': 0})
 
     # Define the default sub path format.

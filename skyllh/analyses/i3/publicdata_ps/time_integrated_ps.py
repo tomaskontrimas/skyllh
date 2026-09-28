@@ -38,6 +38,7 @@ from skyllh.core.background_generator import (
 )
 from skyllh.core.config import (
     Config,
+    resolve_config,
 )
 from skyllh.core.dataset import Dataset
 from skyllh.core.event_selection import (
@@ -122,9 +123,9 @@ from skyllh.i3.config import (
 
 
 def create_analysis(
-    cfg: Config,
-    datasets: list[Dataset],
-    source: PointLikeSource,
+    cfg: Config | None = None,
+    datasets: list[Dataset] | None = None,
+    source: PointLikeSource | None = None,
     refplflux_Phi0: float = 1,
     refplflux_E0: float = 1e3,
     refplflux_gamma: float = 2.0,
@@ -152,7 +153,9 @@ def create_analysis(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the Config instance of the datasets is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     datasets
         The list of Dataset instances, which should be used in the
         analysis.
@@ -220,6 +223,11 @@ def create_analysis(
     ana
         The Analysis instance for this analysis.
     """
+    if datasets is None or source is None:
+        raise TypeError('create_analysis() missing required arguments: datasets, source')
+
+    cfg = resolve_config(cfg, objs=datasets)
+
     add_icecube_specific_analysis_required_data_fields(cfg)
 
     # Remove run number from the dataset data field requirements.

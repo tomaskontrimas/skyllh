@@ -2,7 +2,7 @@ import logging
 import os.path
 import sys
 
-from skyllh.core.config import Config
+from skyllh.core.config import Config, resolve_config
 
 
 def _resolve_log_level(level: int | str | None, default: int = logging.INFO):
@@ -57,8 +57,8 @@ def get_logger(name: str) -> logging.Logger:
 
 
 def setup_logger(
-    cfg: Config,
-    name: str,
+    cfg: Config | None = None,
+    name: str | None = None,
     log_level: int | str | None = None,
     log_format: str | None = None,
     console: bool = False,
@@ -75,7 +75,8 @@ def setup_logger(
     Parameters
     ----------
     cfg
-        Local configuration.
+        Local configuration. If set to ``None``, the current Config instance
+        is used, see :func:`~skyllh.core.config.resolve_config`.
     name
         The name of the logger to set up.
         Logger hierarchy is defined using dots as separators.
@@ -106,6 +107,10 @@ def setup_logger(
         Optionally clear handlers before setting up new ones.
         Default
     """
+    if name is None:
+        raise TypeError("setup_logger() missing required argument: 'name'")
+    cfg = resolve_config(cfg)
+
     logger = logging.getLogger(name)
 
     cfg_log_level = cfg['logging'].get('log_level', logging.INFO)
@@ -169,8 +174,8 @@ def setup_logger(
 
 
 def setup_logging(
-    cfg: Config,
-    name: str,
+    cfg: Config | None = None,
+    name: str | None = None,
     log_format: str | None = None,
     log_level: int | str | None = None,
     console: bool = True,
@@ -182,7 +187,9 @@ def setup_logging(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the current Config instance is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     name
         The name of the user-defined logger to set up.
     log_format
@@ -207,6 +214,10 @@ def setup_logging(
     logging.Logger
         The logger instance specified by ``name``.
     """
+    if name is None:
+        raise TypeError("setup_logging() missing required argument: 'name'")
+    cfg = resolve_config(cfg)
+
     if log_format is None:
         log_format = cfg['logging']['log_format']
 

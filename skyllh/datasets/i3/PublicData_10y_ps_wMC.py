@@ -1,6 +1,6 @@
 import numpy as np
 
-from skyllh.core.config import Config
+from skyllh.core.config import Config, resolve_config
 from skyllh.core.dataset import DatasetCollection
 from skyllh.datasets.i3 import (
     PublicData_10y_ps,
@@ -10,7 +10,7 @@ DATASET_NAMES = PublicData_10y_ps.DATASET_NAMES
 
 
 def create_dataset_collection(
-    cfg: Config,
+    cfg: Config | None = None,
     base_path: str | None = None,
     sub_path_fmt: str | None = None,
 ) -> DatasetCollection:
@@ -22,7 +22,9 @@ def create_dataset_collection(
     Parameters
     ----------
     cfg
-        The instance of Config holding the local configuration.
+        The instance of Config holding the local configuration. If set to
+        ``None``, the current Config instance is used, see
+        :func:`~skyllh.core.config.resolve_config`.
     base_path
         The base path of the data files. The actual path of a data file is
         assumed to be of the structure <base_path>/<sub_path>/<file_name>.
@@ -39,6 +41,8 @@ def create_dataset_collection(
         The dataset collection containing all the seasons as individual
         I3Dataset objects.
     """
+    cfg = resolve_config(cfg)
+
     dsc = PublicData_10y_ps.create_dataset_collection(cfg=cfg, base_path=base_path, sub_path_fmt=sub_path_fmt)
 
     dsc.description += """

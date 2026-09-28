@@ -28,6 +28,7 @@ from skyllh.core import (
 from skyllh.core.config import (
     Config,
     HasConfig,
+    resolve_config,
 )
 from skyllh.core.math import (
     MathFunction,
@@ -1917,13 +1918,15 @@ class FluxModel(
     """
 
     @staticmethod
-    def get_default_units(cfg: Config) -> dict:
+    def get_default_units(cfg: Config | None = None) -> dict:
         """Returns the configured default units for flux models.
 
         Parameters
         ----------
         cfg
-            The instance of Config holding the local configuration.
+            The instance of Config holding the local configuration. If set to
+            ``None``, the current Config instance is used, see
+            :func:`~skyllh.core.config.resolve_config`.
 
         Returns
         -------
@@ -1931,6 +1934,8 @@ class FluxModel(
             The dictionary holding the configured default units used for flux
             models.
         """
+        cfg = resolve_config(cfg)
+
         return cfg['units']['defaults']['fluxes']
 
     def __init__(
