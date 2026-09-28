@@ -37,15 +37,47 @@ class FctSpline1D:
         self.x_min = self.x_binedges[0]
         self.x_max = self.x_binedges[-1]
 
-        x = get_bincenters_from_binedges(self.x_binedges)
-
-        self.spl_f = interpolate.PchipInterpolator(x, f, extrapolate=False)
+        self._f = np.copy(f)
+        self.spl_f = self._create_spline()
 
         self.norm = None
         if norm:
             # The spline is defined only in the `x` (bincenters) interval by construction.
             # We choose not to extrapolate out-of-range values.
+            x = get_bincenters_from_binedges(self.x_binedges)
             self.norm = float(self.spl_f.integrate(x[0], x[-1]))
+
+    def _create_spline(self) -> interpolate.PchipInterpolator:
+        """Creates the PchipInterpolator instance from the function values and
+        the x-axis bin edges.
+
+        Returns
+        -------
+        spl_f
+            The PchipInterpolator instance representing the spline.
+        """
+        x = get_bincenters_from_binedges(self.x_binedges)
+
+        return interpolate.PchipInterpolator(x, self._f, extrapolate=False)
+
+    def __getstate__(self) -> dict:
+        """Returns the state of the instance for pickling, e.g. for transferring
+        it between processes. The spline object itself is not pickled, because
+        some scipy versions (e.g. 1.18.0) cannot pickle PchipInterpolator
+        instances. The spline is re-created from the function values instead
+        when unpickling.
+        """
+        state = self.__dict__.copy()
+        del state['spl_f']
+
+        return state
+
+    def __setstate__(self, state: dict) -> None:
+        """Restores the state of the instance when unpickling and re-creates
+        the spline.
+        """
+        self.__dict__.update(state)
+        self.spl_f = self._create_spline()
 
     def __call__(self, x: np.ndarray, oor_value: float = 0) -> np.ndarray:
         """Evaluates the spline at the given x values. For x-values
