@@ -1,6 +1,7 @@
 import logging
 import os
 import signal
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -153,11 +154,46 @@ class ParallelizeTestCase(unittest.TestCase):
 
 
 class NCpuTestCase(unittest.TestCase):
+    @patch.dict(os.environ)
     def test_get_available_ncpu(self):
+        os.environ.pop('_CONDOR_MACHINE_AD', None)
         ncpu = get_available_ncpu()
         self.assertGreaterEqual(ncpu, 1)
         if hasattr(os, 'sched_getaffinity'):
             self.assertEqual(ncpu, len(os.sched_getaffinity(0)))
+
+    def _get_available_ncpu_with_machine_ad(self, content):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, '.machine.ad')
+            with open(path, 'w') as f:
+                f.write(content)
+            with patch.dict(os.environ, {'_CONDOR_MACHINE_AD': path}):
+                return get_available_ncpu()
+
+    def test_get_available_ncpu_htcondor(self):
+        with patch.dict(os.environ):
+            os.environ.pop('_CONDOR_MACHINE_AD', None)
+            ncpu_affinity = get_available_ncpu()
+
+        ncpu = self._get_available_ncpu_with_machine_ad('DetectedCpus = 1024\nCpus = 1\nTotalCpus = 1024.0\n')
+        self.assertEqual(ncpu, 1)
+
+        # The HTCondor slot size must not increase the number of CPUs beyond
+        # the CPU affinity of the process.
+        ncpu = self._get_available_ncpu_with_machine_ad(f'Cpus = {ncpu_affinity + 1}\n')
+        self.assertEqual(ncpu, ncpu_affinity)
+
+    def test_get_available_ncpu_htcondor_invalid(self):
+        with patch.dict(os.environ):
+            os.environ.pop('_CONDOR_MACHINE_AD', None)
+            ncpu_affinity = get_available_ncpu()
+
+        self.assertEqual(self._get_available_ncpu_with_machine_ad('Cpus = undefined\n'), ncpu_affinity)
+        self.assertEqual(self._get_available_ncpu_with_machine_ad('Cpus = 0\n'), ncpu_affinity)
+        self.assertEqual(self._get_available_ncpu_with_machine_ad('TotalCpus = 1.0\n'), ncpu_affinity)
+
+        with patch.dict(os.environ, {'_CONDOR_MACHINE_AD': '/nonexistent/.machine.ad'}):
+            self.assertEqual(get_available_ncpu(), ncpu_affinity)
 
     def test_get_ncpu(self):
         cfg = Config()

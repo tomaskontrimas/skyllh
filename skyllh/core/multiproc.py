@@ -52,13 +52,46 @@ _POLL_INTERVAL = 0.1
 _RESULT_TIMEOUT = 10
 
 
+def _get_htcondor_ncpu() -> int | None:
+    """Determines the number of CPUs allocated to the current HTCondor job.
+
+    HTCondor does not restrict the CPU affinity of a job by default, but it
+    provides the number of CPUs allocated to the job's slot via the ``Cpus``
+    attribute of the machine ClassAd file, whose path is given by the
+    ``_CONDOR_MACHINE_AD`` environment variable.
+
+    Returns
+    -------
+    ncpu
+        The number of CPUs allocated to the HTCondor job, or None if the
+        process does not run within an HTCondor job or the number could not be
+        determined.
+    """
+    path = os.environ.get('_CONDOR_MACHINE_AD')
+    if not path:
+        return None
+
+    try:
+        with open(path) as f:
+            for line in f:
+                (name, sep, value) = line.partition('=')
+                if sep and name.strip() == 'Cpus':
+                    return int(value.strip())
+    except (OSError, ValueError):
+        pass
+
+    return None
+
+
 def get_available_ncpu() -> int:
     """Determines the number of CPUs the current process is allowed to use.
 
     In contrast to :func:`os.cpu_count`, which returns the number of CPUs of the
     entire machine, this function respects the CPU affinity of the process,
-    which is set for example by batch systems like Slurm or HTCondor, or by
-    tools like ``taskset``.
+    which is set for example by batch systems like Slurm, or by tools like
+    ``taskset``. When running within an HTCondor job, the number of CPUs
+    allocated to the job's slot is respected as well, because HTCondor does not
+    restrict the CPU affinity by default.
 
     Returns
     -------
@@ -73,6 +106,10 @@ def get_available_ncpu() -> int:
         ncpu = len(os.sched_getaffinity(0))
     else:
         ncpu = os.cpu_count()
+
+    htcondor_ncpu = _get_htcondor_ncpu()
+    if htcondor_ncpu is not None and htcondor_ncpu >= 1:
+        ncpu = htcondor_ncpu if ncpu is None else min(ncpu, htcondor_ncpu)
 
     if ncpu is None or ncpu < 1:
         ncpu = 1
