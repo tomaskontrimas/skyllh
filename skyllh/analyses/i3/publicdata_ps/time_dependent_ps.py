@@ -1,7 +1,12 @@
-"""Setup the time-dependent analysis. For now this only works on a single
-dataset.
+"""Setup the time-dependent point-source analysis for the public data.
+
+The time dependence of the signal is given by a time flux profile of any shape,
+e.g. a gaussian, a box, or a tabulated lightcurve model. Several datasets are
+supported, where the signal is distributed over the datasets according to their
+effective area and their detector on-time overlap with the time flux profile.
 """
 
+from collections.abc import Callable, Iterator
 from typing import cast
 
 import numpy as np
@@ -45,8 +50,14 @@ from skyllh.core.config import (
     Config,
 )
 from skyllh.core.dataset import Dataset
+from skyllh.core.detsigyield import (
+    TimeDependentDetSigYield,
+    TimeDependentDetSigYieldBuilder,
+)
 from skyllh.core.event_selection import (
+    IntersectionEventSelectionMethod,
     SpatialBoxEventSelectionMethod,
+    TimeWindowEventSelectionMethod,
 )
 from skyllh.core.expectation_maximization import (
     em_fit,
@@ -56,6 +67,10 @@ from skyllh.core.flux_model import (
     GaussianTimeFluxProfile,
     PowerLawEnergyFluxProfile,
     SteadyPointlikeFFM,
+    TimeFluxProfile,
+)
+from skyllh.core.livetime import (
+    Livetime,
 )
 from skyllh.core.llhratio import MultiDatasetTCLLHRatio, ZeroSigH0SingleDatasetTCLLHRatio
 from skyllh.core.logging import (
@@ -77,10 +92,13 @@ from skyllh.core.multiproc import (
 )
 from skyllh.core.parameters import (
     Parameter,
+    ParameterGrid,
     ParameterModelMapper,
 )
 from skyllh.core.pdf import PDF
 from skyllh.core.pdfratio import (
+    PDFRatio,
+    PDFRatioProduct,
     SigOverBkgPDFRatio,
 )
 from skyllh.core.progressbar import (
@@ -93,7 +111,7 @@ from skyllh.core.scrambling import (
     DataScrambler,
 )
 from skyllh.core.signal_generator import (
-    MultiDatasetSignalGenerator,
+    TimeDependentMultiDatasetSignalGenerator,
 )
 from skyllh.core.signalpdf import (
     RayleighPSFPointSourceSignalSpatialPDF,
@@ -125,6 +143,9 @@ from skyllh.core.utils.analysis import (
     create_trial_data_file,
     pointlikesource_to_data_field_array,
 )
+from skyllh.core.utils.flux_model import (
+    get_ontime_integral_of_TimeFluxProfile,
+)
 from skyllh.core.utils.tdm import (
     get_tdm_field_func_psi,
 )
@@ -149,20 +170,17 @@ TXS_0506_PLUS056_SOURCE = PointLikeSource(name='TXS 0506+056', ra=np.deg2rad(77.
 TXS_0506_PLUS056_ALERT_TIME = 58018.8711856
 
 
-def create_signal_time_pdf(
+def create_time_flux_profile(
     cfg: Config,
-    grl: np.ndarray,
     gauss: dict | None = None,
     box: dict | None = None,
-) -> PDF:
-    """Creates the signal time PDF, either a gaussian or a box shaped PDF.
+) -> TimeFluxProfile:
+    """Creates a gaussian or box shaped time flux profile.
 
     Parameters
     ----------
     cfg
         The instance of Config holding the local configuration.
-    grl
-        The structured numpy ndarray holding the good-run-list data.
     gauss
         None or dictionary with {"mu": float, "sigma": float}.
     box
@@ -170,18 +188,64 @@ def create_signal_time_pdf(
 
     Returns
     -------
+    time_flux_profile
+        The created instance of TimeFluxProfile.
+    """
+    if (gauss is not None) and (box is not None):
+        raise ValueError('Time PDF cannot be both gaussian and box shaped. Please specify only one shape.')
+
+    if gauss is not None:
+        return GaussianTimeFluxProfile(t0=gauss['mu'], sigma_t=gauss['sigma'], cfg=cfg)
+    if box is not None:
+        return BoxTimeFluxProfile.from_start_and_stop_time(start=box['start'], stop=box['stop'], cfg=cfg)
+
+    raise TypeError('Either gauss or box have to be specified as time pdf.')
+
+
+def create_signal_time_pdf(
+    cfg: Config,
+    grl: np.ndarray | None = None,
+    gauss: dict | None = None,
+    box: dict | None = None,
+    time_flux_profile: TimeFluxProfile | None = None,
+    livetime: Livetime | None = None,
+) -> SignalTimePDF:
+    """Creates the signal time PDF for a given time flux profile, which can be
+    of any shape. For convenience, a gaussian or box shaped time flux profile
+    can be specified via the ``gauss`` or ``box`` argument.
+
+    Parameters
+    ----------
+    cfg
+        The instance of Config holding the local configuration.
+    grl
+        The structured numpy ndarray holding the good-run-list data. It is used
+        to create the Livetime instance if ``livetime`` is ``None``.
+    gauss
+        None or dictionary with {"mu": float, "sigma": float}.
+    box
+        None or dictionary with {"start": float, "stop": float}.
+    time_flux_profile
+        The instance of TimeFluxProfile describing the time dependence of the
+        signal. If specified, ``gauss`` and ``box`` must be ``None``.
+    livetime
+        The instance of Livetime of the dataset. If set to ``None``, it is
+        created from ``grl``.
+
+    Returns
+    -------
     pdf
         The created time PDF instance.
     """
+    if livetime is None:
+        if grl is None:
+            raise ValueError('Either the grl or the livetime argument must be specified!')
+        livetime = I3Livetime.from_grl_data(grl_data=grl)
 
-    livetime = I3Livetime.from_grl_data(grl_data=grl)
-
-    if gauss is not None:
-        time_flux_profile = GaussianTimeFluxProfile(t0=gauss['mu'], sigma_t=gauss['sigma'], cfg=cfg)
-    elif box is not None:
-        time_flux_profile = BoxTimeFluxProfile.from_start_and_stop_time(start=box['start'], stop=box['stop'], cfg=cfg)
-    else:
-        raise TypeError('Either gauss or box have to be specified as time pdf.')
+    if time_flux_profile is None:
+        time_flux_profile = create_time_flux_profile(cfg=cfg, gauss=gauss, box=box)
+    elif (gauss is not None) or (box is not None):
+        raise ValueError('The gauss and box arguments must be None, if a time_flux_profile is specified!')
 
     pdf = SignalTimePDF(
         cfg=cfg,
@@ -192,12 +256,166 @@ def create_signal_time_pdf(
     return pdf
 
 
+def create_time_pdfratio(
+    cfg: Config,
+    livetime: Livetime,
+    time_flux_profile: TimeFluxProfile,
+) -> SigOverBkgPDFRatio:
+    """Creates the time PDF ratio for a dataset, i.e. the ratio of the signal
+    time PDF for the given time flux profile and the background time PDF,
+    which is uniform during the detector on-time of the dataset.
+
+    Parameters
+    ----------
+    cfg
+        The instance of Config holding the local configuration.
+    livetime
+        The instance of Livetime of the dataset.
+    time_flux_profile
+        The instance of TimeFluxProfile describing the time dependence of the
+        signal.
+
+    Returns
+    -------
+    time_pdfratio
+        The instance of SigOverBkgPDFRatio for the time PDFs.
+    """
+    time_bkgpdf = BackgroundTimePDF(
+        cfg=cfg,
+        livetime=livetime,
+        time_flux_profile=BoxTimeFluxProfile.from_start_and_stop_time(
+            start=livetime.time_start, stop=livetime.time_stop, cfg=cfg
+        ),
+    )
+    time_sigpdf = create_signal_time_pdf(cfg=cfg, livetime=livetime, time_flux_profile=time_flux_profile)
+    time_pdfratio = SigOverBkgPDFRatio(
+        cfg=cfg,
+        sig_pdf=time_sigpdf,
+        bkg_pdf=time_bkgpdf,
+        same_axes=False,
+    )
+
+    return time_pdfratio
+
+
+def _iter_pdfratio_pdfs(pdfratio: PDFRatio) -> Iterator[PDF]:
+    """Iterates recursively over all PDF instances of the given PDF ratio."""
+    if isinstance(pdfratio, PDFRatioProduct):
+        yield from _iter_pdfratio_pdfs(pdfratio.pdfratio1)
+        yield from _iter_pdfratio_pdfs(pdfratio.pdfratio2)
+    elif isinstance(pdfratio, SigOverBkgPDFRatio):
+        yield cast(PDF, pdfratio.sig_pdf)
+        yield cast(PDF, pdfratio.bkg_pdf)
+
+
+def get_signal_time_pdfs(
+    ana: SingleSourceMultiDatasetLLHRatioAnalysis,
+) -> list[SignalTimePDF]:
+    """Returns the signal time PDFs of the log-likelihood ratio functions of
+    all datasets of the analysis.
+
+    Parameters
+    ----------
+    ana
+        The analysis instance.
+
+    Returns
+    -------
+    sig_time_pdfs
+        The list of SignalTimePDF instances.
+    """
+    sig_time_pdfs = []
+    for llhratio in cast(MultiDatasetTCLLHRatio, ana.llhratio).llhratio_list:
+        pdfratio = cast(ZeroSigH0SingleDatasetTCLLHRatio, llhratio).pdfratio
+        sig_time_pdfs.extend(pdf for pdf in _iter_pdfratio_pdfs(pdfratio) if isinstance(pdf, SignalTimePDF))
+
+    return sig_time_pdfs
+
+
+def change_time_flux_profile(
+    ana: SingleSourceMultiDatasetLLHRatioAnalysis,
+    time_flux_profile: TimeFluxProfile,
+):
+    """Changes the time flux profile of the tested signal hypothesis, i.e. the
+    time flux profile of the signal time PDFs of all datasets and the time
+    flux profile of the time-dependent detector signal yields used by the
+    log-likelihood ratio function. The time flux profile of the injected signal
+    is not changed. Use :func:`change_injection_time_flux_profile` for that.
+
+    Parameters
+    ----------
+    ana
+        The analysis instance.
+    time_flux_profile
+        The instance of TimeFluxProfile of the signal hypothesis.
+
+    Raises
+    ------
+    RuntimeError
+        If the analysis uses a time window event selection, because the
+        selected events would not match the new time flux profile.
+    """
+    for evt_sel_method in ana._event_selection_method_list:
+        if _uses_time_window_event_selection(evt_sel_method):
+            raise RuntimeError(
+                'The time flux profile of the signal hypothesis cannot be changed, because the analysis uses a time '
+                'window event selection! Create the analysis with evt_sel_time_window=False.'
+            )
+
+    for sig_time_pdf in get_signal_time_pdfs(ana):
+        sig_time_pdf.time_flux_profile = time_flux_profile
+
+    for shg in ana.shg_mgr.shg_list:
+        for builder in shg.detsigyield_builder_list:
+            if isinstance(builder, TimeDependentDetSigYieldBuilder):
+                builder.time_flux_profile = time_flux_profile
+
+    if ana.detsigyield_service is not None:
+        for detsigyield in ana.detsigyield_service.arr.flat:
+            if isinstance(detsigyield, TimeDependentDetSigYield):
+                detsigyield.time_flux_profile = time_flux_profile
+
+
+def change_injection_time_flux_profile(
+    ana: SingleSourceMultiDatasetLLHRatioAnalysis,
+    time_flux_profile: TimeFluxProfile,
+):
+    """Changes the time flux profile of the injected signal, i.e. the time flux
+    profile of the signal generators of all datasets.
+
+    Parameters
+    ----------
+    ana
+        The analysis instance.
+    time_flux_profile
+        The instance of TimeFluxProfile of the injected signal.
+    """
+    for sig_generator in ana.sig_generator_list:
+        if isinstance(sig_generator, TimeDependentPDDatasetSignalGenerator):
+            sig_generator.time_flux_profile = time_flux_profile
+
+
+def _uses_time_window_event_selection(evt_sel_method) -> bool:
+    """Checks if the given event selection method is or contains a time window
+    event selection method.
+    """
+    if isinstance(evt_sel_method, TimeWindowEventSelectionMethod):
+        return True
+    if isinstance(evt_sel_method, IntersectionEventSelectionMethod):
+        return _uses_time_window_event_selection(evt_sel_method.evt_sel_method1) or (
+            _uses_time_window_event_selection(evt_sel_method.evt_sel_method2)
+        )
+    return False
+
+
 def change_signal_time_pdf_of_llhratio_function(
     ana: SingleSourceMultiDatasetLLHRatioAnalysis,
     gauss: dict | None = None,
     box: dict | None = None,
 ):
-    """Changes the signal time PDF of the log-likelihood ratio function.
+    """Changes the signal time PDF of the log-likelihood ratio function to a
+    gaussian or box shaped time flux profile for all datasets. See
+    :func:`change_time_flux_profile` for time flux profiles of any shape.
 
     Parameters
     ----------
@@ -208,22 +426,9 @@ def change_signal_time_pdf_of_llhratio_function(
     box
         None or dictionary with {"start": float, "stop": float}.
     """
-    cfg = ana.cfg
-    grl = ana.data_list[0].grl
+    time_flux_profile = create_time_flux_profile(cfg=ana.cfg, gauss=gauss, box=box)
 
-    time_sigpdf = create_signal_time_pdf(cfg=cfg, grl=grl, gauss=gauss, box=box)
-
-    pdfratio = cast(
-        ZeroSigH0SingleDatasetTCLLHRatio, cast(MultiDatasetTCLLHRatio, ana.llhratio).llhratio_list[0]
-    ).pdfratio
-
-    # pdfratio is an instance of PDFRatioProduct.
-    # The first item is the PDF ratio product of the spatial and energy PDF
-    # ratios. The second item is the time PDF ratio.
-    pdfratio.pdfratio2.sig_pdf = time_sigpdf  # pyright: ignore[reportAttributeAccessIssue]
-
-    # TODO: Change detector signal yield with flare livetime in sample
-    # (1 / grl_norm in pdf), rebuild the histograms if it is changed.
+    change_time_flux_profile(ana=ana, time_flux_profile=time_flux_profile)
 
 
 def get_energy_spatial_signal_over_background(
@@ -232,7 +437,9 @@ def get_energy_spatial_signal_over_background(
     tl: TimeLord | None = None,
 ) -> np.ndarray:
     """Returns the signal over background ratio for
-    (spatial_signal * energy_signal) / (spatial_background * energy_background).
+    (spatial_signal * energy_signal) / (spatial_background * energy_background)
+    for the events of all datasets. The ratios of the datasets are
+    concatenated in the order of the datasets.
 
     Parameters
     ----------
@@ -242,29 +449,27 @@ def get_energy_spatial_signal_over_background(
         The (N_fitparams,)-shaped numpy ndarray holding the values of the global
         fit parameters, e.g. ns and gamma.
     tl
-        The optional instance of TimeLord for measuring timing behavior.
+        The optional instance of TimeLord for measuring timing information.
 
     Returns
     -------
     ratio
         Product of spatial and energy signal over background pdfs.
     """
-    tdm = ana.tdm_list[0]
-
-    pdfratio = cast(
-        ZeroSigH0SingleDatasetTCLLHRatio, cast(MultiDatasetTCLLHRatio, ana.llhratio).llhratio_list[0]
-    ).pdfratio
-
-    # pdfratio is an instance of PDFRatioProduct.
-    # The first item is the PDF ratio product of the spatial and energy PDF
-    # ratios. The second item is the time PDF ratio.
-    pdfratio = pdfratio.pdfratio1  # pyright: ignore[reportAttributeAccessIssue]
-
     src_params_recarray = ana.pmm.create_src_params_recarray(gflp_values=fitparam_values)
 
-    ratio = pdfratio.get_ratio(tdm=tdm, src_params_recarray=src_params_recarray, tl=tl)
+    ratios = []
+    for tdm, llhratio in zip(ana.tdm_list, cast(MultiDatasetTCLLHRatio, ana.llhratio).llhratio_list, strict=True):
+        pdfratio = cast(ZeroSigH0SingleDatasetTCLLHRatio, llhratio).pdfratio
 
-    return ratio
+        # pdfratio is an instance of PDFRatioProduct.
+        # The first item is the PDF ratio product of the spatial and energy PDF
+        # ratios. The second item is the time PDF ratio.
+        pdfratio = pdfratio.pdfratio1  # pyright: ignore[reportAttributeAccessIssue]
+
+        ratios.append(pdfratio.get_ratio(tdm=tdm, src_params_recarray=src_params_recarray, tl=tl))
+
+    return np.concatenate(ratios)
 
 
 def change_fluxmodel_gamma(
@@ -288,7 +493,7 @@ def change_time_flux_profile_params(
     ana: SingleSourceMultiDatasetLLHRatioAnalysis,
     params: dict,
 ):
-    """Changes the parameters of the source's time flux profile.
+    """Changes the parameters of the time flux profile of the injected signal.
 
     Parameters
     ----------
@@ -297,9 +502,14 @@ def change_time_flux_profile_params(
     params
         The dictionary with the parameter names and values to be set.
     """
-    # Note: In the future the primary storage place for the time flux profile
-    #       will be within the flux model.
-    ana.sig_generator_list[0]._time_flux_profile.set_params(params)
+    # Each time flux profile instance must be changed only once, because
+    # several signal generators might share the same instance.
+    profiles = {}
+    for sig_generator in ana.sig_generator_list:
+        if isinstance(sig_generator, TimeDependentPDDatasetSignalGenerator):
+            profiles[id(sig_generator.time_flux_profile)] = sig_generator.time_flux_profile
+    for profile in profiles.values():
+        profile.set_params(params)
 
 
 def calculate_TS(
@@ -396,7 +606,8 @@ def run_gamma_scan_for_single_flare(
     ]
     em_results = np.empty(n_gamma, dtype=em_results_dt)
 
-    time = ana._tdm_list[0].get_data('time')
+    # The EM is performed on the events of all datasets.
+    time = np.concatenate([tdm.get_data('time') for tdm in ana.tdm_list])
 
     gamma_values = np.linspace(gamma_min, gamma_max, n_gamma)
 
@@ -579,7 +790,7 @@ def do_trial_with_em(
         gauss['mu'] if gauss is not None else -1,
         gauss['sigma'] if gauss is not None else -1,
         box['start'] if box is not None else -1,
-        box['end'] if box is not None else -1,
+        box['stop'] if box is not None else -1,
         max_ts,
         best_fitparams[0],
         best_em_result['ns_em'],
@@ -722,12 +933,85 @@ def do_trials_with_em(
     return trials
 
 
+def create_spatial_energy_pdfratio(
+    cfg: Config,
+    ds: Dataset,
+    data: I3DatasetData,
+    source: PointLikeSource,
+    fluxmodel: SteadyPointlikeFFM,
+    param_grid: ParameterGrid,
+    sm: PDSmearingMatrix,
+    kde_smoothing: bool = False,
+    ppbar: ProgressBar | None = None,
+) -> PDFRatio:
+    """Creates the product of the spatial and energy PDF ratios for a public
+    point-source track dataset. This is the default PDF ratio factory of
+    :func:`create_analysis`.
+
+    Parameters
+    ----------
+    cfg
+        The instance of Config holding the local configuration.
+    ds
+        The instance of Dataset.
+    data
+        The instance of I3DatasetData holding the data of the dataset.
+    source
+        The PointLikeSource instance defining the point source position.
+    fluxmodel
+        The flux model of the source.
+    param_grid
+        The instance of ParameterGrid for the spectral index.
+    sm
+        The instance of PDSmearingMatrix of the dataset.
+    kde_smoothing
+        Apply a KDE-based smoothing to the data-driven background energy pdf.
+    ppbar
+        The instance of ProgressBar for the optional parent progress bar.
+
+    Returns
+    -------
+    pdfratio
+        The instance of PDFRatio for the product of the spatial and energy PDF
+        ratios.
+    """
+    assert data.exp is not None
+
+    sin_dec_binning = ds.get_binning_definition('sin_dec')
+    log_energy_binning = ds.get_binning_definition('log_energy')
+
+    # Create the spatial PDF ratio instance for this dataset.
+    spatial_sigpdf = RayleighPSFPointSourceSignalSpatialPDF(cfg=cfg, dec_range=tuple(np.arcsin(sin_dec_binning.range)))
+    spatial_bkgpdf = DataBackgroundI3SpatialPDF(cfg=cfg, data_exp=data.exp, sin_dec_binning=sin_dec_binning)
+    spatial_pdfratio = SigOverBkgPDFRatio(cfg=cfg, sig_pdf=spatial_sigpdf, bkg_pdf=spatial_bkgpdf)
+
+    # Create the energy PDF ratio instance for this dataset.
+    energy_sigpdfset = PDSignalEnergyPDFSet(
+        cfg=cfg, ds=ds, src_dec=source.dec, fluxmodel=fluxmodel, param_grid_set=param_grid, ppbar=ppbar, sm=sm
+    )
+    smoothing_filter = BlockSmoothingFilter(nbins=1)
+    energy_bkgpdf = PDDataBackgroundI3EnergyPDF(
+        cfg=cfg,
+        data_exp=data.exp,
+        logE_binning=log_energy_binning,
+        sinDec_binning=sin_dec_binning,
+        smoothing_filter=smoothing_filter,
+        kde_smoothing=kde_smoothing,
+    )
+
+    energy_pdfratio = PDSigSetOverBkgPDFRatio(cfg=cfg, sig_pdf_set=energy_sigpdfset, bkg_pdf=energy_bkgpdf)
+
+    return spatial_pdfratio * energy_pdfratio
+
+
 def create_analysis(
     cfg: Config,
     datasets: list[Dataset],
     source: PointLikeSource,
     box=None,
     gauss=None,
+    time_flux_profile: TimeFluxProfile | None = None,
+    injection_time_flux_profile: TimeFluxProfile | None = None,
     refplflux_Phi0: float = 1,
     refplflux_E0: float = 1e3,
     refplflux_gamma: float = 2.0,
@@ -742,6 +1026,8 @@ def create_analysis(
     compress_data: bool = False,
     keep_data_fields: list[str] | None = None,
     evt_sel_delta_angle_deg: float = 10,
+    evt_sel_time_window: bool = False,
+    pdfratio_factories: dict[str, Callable[..., PDFRatio]] | None = None,
     construct_bkg_generator: bool = True,
     construct_sig_generator: bool = True,
     tl: TimeLord | None = None,
@@ -749,6 +1035,30 @@ def create_analysis(
     logger_name: str | None = None,
 ) -> SingleSourceMultiDatasetLLHRatioAnalysis:
     """Creates the Analysis instance for this particular analysis.
+
+    The time dependence of the signal is given by a time flux profile
+    :math:`T(t)`, i.e. the flux of the source is
+    :math:`\\Phi(E,t) = \\Phi_0 (E/E_0)^{-\\gamma} T(t)`. The time flux profile
+    can be of any shape, e.g. an instance of
+    :class:`~skyllh.core.flux_model.TabulatedTimeFluxProfile` for a tabulated
+    lightcurve model. For convenience, gaussian and box shaped time flux
+    profiles can be specified via the ``gauss`` and ``box`` arguments.
+
+    Several datasets are supported. For each dataset, the signal time PDF is
+    normalized over the detector on-time of the dataset, and the expected
+    number of signal events of the dataset is given by the integral of the
+    time flux profile over the detector on-time of the dataset. Hence, the
+    signal is distributed over the datasets according to their effective area
+    and their overlap with the time flux profile. Datasets, which do not
+    overlap with the time flux profile, do not contribute any signal.
+
+    .. note::
+
+        The datasets must not contain the same events, e.g. a combined dataset
+        together with one of its individual seasons. Datasets that were taken
+        at the same time, e.g. tracks and cascades, must have their overlap
+        removed beforehand, in the data and in the detector response used for
+        the signal.
 
     Parameters
     ----------
@@ -765,6 +1075,14 @@ def create_analysis(
     gauss
         None if no gaussian time pdf, else dictionary of the format
         ``{'mu': float, 'sigma': float}``.
+    time_flux_profile
+        The instance of TimeFluxProfile describing the time dependence of the
+        signal hypothesis. The times must be given in MJD. If specified,
+        ``box`` and ``gauss`` must be ``None``.
+    injection_time_flux_profile
+        The optional instance of TimeFluxProfile describing the time dependence
+        of the injected signal. If set to ``None``, the time flux profile of
+        the signal hypothesis is used.
     refplflux_Phi0
         The flux normalization to use for the reference power law flux model.
     refplflux_E0
@@ -801,6 +1119,19 @@ def create_analysis(
         the data.
     evt_sel_delta_angle_deg
         The delta angle in degrees for the event selection optimization methods.
+    evt_sel_time_window
+        Flag if only events within the time range of the time flux profile of
+        the signal hypothesis should be selected for the likelihood evaluation.
+        This speeds up the analysis significantly for short time flux profiles.
+        It can only be used if the time flux profile of the signal hypothesis
+        is not changed after the creation of the analysis, i.e. not for the
+        expectation maximization based flare search.
+    pdfratio_factories
+        The optional dictionary mapping dataset names to callables creating
+        the product of the spatial and energy PDF ratios for the respective
+        dataset. The callables must have the same call signature as
+        :func:`create_spatial_energy_pdfratio`, which is used for datasets not
+        contained in the dictionary. The time PDF ratio is added automatically.
     construct_bkg_generator
         Flag if the background generator should be constructed (``True``) or not
         (``False``).
@@ -829,13 +1160,36 @@ def create_analysis(
         logger_name = __name__
     logger = get_logger(logger_name)
 
-    if len(datasets) != 1:
-        raise RuntimeError('This analysis supports only analyses with only single datasets at the moment!')
+    if len(datasets) == 0:
+        raise ValueError('At least one dataset must be specified!')
 
-    if (gauss is None) and (box is None):
-        raise ValueError('No time pdf specified (box or gauss)!')
-    if (gauss is not None) and (box is not None):
-        raise ValueError('Time PDF cannot be both gaussian and box shaped. Please specify only one shape.')
+    dataset_names = [ds.name for ds in datasets]
+    if len(set(dataset_names)) != len(dataset_names):
+        raise ValueError(f'The dataset names must be unique! Given dataset names: {dataset_names}')
+
+    if time_flux_profile is None:
+        if (gauss is None) and (box is None):
+            raise ValueError('No time pdf specified (box, gauss, or time_flux_profile)!')
+        time_flux_profile = create_time_flux_profile(cfg=cfg, gauss=gauss, box=box)
+    else:
+        if (gauss is not None) or (box is not None):
+            raise ValueError('The gauss and box arguments must be None, if a time_flux_profile is specified!')
+        if not isinstance(time_flux_profile, TimeFluxProfile):
+            raise TypeError(
+                'The time_flux_profile argument must be an instance of TimeFluxProfile! '
+                f'Its current type is {type(time_flux_profile).__name__}.'
+            )
+
+    if injection_time_flux_profile is None:
+        injection_time_flux_profile = time_flux_profile
+    elif not isinstance(injection_time_flux_profile, TimeFluxProfile):
+        raise TypeError(
+            'The injection_time_flux_profile argument must be an instance of TimeFluxProfile! '
+            f'Its current type is {type(injection_time_flux_profile).__name__}.'
+        )
+
+    if pdfratio_factories is None:
+        pdfratio_factories = {}
 
     # Create the minimizer instance.
     if minimizer_impl == 'LBFGS':
@@ -862,13 +1216,6 @@ def create_analysis(
         cfg=cfg,
     )
 
-    # Define the time flux profile of the source.
-    time_flux_profile = None
-    if box is not None:
-        time_flux_profile = BoxTimeFluxProfile.from_start_and_stop_time(start=box['start'], stop=box['stop'], cfg=cfg)
-    elif gauss is not None:
-        time_flux_profile = GaussianTimeFluxProfile(t0=gauss['mu'], sigma_t=gauss['sigma'], cfg=cfg)
-
     # Define the fit parameter ns.
     param_ns = Parameter(name='ns', initial=ns_seed, valmin=ns_min, valmax=ns_max)
 
@@ -887,8 +1234,14 @@ def create_analysis(
     # source and flux model.
     # The sin(dec) binning will be taken by the builder automatically from the
     # Dataset instance.
+    # The time-integrated detector signal yield is scaled by the integral of the
+    # time flux profile over the detector on-time of each dataset divided by the
+    # live-time of the dataset. The livetimes of the datasets are set below.
     gamma_grid = param_gamma.as_linear_grid(delta=0.1)
-    detsigyield_builder = PDSingleParamFluxPointLikeSourceI3DetSigYieldBuilder(cfg=cfg, param_grid=gamma_grid)
+    detsigyield_builder = TimeDependentDetSigYieldBuilder(
+        builder=PDSingleParamFluxPointLikeSourceI3DetSigYieldBuilder(cfg=cfg, param_grid=gamma_grid),
+        time_flux_profile=time_flux_profile,
+    )
 
     # Create a source hypothesis group manager with a single source hypothesis
     # group for the single source.
@@ -920,7 +1273,7 @@ def create_analysis(
         shg_mgr=shg_mgr,
         pmm=pmm,
         test_statistic=test_statistic,
-        sig_generator_cls=MultiDatasetSignalGenerator,
+        sig_generator_cls=TimeDependentMultiDatasetSignalGenerator,
     )
 
     # Define the event selection method for pure optimization purposes.
@@ -928,6 +1281,10 @@ def create_analysis(
     event_selection_method = SpatialBoxEventSelectionMethod(
         shg_mgr=shg_mgr, delta_angle=np.deg2rad(evt_sel_delta_angle_deg)
     )
+    if evt_sel_time_window:
+        event_selection_method = event_selection_method & TimeWindowEventSelectionMethod(
+            shg_mgr=shg_mgr, time_flux_profile=time_flux_profile
+        )
 
     # Add the data sets to the analysis.
     pbar = ProgressBar(len(datasets), parent=ppbar).start()
@@ -944,57 +1301,35 @@ def create_analysis(
         clip_grl_start_times(grl_data=cast(np.ndarray, data.grl))
 
         livetime = I3Livetime.from_grl_data(grl_data=cast(np.ndarray, data.grl))
+        detsigyield_builder.set_livetime(ds.name, livetime)
 
-        sin_dec_binning = ds.get_binning_definition('sin_dec')
-        log_energy_binning = ds.get_binning_definition('log_energy')
-
-        # Create the spatial PDF ratio instance for this dataset.
-        spatial_sigpdf = RayleighPSFPointSourceSignalSpatialPDF(
-            cfg=cfg, dec_range=tuple(np.arcsin(sin_dec_binning.range))
-        )
-        spatial_bkgpdf = DataBackgroundI3SpatialPDF(cfg=cfg, data_exp=data.exp, sin_dec_binning=sin_dec_binning)
-        spatial_pdfratio = SigOverBkgPDFRatio(cfg=cfg, sig_pdf=spatial_sigpdf, bkg_pdf=spatial_bkgpdf)
+        if get_ontime_integral_of_TimeFluxProfile(profile=time_flux_profile, livetime=livetime) <= 0:
+            logger.warning(
+                f'The time flux profile of the signal hypothesis does not overlap with the detector on-time of '
+                f'dataset "{ds.name}". This dataset will not contribute any signal.'
+            )
 
         sm = PDSmearingMatrix(
             pathfilenames=ds.get_abs_pathfilename_list(ds.get_aux_data_definition('smearing_datafile'))
         )
 
-        # Create the energy PDF ratio instance for this dataset.
-        energy_sigpdfset = PDSignalEnergyPDFSet(
-            cfg=cfg, ds=ds, src_dec=source.dec, fluxmodel=fluxmodel, param_grid_set=gamma_grid, ppbar=ppbar, sm=sm
-        )
-        smoothing_filter = BlockSmoothingFilter(nbins=1)
-        energy_bkgpdf = PDDataBackgroundI3EnergyPDF(
+        # Create the product of the spatial and energy PDF ratios for this
+        # dataset.
+        pdfratio_factory = pdfratio_factories.get(ds.name, create_spatial_energy_pdfratio)
+        pdfratio = pdfratio_factory(
             cfg=cfg,
-            data_exp=data.exp,
-            logE_binning=log_energy_binning,
-            sinDec_binning=sin_dec_binning,
-            smoothing_filter=smoothing_filter,
+            ds=ds,
+            data=data,
+            source=source,
+            fluxmodel=fluxmodel,
+            param_grid=gamma_grid,
+            sm=sm,
             kde_smoothing=kde_smoothing,
+            ppbar=ppbar,
         )
-
-        energy_pdfratio = PDSigSetOverBkgPDFRatio(cfg=cfg, sig_pdf_set=energy_sigpdfset, bkg_pdf=energy_bkgpdf)
-
-        pdfratio = spatial_pdfratio * energy_pdfratio
 
         # Create the time PDF ratio instance for this dataset.
-        if (gauss is not None) or (box is not None):
-            time_bkgpdf = BackgroundTimePDF(
-                cfg=cfg,
-                livetime=livetime,
-                time_flux_profile=BoxTimeFluxProfile.from_start_and_stop_time(
-                    start=livetime.time_start, stop=livetime.time_stop, cfg=cfg
-                ),
-            )
-            time_sigpdf = create_signal_time_pdf(cfg=cfg, grl=cast(np.ndarray, data.grl), gauss=gauss, box=box)
-            time_pdfratio = SigOverBkgPDFRatio(
-                cfg=cfg,
-                sig_pdf=time_sigpdf,
-                bkg_pdf=time_bkgpdf,
-                same_axes=False,
-            )
-
-            pdfratio = pdfratio * time_pdfratio
+        pdfratio = pdfratio * create_time_pdfratio(cfg=cfg, livetime=livetime, time_flux_profile=time_flux_profile)
 
         # Create a trial data manager and add the required data fields.
         tdm = TrialDataManager()
@@ -1018,14 +1353,13 @@ def create_analysis(
             cumulative_thr=ds.get_aux_data('cumulative_threshold'),
         )
 
-        assert time_flux_profile is not None
         sig_generator = TimeDependentPDDatasetSignalGenerator(
             cfg=cfg,
             shg_mgr=shg_mgr,
             ds=ds,
             ds_idx=ds_idx,
             livetime=livetime,
-            time_flux_profile=time_flux_profile,
+            time_flux_profile=injection_time_flux_profile,
             energy_cut_spline=energy_cut_spline,
             sm=sm,
         )

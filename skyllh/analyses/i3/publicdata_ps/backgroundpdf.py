@@ -286,6 +286,9 @@ class PDBackgroundI3EnergyPDF(EnergyPDF, IsBackgroundPDF, UsesBinning):
             PDF.
         """
         log10emu = tdm['log_energy']
+        if len(log10emu) == 0:
+            # There are no (selected) trial data events.
+            return
         log10emu_axis = self.axes['log_energy']
         if np.min(log10emu) < log10emu_axis.vmin:
             raise ValueError(

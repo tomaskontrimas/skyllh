@@ -44,7 +44,7 @@ from skyllh.core.storage import (
     DataFieldRecordArray,
 )
 from skyllh.core.utils.flux_model import (
-    create_scipy_stats_rv_continuous_from_TimeFluxProfile,
+    draw_ontimes_from_TimeFluxProfile,
 )
 
 
@@ -557,6 +557,9 @@ class PDDatasetSignalGenerator(
 
         n_events = int_cast(_mean, 'The `mean` argument must be castable to type of int!')
 
+        if n_events == 0:
+            return (0, {})
+
         if src_detsigyield_weights_service is None:
             raise ValueError(
                 'The src_detsigyield_weights_service argument must be provided '
@@ -757,15 +760,25 @@ class TimeDependentPDDatasetSignalGenerator(
             shg_mgr=shg_mgr, ds=ds, ds_idx=ds_idx, energy_cut_spline=energy_cut_spline, cut_sindec=cut_sindec, **kwargs
         )
 
-        if not isinstance(time_flux_profile, TimeFluxProfile):
-            raise TypeError(
-                'The time_flux_profile argument must be an instance of '
-                'TimeFluxProfile! '
-                f'Its current type is {classname(time_flux_profile)}!'
-            )
-
         self.livetime = livetime
-        self._time_flux_profile = time_flux_profile
+        self.time_flux_profile = time_flux_profile
+
+    @property
+    def time_flux_profile(self) -> TimeFluxProfile:
+        """The instance of TimeFluxProfile providing the time profile of the
+        source(s), according to which the times of the signal events are drawn.
+        """
+        return self._time_flux_profile
+
+    @time_flux_profile.setter
+    def time_flux_profile(self, profile):
+        if not isinstance(profile, TimeFluxProfile):
+            raise TypeError(
+                'The time_flux_profile property must be an instance of '
+                'TimeFluxProfile! '
+                f'Its current type is {classname(profile)}!'
+            )
+        self._time_flux_profile = profile
 
     @property
     def livetime(self):
@@ -827,20 +840,17 @@ class TimeDependentPDDatasetSignalGenerator(
             src_detsigyield_weights_service=src_detsigyield_weights_service,
         )
 
-        # Create a scipy.stats.rv_continuous instance for the time flux profile.
-        time_rv = create_scipy_stats_rv_continuous_from_TimeFluxProfile(profile=self._time_flux_profile)
+        if self.ds_idx not in signal_events_dict:
+            return (n_signal, signal_events_dict)
 
-        # Optimized time injection version, based on csky implementation.
-        # https://github.com/icecube/csky/blob/7e969639c5ef6dbb42872dac9b761e1e8b0ccbe2/csky/inj.py#L1122
+        # Draw the times of the signal events according to the time flux
+        # profile restricted to the detector on-time intervals of the dataset.
         events = signal_events_dict[self.ds_idx]
-        times = np.array([], dtype=np.float64)
-        n_events = len(events)
-        while len(times) < n_events:
-            new_times = time_rv.rvs(size=(n_events - len(times)), random_state=rss.random)
-            mask = self._livetime.is_on(mjd=new_times)
-            new_times = new_times[mask]
-
-            times = np.concatenate((times, new_times))
-        events['time'] = times
+        events['time'] = draw_ontimes_from_TimeFluxProfile(
+            profile=self._time_flux_profile,
+            livetime=self._livetime,
+            rss=rss,
+            size=len(events),
+        )
 
         return (n_signal, signal_events_dict)
