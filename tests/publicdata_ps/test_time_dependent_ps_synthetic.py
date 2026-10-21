@@ -27,6 +27,7 @@ import unittest
 from typing import cast
 
 import numpy as np
+import scipy.stats
 
 from skyllh.analyses.i3.publicdata_ps import (
     time_dependent_ps,
@@ -43,6 +44,7 @@ from skyllh.core.livetime import Livetime
 from skyllh.core.random import RandomStateService
 from skyllh.core.signal_generator import TimeDependentMultiDatasetSignalGenerator
 from skyllh.core.source_model import PointLikeSource
+from skyllh.core.storage import DataFieldRecordArray
 from skyllh.core.utils.flux_model import get_ontime_integral_of_TimeFluxProfile
 
 from .synthetic_data import (
@@ -335,6 +337,30 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
         self.assertGreater(ts_full, 10)
         np.testing.assert_allclose(ts_split, ts_full, rtol=0.1)
         np.testing.assert_allclose(fp_split, fp_full, rtol=0.1)
+
+    def test_independent_background_scrambling(self):
+        """The background of simultaneous datasets with the same good-run-list
+        must be scrambled independently.
+        """
+        ana = self._create_td_analysis(['S_a', 'S_b'], box={'start': 59000.0, 'stop': 59200.0})
+        (_, _, events_list) = ana.generate_pseudo_data(rss=RandomStateService(seed=12), mean_n_sig=0)
+        (time_a, time_b) = (cast(DataFieldRecordArray, events)['time'] for events in events_list)
+        (times_a, times_b) = (np.sort(time_a), np.sort(time_b))
+
+        # No common scrambled times.
+        self.assertEqual(len(np.intersect1d(times_a, times_b)), 0)
+
+        # The scrambled times follow the same distribution, and the times
+        # of the two datasets are not correlated within the runs.
+        self.assertGreater(scipy.stats.ks_2samp(times_a, times_b).pvalue, 1e-3)  # pyright: ignore[reportAttributeAccessIssue]
+        livetime = self._get_livetimes(ana)[0]
+        intervals = livetime.uptime_mjd_intervals_arr
+        run_a = np.searchsorted(intervals[:, 0], time_a, side='right') - 1
+        run_b = np.searchsorted(intervals[:, 0], time_b, side='right') - 1
+        frac_a = (time_a - intervals[run_a, 0]) / (intervals[run_a, 1] - intervals[run_a, 0])
+        frac_b = (time_b - intervals[run_b, 0]) / (intervals[run_b, 1] - intervals[run_b, 0])
+        n = min(len(frac_a), len(frac_b))
+        self.assertLess(abs(np.corrcoef(frac_a[:n], frac_b[:n])[0, 1]), 0.05)
 
     def test_consecutive_datasets(self):
         """Splitting a dataset in time must give the same result, also for a

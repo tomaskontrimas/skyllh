@@ -92,6 +92,11 @@ We provide an incomplete list of tutorials below. They are meant to illustrate h
    Uses the Expectation-Maximisation (EM) algorithm to fit the timing and duration of a
    neutrino flare (TXS 0506+056).
 
+:doc:`time_dependent_lightcurve`
+   Search for neutrinos following a fixed, custom lightcurve, e.g. a supernova neutrino model,
+   using all datasets of the IceTracks-DR2 release. Covers tabulated lightcurves, the time
+   window event selection, trials, and the flux normalization of time-dependent fluxes.
+
 .. toctree::
     :maxdepth: 3
     :hidden:
@@ -105,3 +110,4 @@ We provide an incomplete list of tutorials below. They are meant to illustrate h
     p_value_method_comparison
     sensitivity_study
     time_dependent_point_source
+    time_dependent_lightcurve

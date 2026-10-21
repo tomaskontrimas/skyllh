@@ -37,3 +37,71 @@ Frequently Asked Questions (FAQ)
         analysis components.
 
         A re-creation of the signal generator instances is then not required.
+
+.. dropdown:: How can I use my own time profile (e.g. a neutrino lightcurve) in a time-dependent analysis?
+   :icon: question
+
+    The signal time PDF, the detector signal yield, and the signal injection of
+    a time-dependent analysis work with any
+    :py:class:`~skyllh.core.flux_model.TimeFluxProfile` instance. A lightcurve
+    given as tabulated values can be used via the
+    :py:class:`~skyllh.core.flux_model.TabulatedTimeFluxProfile` class. Any other
+    shape can be implemented by deriving a class from
+    :py:class:`~skyllh.core.flux_model.TimeFluxProfile` and implementing the
+    ``__call__``, ``get_integral``, and ``move`` methods. The times must be given
+    in MJD.
+
+    For the public data, the time flux profile is passed to the
+    :py:func:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps.create_analysis`
+    function via the ``time_flux_profile`` argument. For a fixed time profile,
+    the analysis is unblinded via
+    :py:meth:`~skyllh.core.analysis.Analysis.unblind`, and trials are generated
+    via :py:meth:`~skyllh.core.analysis.Analysis.do_trials`. See the
+    :doc:`../tutorials/time_dependent_lightcurve` tutorial.
+
+    In a custom analysis, the time dependence is added by multiplying the PDF
+    ratio of each dataset with the time PDF ratio created by
+    :py:func:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps.create_time_pdfratio`,
+    by wrapping the detector signal yield builder into a
+    :py:class:`~skyllh.core.detsigyield.TimeDependentDetSigYieldBuilder`, and by
+    using the
+    :py:class:`~skyllh.core.signal_generator.TimeDependentMultiDatasetSignalGenerator`
+    class as signal generator class of the analysis.
+
+.. dropdown:: How is the signal distributed over several datasets in a time-dependent analysis?
+   :icon: question
+
+    The expected number of signal events of a dataset is the time-integrated
+    detector signal yield of the dataset scaled by the integral of the time flux
+    profile over the detector on-time of the dataset divided by the livetime of
+    the dataset, see
+    :py:class:`~skyllh.core.detsigyield.TimeDependentDetSigYield`. Hence, the
+    fitted number of signal events and the injected signal events are distributed
+    over the datasets according to their effective area and their detector
+    on-time overlap with the time flux profile. Datasets without overlap do not
+    contribute any signal.
+
+    The signal time PDF of each dataset is normalized over the detector on-time
+    of the dataset.
+
+    The time flux profile of the injected signal can differ from the time flux
+    profile of the tested signal hypothesis. It can be specified via the
+    ``injection_time_flux_profile`` argument of
+    :py:func:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps.create_analysis`,
+    or changed via the
+    :py:func:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps.change_injection_time_flux_profile`
+    function.
+
+.. dropdown:: Can I combine datasets that overlap in time?
+   :icon: question
+
+    Yes, as long as the datasets do not contain the same events. Each dataset
+    keeps its own good-run-list, background PDFs, background scrambling, and
+    signal time PDF, and the likelihood is the product of the likelihoods of the
+    datasets. For example, a track and a cascade dataset recorded at the same time
+    can be combined, if events contained in both datasets were removed from one of
+    them beforehand, in the data and in the detector response used for the signal.
+
+    SkyLLH does not check for common events. A combined dataset, e.g.
+    ``IC86_I-XI`` of the IceTracks-DR2 release, must not be used together with its
+    individual seasons, e.g. ``IC86_VII``.
