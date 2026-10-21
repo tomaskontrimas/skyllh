@@ -477,6 +477,13 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
         self.assertAlmostEqual(inj.lag, 1.5, places=6)
         self.assertEqual(set(result['global_params']), {'ns', 'gamma'})
 
+        # The refinement must move away from a best seed at zero.
+        lc.set_params({'lag': 0.0})
+        result_zero = fit_time_flux_profile_params(
+            ana=ana, time_flux_profile=lc, param_ranges={'lag': (-4.0, 4.0)}, seeds=[{'lag': 0.0}]
+        )
+        self.assertLess(abs(result_zero['time_params']['lag'] - result['time_params']['lag']), 0.1)
+
         # The fit cannot be better than the best seed.
         for lag in np.linspace(-4, 4, 9):
             lc.set_params({'lag': lag})

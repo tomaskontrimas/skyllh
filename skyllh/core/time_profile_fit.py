@@ -132,6 +132,26 @@ def _assert_time_flux_profile_can_be_fitted(
             )
 
 
+def _create_initial_simplex(
+    x0: np.ndarray,
+    steps: Sequence[float],
+    bounds: Sequence[tuple[float, float]],
+) -> np.ndarray:
+    """Creates the initial simplex of the Nelder-Mead minimization around the
+    given start point with the given step size for each parameter. The steps
+    are taken towards the inside of the parameter bounds.
+    """
+    n = len(x0)
+    simplex = np.tile(x0, (n + 1, 1)).astype(np.float64)
+    for i in range(n):
+        (lo, hi) = bounds[i]
+        step = steps[i] if steps[i] > 0 else 1e-3 * max(abs(x0[i]), 1)
+        simplex[i + 1, i] = x0[i] + step if x0[i] + step <= hi else x0[i] - step
+        if not (lo <= simplex[i + 1, i] <= hi):
+            simplex[i + 1, i] = 0.5 * (lo + hi) if x0[i] != 0.5 * (lo + hi) else hi
+    return simplex
+
+
 def fit_time_flux_profile_params(
     ana: LLHRatioAnalysis,
     time_flux_profile: TimeFluxProfile,
@@ -181,7 +201,9 @@ def fit_time_flux_profile_params(
     method
         The minimization method of ``scipy.optimize.minimize`` used for the
         refinement. It must support bounds, e.g. ``'Nelder-Mead'`` or
-        ``'Powell'``.
+        ``'Powell'``. For ``'Nelder-Mead'``, the initial simplex extends by half
+        the seed grid spacing, or by 10% of the parameter range if seeds are
+        given, around the seed.
     minimize_options
         The optional options passed to ``scipy.optimize.minimize``. For the
         ``'Nelder-Mead'`` method, the default options are an absolute parameter
@@ -217,6 +239,13 @@ def fit_time_flux_profile_params(
     if minimize_options is None and method == 'Nelder-Mead':
         widths = [hi - lo for (lo, hi) in bounds if hi > lo]
         minimize_options = {'xatol': 1e-3 * min(widths) if widths else 1e-4, 'fatol': 0.01}
+
+    # The initial step size of the refinement for each parameter: half the
+    # spacing of the seed grid, or 10% of the parameter range for given seeds.
+    steps = []
+    for name, (lo, hi) in zip(names, bounds, strict=True):
+        n = n_seeds[name] if isinstance(n_seeds, dict) else n_seeds
+        steps.append(0.5 * (hi - lo) / (n - 1) if (seeds is None and n > 1) else 0.1 * (hi - lo))
 
     if seeds is None:
         seeds = create_time_flux_profile_param_seeds(param_ranges=param_ranges, n_seeds=n_seeds)
@@ -254,12 +283,16 @@ def fit_time_flux_profile_params(
 
     with TaskTimer(tl, 'Refine time flux profile parameters.'):
         for idx in np.argsort(-seed_ts)[: max(0, n_refine)]:
+            x0 = np.array(seed_points[idx])
+            options = dict(minimize_options) if minimize_options is not None else {}
+            if method == 'Nelder-Mead' and 'initial_simplex' not in options:
+                options['initial_simplex'] = _create_initial_simplex(x0=x0, steps=steps, bounds=bounds)
             res = scipy.optimize.minimize(
                 lambda x: -evaluate(x)[0],
-                x0=np.array(seed_points[idx]),
+                x0=x0,
                 method=method,
                 bounds=bounds,
-                options=minimize_options,
+                options=options,
             )
             x = tuple(float(np.clip(v, lo, hi)) for (v, (lo, hi)) in zip(res.x, bounds, strict=True))
             ts = evaluate(x)[0]
