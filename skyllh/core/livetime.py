@@ -223,10 +223,19 @@ class Livetime:
         -------
         ontime_intervals
             The (N,2)-shaped ndarray holding the on-time detector intervals.
+            If there is no detector on-time between ``t_start`` and ``t_end``,
+            a (0,2)-shaped ndarray is returned.
         """
         onoff_intervals = self._get_onoff_intervals()
 
         (t_start_idx, t_end_idx) = self._get_onoff_interval_indices(np.array([t_start, t_end]))
+
+        # Check if there is no on-time interval within the given time range,
+        # i.e. both times are within the same off-time interval, or the time
+        # range is reversed.
+        if (t_start >= t_end) or ((t_start_idx == t_end_idx) and (t_start_idx % 2 == 0)):
+            return np.empty((0, 2), dtype=np.float64)
+
         t_start_f: float = t_start
         t_end_f: float = t_end
         if t_start_idx % 2 == 0:

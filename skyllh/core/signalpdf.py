@@ -369,6 +369,8 @@ class SignalTimePDF(
         super().__init__(livetime=livetime, time_flux_profile=time_flux_profile, **kwargs)
 
         self._pd = None
+        self._pd_params_recarray = None
+        self._pd_profile_key = None
 
     def _calculate_pd(
         self,
@@ -413,12 +415,17 @@ class SignalTimePDF(
             assert params_recarray.dtype.fields is not None
             params = dict(zip(params_recarray.dtype.fields.keys(), src_params_row, strict=True))
 
-            # Update the time flux profile if its parameter values have changed
-            # and recalculate self._I and self._S if an update was actually
-            # performed.
-            updated = self._time_flux_profile.set_params(params)
-            if updated:
-                self._S = self._calculate_sum_of_ontime_time_flux_profile_integrals()
+            # Update the time flux profile if its parameter values have changed.
+            # The sum S of the on-time profile integrals gets recalculated
+            # automatically if the profile has changed.
+            self._time_flux_profile.set_params(params)
+            S = self.get_S()
+
+            # If the time flux profile does not overlap with any detector
+            # on-time interval, no signal is expected from this source and the
+            # probability density is zero.
+            if S <= 0:
+                continue
 
             src_m = src_idxs == src_idx
             idxs = evt_idxs[src_m]
@@ -430,7 +437,7 @@ class SignalTimePDF(
             on = self._livetime.is_on(times)
 
             pd_src = pd[src_m]
-            pd_src[on] = self._time_flux_profile(t=times[on]) / self._S
+            pd_src[on] = self._time_flux_profile(t=times[on]) / S
             pd[src_m] = pd_src
 
         return pd
@@ -466,6 +473,8 @@ class SignalTimePDF(
         )
         if not is_constant:
             self._pd = None
+            self._pd_params_recarray = None
+            self._pd_profile_key = None
             return
 
         # At this point it has been checked that the PDF is constant and we can
@@ -478,6 +487,8 @@ class SignalTimePDF(
             params_recarray = self.pmm.create_src_params_recarray()
 
         self._pd = self._calculate_pd(tdm=tdm, params_recarray=params_recarray, tl=tl)
+        self._pd_params_recarray = params_recarray
+        self._pd_profile_key = self._get_time_flux_profile_key()
 
     def get_pd(
         self,
@@ -514,8 +525,16 @@ class SignalTimePDF(
             The dictionary holding the gradients of the probability density
             w.r.t. each global fit parameter.
         """
-        # Check if we have pre-calculated PDF values.
+        # Check if we have pre-calculated PDF values. If the time flux profile
+        # has been changed since the pre-calculation, e.g. by replacing the
+        # profile instance or by changing its parameter values, the PDF values
+        # are re-calculated.
         if self._pd is not None:
+            key = self._get_time_flux_profile_key()
+            if key != self._pd_profile_key:
+                assert self._pd_params_recarray is not None
+                self._pd = self._calculate_pd(tdm=tdm, params_recarray=self._pd_params_recarray, tl=tl)
+                self._pd_profile_key = self._get_time_flux_profile_key()
             return (self._pd, {})
 
         assert params_recarray is not None

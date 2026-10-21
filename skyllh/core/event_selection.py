@@ -6,6 +6,9 @@ from typing import Literal, cast, overload
 import numpy as np
 import scipy.sparse
 
+from skyllh.core.flux_model import (
+    TimeFluxProfile,
+)
 from skyllh.core.py import (
     classname,
     float_cast,
@@ -1326,6 +1329,162 @@ class AngErrOfPsiEventSelectionMethod(SpatialEventSelectionMethod):
         idxs = np.argwhere(mask_sky[:, mask])
         src_idxs = idxs[:, 0]
         evt_idxs = idxs[:, 1]
+
+        if ret_original_evt_idxs:
+            return (selected_events, (src_idxs, evt_idxs), selected_events_idxs)
+
+        return (selected_events, (src_idxs, evt_idxs))
+
+
+class TimeWindowEventSelectionMethod(EventSelectionMethod):
+    """This event selection method selects events, whose time lies within the
+    time range of a time flux profile, i.e. within ``[t_start, t_stop]`` of the
+    profile. Events outside this time range have a signal time probability
+    density of zero and do not contribute to the signal part of the
+    log-likelihood ratio function.
+
+    This event selection method is supposed to be used for time-dependent
+    analyses with a time flux profile, whose time range does not change during
+    the likelihood maximization. It can be combined with a spatial event
+    selection method via the ``&`` operator, e.g.
+    ``SpatialBoxEventSelectionMethod(...) & TimeWindowEventSelectionMethod(...)``.
+
+    .. note::
+
+        The time range of the time flux profile is read at each call of the
+        ``select_events`` method. Hence, the same time flux profile instance
+        can be used by the signal time PDF and this event selection method.
+
+    """
+
+    def __init__(
+        self,
+        shg_mgr: SourceHypoGroupManager | None,
+        time_flux_profile: TimeFluxProfile,
+        **kwargs,
+    ):
+        """Creates a new time window event selection method instance.
+
+        Parameters
+        ----------
+        shg_mgr
+            The instance of SourceHypoGroupManager that defines the list of
+            sources. It is required to determine the number of sources, when
+            no source-event index pairs are given to the ``select_events``
+            method.
+        time_flux_profile
+            The instance of TimeFluxProfile, which defines the time range of
+            the selected events.
+        """
+        super().__init__(shg_mgr=shg_mgr, **kwargs)
+
+        self.time_flux_profile = time_flux_profile
+
+    @property
+    def time_flux_profile(self):
+        """The instance of TimeFluxProfile, which defines the time range of the
+        selected events.
+        """
+        return self._time_flux_profile
+
+    @time_flux_profile.setter
+    def time_flux_profile(self, profile):
+        if not isinstance(profile, TimeFluxProfile):
+            raise TypeError(
+                'The time_flux_profile property must be an instance of TimeFluxProfile! '
+                f'Its current type is {classname(profile)}.'
+            )
+        self._time_flux_profile = profile
+
+    @overload
+    def select_events(
+        self,
+        events: DataFieldRecordArray,
+        src_evt_idxs: tuple | None = None,
+        ret_original_evt_idxs: Literal[False] = False,
+        tl: TimeLord | None = None,
+    ) -> _SelectEventsReturn2: ...
+    @overload
+    def select_events(
+        self,
+        events: DataFieldRecordArray,
+        src_evt_idxs: tuple | None = None,
+        *,
+        ret_original_evt_idxs: Literal[True],
+        tl: TimeLord | None = None,
+    ) -> _SelectEventsReturn3: ...
+    def select_events(
+        self,
+        events: DataFieldRecordArray,
+        src_evt_idxs: tuple | None = None,
+        ret_original_evt_idxs: bool = False,
+        tl: TimeLord | None = None,
+    ) -> _SelectEventsReturn:
+        """Selects the events, whose time lies within the time range of the
+        time flux profile.
+
+        Parameters
+        ----------
+        events
+            The instance of DataFieldRecordArray holding the events, for which
+            the selection method should get applied. The following data fields
+            must exist:
+
+            ``'time'`` : float
+                The time of the event.
+
+        src_evt_idxs
+            The 2-element tuple holding the two 1d ndarrays of int of length
+            N_values, specifying to which sources the given events belong to.
+            If set to ``None``, all events are associated with all sources.
+        ret_original_evt_idxs
+            Flag if the original indices of the selected events should get
+            returned as well.
+        tl
+            The optional instance of TimeLord that should be used to collect
+            timing information about this method.
+
+        Returns
+        -------
+        selected_events
+            The instance of DataFieldRecordArray holding the selected events,
+            i.e. a subset of the `events` argument.
+        (src_idxs, evt_idxs) : 1d ndarrays of ints
+            The indices of the sources and the selected events.
+        original_evt_idxs
+            The (N_selected_events,)-shaped numpy ndarray holding the original
+            indices of the selected events, if ``ret_original_evt_idxs`` is set
+            to ``True``.
+        """
+        with TaskTimer(tl, 'ESM: Calculate time window mask.'):
+            times = events['time']
+            mask = (times >= self._time_flux_profile.t_start) & (times <= self._time_flux_profile.t_stop)
+
+        with TaskTimer(tl, 'ESM: Create selected_events.'):
+            selected_events_idxs = events.indices[mask]
+            selected_events = events[selected_events_idxs]
+
+        with TaskTimer(tl, 'ESM: Calculate indices of selected events.'):
+            n_selected = len(selected_events_idxs)
+            if src_evt_idxs is None:
+                if self._shg_mgr is None:
+                    raise ValueError(
+                        f'The {classname(self)} requires a SourceHypoGroupManager instance, when no source-event '
+                        'index pairs are given!'
+                    )
+                n_sources = self._shg_mgr.n_sources
+                src_idxs = np.repeat(np.arange(n_sources), n_selected)
+                evt_idxs = np.tile(np.arange(n_selected), n_sources)
+            else:
+                (src_idxs, evt_idxs) = src_evt_idxs
+                # Map the old event indices to the new event indices of the
+                # selected events. Unselected events are mapped to -1.
+                new_idxs = np.full((len(events),), -1, dtype=np.int64)
+                new_idxs[selected_events_idxs] = np.arange(n_selected)
+                evt_idxs = new_idxs[evt_idxs]
+                m = evt_idxs >= 0
+                src_idxs = src_idxs[m]
+                evt_idxs = evt_idxs[m]
 
         if ret_original_evt_idxs:
             return (selected_events, (src_idxs, evt_idxs), selected_events_idxs)

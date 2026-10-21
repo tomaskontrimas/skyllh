@@ -1,4 +1,5 @@
 import abc
+import contextlib
 import itertools
 
 import numpy as np
@@ -12,6 +13,9 @@ from skyllh.core.config import (
 from skyllh.core.dataset import (
     Dataset,
     DatasetData,
+)
+from skyllh.core.detsigyield import (
+    TimeDependentDetSigYield,
 )
 from skyllh.core.livetime import (
     Livetime,
@@ -499,6 +503,88 @@ class MultiDatasetSignalGenerator(
                     signal_events_dict[k].append(v)
 
         return (n_signal, signal_events_dict)
+
+
+class TimeDependentMultiDatasetSignalGenerator(
+    MultiDatasetSignalGenerator,
+):
+    """This class provides a multi-dataset signal generator for time-dependent
+    analyses with detector signal yields of type
+    :class:`~skyllh.core.detsigyield.TimeDependentDetSigYield`.
+
+    The detector signal yields are shared between the log-likelihood ratio
+    function and the signal generator. However, the time flux profile of the
+    injected signal (the truth) can differ from the time flux profile of the
+    tested signal hypothesis, e.g. when scanning different flare hypotheses.
+    Hence, this signal generator sets the time flux profile of each dataset
+    signal generator, i.e. its ``time_flux_profile`` attribute, as the time flux
+    profile of the time-dependent detector signal yields of the dataset while
+    generating signal events and calculating the flux model scaling factor.
+    Afterwards the original time flux profiles are restored. This ensures that
+    the signal events are distributed over the datasets according to the time
+    flux profile of the injected signal.
+
+    Dataset signal generators without a ``time_flux_profile`` attribute, and
+    detector signal yields not of type TimeDependentDetSigYield, are left
+    unchanged.
+    """
+
+    @contextlib.contextmanager
+    def injection_time_flux_profiles(self):
+        """Context manager, which sets the time flux profiles of the dataset
+        signal generators as the time flux profiles of the time-dependent
+        detector signal yields of the respective datasets, and restores the
+        original time flux profiles on exit.
+        """
+        saved = []
+        try:
+            if self._sig_generator_list is not None:
+                detsigyield_arr = self.ds_sig_weight_factors_service.src_detsigyield_weights_service.detsigyield_arr
+
+                for ds_idx, ds_sig_generator in enumerate(self._sig_generator_list):
+                    profile = getattr(ds_sig_generator, 'time_flux_profile', None)
+                    if profile is None:
+                        continue
+                    for detsigyield in detsigyield_arr[ds_idx]:
+                        if not isinstance(detsigyield, TimeDependentDetSigYield):
+                            continue
+                        saved.append((detsigyield, detsigyield.time_flux_profile))
+                        detsigyield.time_flux_profile = profile
+            yield
+        finally:
+            for detsigyield, profile in saved:
+                detsigyield.time_flux_profile = profile
+
+    def fluxmodel_scaling_factor(self, src_params_recarray=None, per_source: bool = False):
+        """Returns the scaling factor to convert a mean number of detected
+        signal events into a flux normalization using the time flux profiles of
+        the injected signal. See
+        :meth:`~skyllh.core.signal_generator.MultiDatasetSignalGenerator.fluxmodel_scaling_factor`
+        for the documentation.
+        """
+        with self.injection_time_flux_profiles():
+            return super().fluxmodel_scaling_factor(src_params_recarray=src_params_recarray, per_source=per_source)
+
+    def generate_signal_events(
+        self,
+        rss: RandomStateService,
+        mean: float,
+        poisson: bool = True,
+        src_detsigyield_weights_service: SrcDetSigYieldWeightsService | None = None,
+    ) -> tuple[int, dict[int, DataFieldRecordArray]]:
+        """Generates a given number of signal events distributed across the
+        individual datasets according to the time flux profiles of the injected
+        signal. See
+        :meth:`~skyllh.core.signal_generator.MultiDatasetSignalGenerator.generate_signal_events`
+        for the documentation.
+        """
+        with self.injection_time_flux_profiles():
+            return super().generate_signal_events(
+                rss=rss,
+                mean=mean,
+                poisson=poisson,
+                src_detsigyield_weights_service=src_detsigyield_weights_service,
+            )
 
 
 class MCMultiDatasetSignalGenerator(

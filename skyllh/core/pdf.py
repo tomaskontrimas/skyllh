@@ -760,6 +760,7 @@ class TimePDF(PDF, metaclass=abc.ABCMeta):
         # the time flux profile, in order to be able to rescale the time flux
         # profile to unity with overlapping detector off-times removed.
         self._S = self._calculate_sum_of_ontime_time_flux_profile_integrals()
+        self._S_profile_key = self._get_time_flux_profile_key()
 
     @property
     def livetime(self):
@@ -816,9 +817,37 @@ class TimePDF(PDF, metaclass=abc.ABCMeta):
             self._time_flux_profile.t_start, self._time_flux_profile.t_stop
         )
 
+        if len(uptime_intervals) == 0:
+            return 0.0
+
         S = np.sum(self._time_flux_profile.get_integral(uptime_intervals[:, 0], uptime_intervals[:, 1]))
 
         return S
+
+    def _get_time_flux_profile_key(self) -> tuple:
+        """Returns a key describing the current time flux profile instance and
+        its state. It is used to detect changes of the time flux profile.
+        """
+        return (id(self._time_flux_profile), self._time_flux_profile.state)
+
+    def get_S(self) -> float:
+        """Returns the sum, S, of the time flux profile integrals during the
+        detector on-time intervals. The value is recalculated automatically if
+        the time flux profile instance or its parameter values have changed.
+
+        Returns
+        -------
+        S
+            The sum of the time flux profile integrals during the detector
+            on-time intervals. It is zero if the time flux profile does not
+            overlap with any detector on-time interval.
+        """
+        key = self._get_time_flux_profile_key()
+        if key != self._S_profile_key:
+            self._S = self._calculate_sum_of_ontime_time_flux_profile_integrals()
+            self._S_profile_key = key
+
+        return self._S
 
     def assert_is_valid_for_trial_data(self, tdm: TrialDataManager, tl: TimeLord | None = None, **kwargs):
         """Checks if the time PDF is valid for all the given trial data.

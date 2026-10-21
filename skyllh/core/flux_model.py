@@ -10,7 +10,7 @@ class. It describes a mathematical function for the differential flux:
 """
 
 import abc
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 
 import numpy as np
 import scipy.special
@@ -1211,6 +1211,15 @@ class TimeFluxProfile(
             )
         self._time_unit = unit
 
+    @property
+    def state(self) -> tuple:
+        """(read-only) The tuple describing the current state of the time
+        profile, i.e. its start and stop time, and the values of its
+        parameters. It can be used to detect changes of the time profile, e.g.
+        for caching quantities that depend on the time profile.
+        """
+        return (self._t_start, self._t_stop, *(getattr(self, name) for name in self.param_names))
+
     def get_total_integral(self) -> 'float | np.ndarray':
         """Calculates the total integral of the time profile from t_start to
         t_stop.
@@ -1894,6 +1903,267 @@ class GaussianTimeFluxProfile(
         i2 = c1 * scipy.special.erf((t2 - t0) / c2)
 
         integral = i2 - i1
+
+        return integral
+
+
+class TabulatedTimeFluxProfile(
+    TimeFluxProfile,
+):
+    """This class describes a time flux profile, which is given by tabulated
+    values at given times, e.g. a neutrino lightcurve model. Between the
+    tabulated times the profile is interpolated linearly. Outside the tabulated
+    time range the profile is zero.
+
+    The profile can be moved in time, which allows e.g. to introduce a time lag
+    w.r.t. the reference time of the lightcurve. It has the following
+    parameter:
+
+        t_start : float
+            The start time of the profile, i.e. the time of the first tabulated
+            value. Changing it moves the entire profile in time.
+
+    .. note::
+
+        The absolute normalization of the profile values defines the meaning of
+        the flux normalization of the flux model. If the profile values are
+        relative to 1, the flux normalization is the flux at the time where the
+        profile is 1.
+    """
+
+    def __init__(
+        self,
+        t: 'np.ndarray | Sequence[float]',
+        values: 'np.ndarray | Sequence[float]',
+        time_unit: units.UnitBase | None = None,
+        **kwargs,
+    ):
+        """Creates a new tabulated time flux profile instance.
+
+        Parameters
+        ----------
+        t
+            The (N_times,)-shaped numpy ndarray holding the strictly ascending
+            times of the tabulated profile values. At least two times must be
+            given.
+        values
+            The (N_times,)-shaped numpy ndarray holding the non-negative profile
+            values at the given times.
+        time_unit
+            The used unit for time.
+            If set to ``None``, the configured default time unit for fluxes is
+            used.
+        """
+        t = np.array(t, dtype=np.float64)
+        values = np.array(values, dtype=np.float64)
+
+        if t.ndim != 1 or t.shape != values.shape:
+            raise ValueError(
+                'The t and values arguments must be 1d arrays of the same length! '
+                f'Their current shapes are {t.shape} and {values.shape}.'
+            )
+        if len(t) < 2:
+            raise ValueError('At least two tabulated time values are required!')
+        if np.any(np.diff(t) <= 0):
+            raise ValueError('The tabulated times must be strictly ascending!')
+        if np.any(values < 0) or not np.all(np.isfinite(values)):
+            raise ValueError('The tabulated profile values must be finite and non-negative!')
+
+        # Store the tabulated times relative to the first time. The absolute
+        # position of the profile is given by t_start.
+        self._t_rel = t - t[0]
+        self._values = values
+
+        # The slopes of the linear segments between the tabulated points.
+        self._slopes = np.diff(values) / np.diff(self._t_rel)
+
+        # The cumulative integral of the profile at the tabulated points
+        # relative to t_start.
+        self._cum_integral = np.concatenate(([0], np.cumsum(0.5 * (values[1:] + values[:-1]) * np.diff(self._t_rel))))
+
+        super().__init__(t_start=t[0], t_stop=t[-1], time_unit=time_unit, **kwargs)
+
+        # Define the parameters which can be set via the `set_params`
+        # method.
+        self.param_names = ('t_start',)
+
+    @property
+    def t_start(self):
+        """The start time of the profile, i.e. the time of the first tabulated
+        value. Setting it moves the entire profile in time.
+        """
+        return self._t_start
+
+    @t_start.setter
+    def t_start(self, t):
+        t = float_cast(t, f'The t_start property must be castable to type float! Its current type is {classname(t)}!')
+        self._t_start = t
+        self._t_stop = t + self._t_rel[-1]
+
+    @property
+    def t_stop(self):
+        """The stop time of the profile, i.e. the time of the last tabulated
+        value. Setting it moves the entire profile in time.
+        """
+        return self._t_stop
+
+    @t_stop.setter
+    def t_stop(self, t):
+        t = float_cast(t, f'The t_stop property must be castable to type float! Its current type is {classname(t)}!')
+        self.t_start = t - self._t_rel[-1]
+
+    @property
+    def times(self) -> np.ndarray:
+        """(read-only) The absolute times of the tabulated profile values."""
+        return self._t_rel + self._t_start
+
+    @property
+    def values(self) -> np.ndarray:
+        """(read-only) The tabulated profile values."""
+        return self._values
+
+    @property
+    def math_function_str(self):
+        """The string representation of the mathematical function of this time
+        flux profile.
+        """
+        return (
+            f'linear interpolation of {len(self._values)} tabulated values for t in '
+            f'[{self._t_start:g}; {self._t_stop:g}], 0 otherwise'
+        )
+
+    def _to_profile_time_unit(self, t, unit):
+        """Converts the given time(s) into the time unit of this profile."""
+        t = np.atleast_1d(np.asarray(t, dtype=np.float64))
+        if (unit is not None) and (unit != self._time_unit):
+            t = t * float(unit.to(self._time_unit))
+        return t
+
+    def _get_cum_integral(self, t: np.ndarray) -> np.ndarray:
+        """Calculates the integral of the profile from t_start to the given
+        times ``t``, which must be given in the time unit of the profile.
+        """
+        t_rel = np.clip(t - self._t_start, 0, self._t_rel[-1])
+
+        idxs = np.clip(np.searchsorted(self._t_rel, t_rel, side='right') - 1, 0, len(self._slopes) - 1)
+        dt = t_rel - self._t_rel[idxs]
+
+        cum = self._cum_integral[idxs] + self._values[idxs] * dt + 0.5 * self._slopes[idxs] * dt * dt
+
+        return cum
+
+    def __call__(
+        self,
+        t: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Returns the linearly interpolated profile values for the given
+        time(s) ``t``. Outside the tabulated time range the values are zero.
+
+        Parameters
+        ----------
+        t
+            The time(s) for which to get the time flux profile values.
+        unit
+            The unit of the given times.
+            If set to ``None``, the set time unit of this TimeFluxProfile
+            instance is assumed.
+
+        Returns
+        -------
+        values
+            The value(s) of the time flux profile for the given time(s).
+        """
+        t = self._to_profile_time_unit(t, unit)
+
+        values = np.interp(t - self._t_start, self._t_rel, self._values, left=0, right=0)
+
+        return values
+
+    def cdf(
+        self,
+        t: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Calculates the cumulative distribution function values for the given
+        time values ``t``.
+
+        Parameters
+        ----------
+        t
+            The (N_times,)-shaped numpy ndarray holding the time values for
+            which to calculate the CDF values.
+        unit
+            The unit of the given times.
+            If set to ``None``, the set time unit of this TimeFluxProfile is
+            assumed.
+
+        Returns
+        -------
+        values
+            The (N_times,)-shaped numpy ndarray holding the cumulative
+            distribution function values for each time ``t``.
+        """
+        t = self._to_profile_time_unit(t, unit)
+
+        total = self._cum_integral[-1]
+        if total == 0:
+            return np.zeros_like(t)
+
+        return self._get_cum_integral(t) / total
+
+    def move(
+        self,
+        dt: float,
+        unit: units.UnitBase | None = None,
+    ):
+        """Moves the tabulated time profile by the given amount of time.
+
+        Parameters
+        ----------
+        dt
+            The time difference of how far to move the time profile in time.
+            This can be a positive or negative time shift value.
+        unit
+            The unit of the given time difference.
+            If set to ``None``, the set time unit of this TimeFluxProfile is
+            assumed.
+        """
+        if (unit is not None) and (unit != self._time_unit):
+            dt = dt * unit.to(self._time_unit)  # pyright: ignore[reportAssignmentType]
+
+        self.t_start = self._t_start + dt
+
+    def get_integral(
+        self,
+        t1: float | np.ndarray,
+        t2: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Calculates the exact integral of the linearly interpolated time
+        profile from time ``t1`` to time ``t2``.
+
+        Parameters
+        ----------
+        t1
+            The start time(s) of the integration.
+        t2
+            The end time(s) of the integration.
+        unit
+            The unit of the given times.
+            If set to ``None``, the set time unit of this TimeFluxProfile
+            instance is assumed.
+
+        Returns
+        -------
+        integral
+            The integral value(s). The values are in the set time unit of
+            this TimeFluxProfile instance.
+        """
+        t1 = self._to_profile_time_unit(t1, unit)
+        t2 = self._to_profile_time_unit(t2, unit)
+
+        integral = self._get_cum_integral(t2) - self._get_cum_integral(t1)
 
         return integral
 

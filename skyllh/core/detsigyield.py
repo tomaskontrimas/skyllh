@@ -1,5 +1,8 @@
 import abc
 from collections.abc import Callable, Sequence
+from typing import cast
+
+import numpy as np
 
 from skyllh.core.config import (
     Config,
@@ -11,6 +14,7 @@ from skyllh.core.dataset import (
 )
 from skyllh.core.flux_model import (
     FluxModel,
+    TimeFluxProfile,
 )
 from skyllh.core.livetime import (
     Livetime,
@@ -26,6 +30,9 @@ from skyllh.core.py import (
 from skyllh.core.source_model import SourceModel
 from skyllh.core.types import (
     SourceHypoGroup_t,
+)
+from skyllh.core.utils.flux_model import (
+    get_ontime_integral_of_TimeFluxProfile,
 )
 
 
@@ -350,3 +357,333 @@ class NullDetSigYieldBuilder(DetSigYieldBuilder):
         raise NotImplementedError(
             f'The {classname(self)} detector signal yield builder cannot actually build a DetSigYield instance!'
         )
+
+
+class TimeDependentDetSigYield(
+    DetSigYield,
+):
+    r"""This class provides a detector signal yield for a source, whose flux
+    varies in time according to a time flux profile :math:`T(t)`, i.e.
+    :math:`\Phi(E,t) = \Phi_0 \Phi(E) T(t)`. It wraps a time-integrated
+    detector signal yield, which is assumed to be proportional to the
+    integrated detector live-time of the dataset, and scales it by the factor
+
+    .. math::
+
+        f = \frac{S}{L},
+
+    where :math:`S` is the integral of the time flux profile over the detector
+    on-time intervals of the dataset, and :math:`L` is the integrated live-time
+    of the dataset. Hence, the detector signal yield is the expected number of
+    signal events detected within the dataset given the time profile of the
+    flux. For datasets, which do not overlap with the time flux profile, the
+    detector signal yield is zero.
+
+    .. note::
+
+        The times of the time flux profile must be given in MJD (days), i.e.
+        the same time format as the detector on-time intervals.
+
+    The scaling factor is cached and recalculated automatically whenever the
+    time flux profile instance or its parameter values change. The time flux
+    profile parameters are not supposed to be fit parameters, hence no
+    gradients w.r.t. them are provided.
+    """
+
+    def __init__(
+        self,
+        detsigyield: DetSigYield,
+        livetime: Livetime,
+        time_flux_profile: TimeFluxProfile,
+        **kwargs,
+    ):
+        """Creates a new time-dependent detector signal yield instance.
+
+        Parameters
+        ----------
+        detsigyield
+            The instance of DetSigYield providing the time-integrated detector
+            signal yield, which is proportional to the integrated live-time of
+            the dataset.
+        livetime
+            The instance of Livetime providing the detector on-time intervals of
+            the dataset.
+        time_flux_profile
+            The instance of TimeFluxProfile describing the time dependence of
+            the source flux.
+        """
+        if not isinstance(detsigyield, DetSigYield):
+            raise TypeError(
+                f'The detsigyield argument must be an instance of DetSigYield! Its current type is '
+                f'{classname(detsigyield)}.'
+            )
+        if not isinstance(livetime, Livetime):
+            raise TypeError(
+                f'The livetime argument must be an instance of Livetime! Its current type is {classname(livetime)}.'
+            )
+
+        super().__init__(
+            param_names=detsigyield.param_names,
+            dataset=detsigyield.dataset,
+            fluxmodel=detsigyield.fluxmodel,
+            livetime=livetime,
+            **kwargs,
+        )
+
+        self._detsigyield = detsigyield
+        self.time_flux_profile = time_flux_profile
+
+        self._time_factor = None
+        self._time_factor_key = None
+
+    @property
+    def detsigyield(self) -> DetSigYield:
+        """(read-only) The wrapped time-integrated detector signal yield."""
+        return self._detsigyield
+
+    @property
+    def time_flux_profile(self) -> TimeFluxProfile:
+        """The instance of TimeFluxProfile describing the time dependence of the
+        source flux.
+        """
+        return self._time_flux_profile
+
+    @time_flux_profile.setter
+    def time_flux_profile(self, profile):
+        if not isinstance(profile, TimeFluxProfile):
+            raise TypeError(
+                f'The time_flux_profile property must be an instance of TimeFluxProfile! Its current type is '
+                f'{classname(profile)}.'
+            )
+        self._time_flux_profile = profile
+
+    def get_time_factor(self) -> float:
+        """Returns the factor, by which the time-integrated detector signal
+        yield is scaled, i.e. the integral of the time flux profile over the
+        detector on-time intervals divided by the integrated live-time.
+
+        Returns
+        -------
+        time_factor
+            The scaling factor. It is zero if the time flux profile does not
+            overlap with any detector on-time interval of the dataset.
+        """
+        key = (id(self._time_flux_profile), self._time_flux_profile.state)
+        if key != self._time_factor_key:
+            livetime = cast(Livetime, self._livetime)
+            S = get_ontime_integral_of_TimeFluxProfile(profile=self._time_flux_profile, livetime=livetime)
+            self._time_factor = S / Livetime.get_integrated_livetime(livetime)
+            self._time_factor_key = key
+
+        return cast(float, self._time_factor)
+
+    def sources_to_recarray(
+        self,
+        sources: SourceModel | Sequence[SourceModel],
+    ):
+        """Converts the given sources into the source record array of the
+        wrapped detector signal yield.
+        """
+        return self._detsigyield.sources_to_recarray(sources)
+
+    def __call__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        src_recarray,
+        src_params_recarray,
+    ) -> tuple[np.ndarray, dict]:
+        """Calculates the detector signal yield of the wrapped detector signal
+        yield scaled by the time factor.
+
+        Parameters
+        ----------
+        src_recarray
+            The numpy record array containing the information of the sources.
+        src_params_recarray
+            The numpy record ndarray containing the parameter values of the
+            sources.
+
+        Returns
+        -------
+        detsigyield
+            The array with the mean number of signal in the detector for each
+            given source.
+        grads
+            The dictionary holding the gradient values for each global fit
+            parameter.
+        """
+        (values, grads) = cast(
+            tuple[np.ndarray, dict],
+            self._detsigyield(src_recarray=src_recarray, src_params_recarray=src_params_recarray),
+        )
+
+        f = self.get_time_factor()
+
+        values = values * f
+        grads = {gpidx: grad * f for (gpidx, grad) in grads.items()}
+
+        return (values, grads)
+
+
+class TimeDependentDetSigYieldBuilder(
+    DetSigYieldBuilder,
+):
+    """This detector signal yield builder wraps a time-integrated detector
+    signal yield builder and constructs instances of
+    :class:`~skyllh.core.detsigyield.TimeDependentDetSigYield` for a given time
+    flux profile. The detector on-time intervals are taken from the dataset
+    data, if its ``livetime`` attribute is an instance of
+    :class:`~skyllh.core.livetime.Livetime`, or from the livetimes set via the
+    :meth:`set_livetime` method.
+    """
+
+    def __init__(
+        self,
+        builder: DetSigYieldBuilder,
+        time_flux_profile: TimeFluxProfile,
+        livetimes: dict[str, Livetime] | None = None,
+        **kwargs,
+    ):
+        """Creates a new time-dependent detector signal yield builder.
+
+        Parameters
+        ----------
+        builder
+            The instance of DetSigYieldBuilder for constructing the
+            time-integrated detector signal yields.
+        time_flux_profile
+            The instance of TimeFluxProfile describing the time dependence of
+            the source flux.
+        livetimes
+            The optional dictionary mapping dataset names to Livetime instances.
+        """
+        if not isinstance(builder, DetSigYieldBuilder):
+            raise TypeError(
+                f'The builder argument must be an instance of DetSigYieldBuilder! Its current type is '
+                f'{classname(builder)}.'
+            )
+
+        super().__init__(cfg=builder.cfg, **kwargs)
+
+        self._builder = builder
+        self.time_flux_profile = time_flux_profile
+        self._livetimes = {} if livetimes is None else dict(livetimes)
+
+    @property
+    def builder(self) -> DetSigYieldBuilder:
+        """(read-only) The wrapped time-integrated detector signal yield
+        builder.
+        """
+        return self._builder
+
+    @property
+    def time_flux_profile(self) -> TimeFluxProfile:
+        """The instance of TimeFluxProfile, which is used for the constructed
+        detector signal yields.
+        """
+        return self._time_flux_profile
+
+    @time_flux_profile.setter
+    def time_flux_profile(self, profile):
+        if not isinstance(profile, TimeFluxProfile):
+            raise TypeError(
+                f'The time_flux_profile property must be an instance of TimeFluxProfile! Its current type is '
+                f'{classname(profile)}.'
+            )
+        self._time_flux_profile = profile
+
+    def set_livetime(self, dataset_name: str, livetime: Livetime):
+        """Sets the Livetime instance for the given dataset.
+
+        Parameters
+        ----------
+        dataset_name
+            The name of the dataset.
+        livetime
+            The instance of Livetime providing the detector on-time intervals of
+            the dataset.
+        """
+        if not isinstance(livetime, Livetime):
+            raise TypeError(
+                f'The livetime argument must be an instance of Livetime! Its current type is {classname(livetime)}.'
+            )
+        self._livetimes[dataset_name] = livetime
+
+    def get_livetime(self, dataset: Dataset, data: DatasetData) -> Livetime:
+        """Retrieves the Livetime instance for the given dataset.
+
+        Parameters
+        ----------
+        dataset
+            The instance of Dataset.
+        data
+            The instance of DatasetData holding the data of the dataset.
+
+        Returns
+        -------
+        livetime
+            The instance of Livetime for the given dataset.
+        """
+        if dataset.name in self._livetimes:
+            return self._livetimes[dataset.name]
+
+        if isinstance(data.livetime, Livetime):
+            return data.livetime
+
+        raise KeyError(
+            f'No Livetime instance is available for dataset "{dataset.name}"! Set it via the set_livetime method of '
+            f'{classname(self)}.'
+        )
+
+    def _wrap(self, detsigyield: DetSigYield, dataset: Dataset, data: DatasetData) -> TimeDependentDetSigYield:
+        """Wraps the given time-integrated detector signal yield."""
+        return TimeDependentDetSigYield(
+            detsigyield=detsigyield,
+            livetime=self.get_livetime(dataset=dataset, data=data),
+            time_flux_profile=self._time_flux_profile,
+        )
+
+    def get_detsigyield_construction_factory(self) -> Callable | None:
+        """Returns the construction factory of the wrapped builder, which wraps
+        the constructed detector signal yields, if the wrapped builder provides
+        a factory. Otherwise ``None`` is returned.
+        """
+        factory = self._builder.get_detsigyield_construction_factory()
+        if factory is None:
+            return None
+
+        def wrapped_factory(dataset, data, shgs, ppbar):
+            detsigyields = factory(dataset=dataset, data=data, shgs=shgs, ppbar=ppbar)
+            return [self._wrap(detsigyield=dsy, dataset=dataset, data=data) for dsy in detsigyields]
+
+        return wrapped_factory
+
+    def construct_detsigyield(
+        self,
+        dataset: Dataset,
+        data: DatasetData,
+        shg: SourceHypoGroup_t,
+        ppbar: ProgressBar | None = None,
+    ) -> TimeDependentDetSigYield:
+        """Constructs the time-integrated detector signal yield with the wrapped
+        builder and wraps it into a TimeDependentDetSigYield instance.
+
+        Parameters
+        ----------
+        dataset
+            The instance of Dataset holding possible dataset specific settings.
+        data
+            The instance of DatasetData holding the monte-carlo event data.
+        shg
+            The instance of SourceHypoGroup (i.e. sources and flux model) for
+            which the detector signal yield should be constructed.
+        ppbar
+            The instance of ProgressBar of the optional parent progress bar.
+
+        Returns
+        -------
+        detsigyield
+            The instance of TimeDependentDetSigYield.
+        """
+        detsigyield = self._builder.construct_detsigyield(dataset=dataset, data=data, shg=shg, ppbar=ppbar)
+
+        return self._wrap(detsigyield=detsigyield, dataset=dataset, data=data)

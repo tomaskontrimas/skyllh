@@ -81,7 +81,14 @@ class BackgroundTimePDF(TimePDF, IsBackgroundPDF):
         # interval.
         on = self._livetime.is_on(times)
 
-        self._pd[on] = self._time_flux_profile(t=times[on]) / self._S
+        S = self.get_S()
+        if S <= 0:
+            raise ValueError(
+                f'The time flux profile {self._time_flux_profile} of the background time PDF does not overlap with any '
+                f'detector on-time interval of {self._livetime}!'
+            )
+
+        self._pd[on] = self._time_flux_profile(t=times[on]) / S
 
     def get_pd(
         self, tdm: TrialDataManager, params_recarray: np.ndarray | None = None, tl: TimeLord | None = None
