@@ -39,6 +39,8 @@ from skyllh.core.detsigyield import TimeDependentDetSigYield
 from skyllh.core.flux_model import (
     BoxTimeFluxProfile,
     GaussianTimeFluxProfile,
+    ProductTimeFluxProfile,
+    SumTimeFluxProfile,
     TabulatedTimeFluxProfile,
 )
 from skyllh.core.livetime import Livetime
@@ -46,6 +48,10 @@ from skyllh.core.random import RandomStateService
 from skyllh.core.signal_generator import TimeDependentMultiDatasetSignalGenerator
 from skyllh.core.source_model import PointLikeSource
 from skyllh.core.storage import DataFieldRecordArray
+from skyllh.core.time_profile_fit import (
+    do_trials_with_time_flux_profile_fit,
+    fit_time_flux_profile_params,
+)
 from skyllh.core.utils.flux_model import get_ontime_integral_of_TimeFluxProfile
 
 from .synthetic_data import (
@@ -439,6 +445,115 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
         for pdf in sig_time_pdfs:
             self.assertIsInstance(pdf.time_flux_profile, BoxTimeFluxProfile)
         np.testing.assert_allclose(np.sum(_get_ds_weights(ana)), 1.0)
+
+    def _inject(self, ana, mean_n_sig, seed):
+        (_, n_events_list, events_list) = ana.generate_pseudo_data(
+            rss=RandomStateService(seed=seed), mean_n_sig=mean_n_sig
+        )
+        ana.initialize_trial(events_list, n_events_list)
+
+    def test_fit_lightcurve_lag(self):
+        """The time lag of a lightcurve spanning two datasets must be
+        recovered, while the injected signal is not changed by the fit.
+        """
+        cfg = Config()
+        lc = TabulatedTimeFluxProfile(t=[59096.0, 59098.0, 59101.0, 59106.0], values=[0.0, 1.0, 0.5, 0.0], cfg=cfg)
+        inj = lc.copy({'lag': 1.5})
+        ana = self._create_td_analysis(
+            ['S1', 'S2'],
+            time_flux_profile=lc,
+            injection_time_flux_profile=inj,
+            evt_sel_time_window=(59090.0, 59112.0),
+        )
+
+        self._inject(ana, mean_n_sig=30, seed=13)
+        result = fit_time_flux_profile_params(
+            ana=ana, time_flux_profile=lc, param_ranges={'lag': (-4.0, 4.0)}, n_seeds=9
+        )
+
+        self.assertGreater(result['ts'], 25)
+        self.assertLess(abs(result['time_params']['lag'] - 1.5), 0.5)
+        self.assertAlmostEqual(lc.lag, result['time_params']['lag'], places=6)
+        self.assertAlmostEqual(inj.lag, 1.5, places=6)
+        self.assertEqual(set(result['global_params']), {'ns', 'gamma'})
+
+        # The fit cannot be better than the best seed.
+        for lag in np.linspace(-4, 4, 9):
+            lc.set_params({'lag': lag})
+            (log_lambda, fp, _) = ana.llhratio.maximize(RandomStateService(seed=1))
+            self.assertLessEqual(ana.calculate_test_statistic(log_lambda, fp), result['ts'] + 1e-6)
+
+        trials = do_trials_with_time_flux_profile_fit(
+            ana=ana, time_flux_profile=lc, param_ranges={'lag': (-4.0, 4.0)}, n=2, mean_n_sig=20, n_seeds=5, ncpu=1
+        )
+        self.assertEqual(len(trials), 2)
+        self.assertTrue(np.all((trials['lag'] >= -4) & (trials['lag'] <= 4)))
+        self.assertTrue(np.all(np.isfinite(trials['ts'])))
+        np.testing.assert_equal(trials['mean_n_sig'], [20, 20])
+
+    def test_fit_profile_with_profile_time_window_raises(self):
+        cfg = Config()
+        lc = TabulatedTimeFluxProfile(t=[59096.0, 59098.0, 59106.0], values=[0.0, 1.0, 0.0], cfg=cfg)
+        ana = self._create_td_analysis(['S1', 'S2'], time_flux_profile=lc, evt_sel_time_window=True)
+        self._inject(ana, mean_n_sig=5, seed=14)
+        with self.assertRaises(RuntimeError):
+            fit_time_flux_profile_params(ana=ana, time_flux_profile=lc, param_ranges={'lag': (-1.0, 1.0)})
+        with self.assertRaises(KeyError):
+            fit_time_flux_profile_params(ana=ana, time_flux_profile=lc, param_ranges={'t0': (-1.0, 1.0)})
+
+    def test_fit_gaussian_flare_with_em_seeds(self):
+        """The mean and width of a gaussian flare must be recovered by the
+        direct fit seeded by the expectation maximization.
+        """
+        ana = self._create_td_analysis(
+            ['S1', 'S2'],
+            gauss={'mu': 59100.0, 'sigma': 3.0},
+            injection_time_flux_profile=GaussianTimeFluxProfile(t0=59101.0, sigma_t=1.0, cfg=Config()),
+        )
+        profile = time_dependent_ps.get_signal_time_pdfs(ana)[0].time_flux_profile
+        self.assertTrue(all(pdf.time_flux_profile is profile for pdf in time_dependent_ps.get_signal_time_pdfs(ana)))
+
+        self._inject(ana, mean_n_sig=30, seed=15)
+        em_results = time_dependent_ps_em.run_gamma_scan_for_single_flare(ana=ana, n_gamma=3)
+        seeds = time_dependent_ps_em.em_results_to_time_flux_profile_seeds(em_results)
+        self.assertGreater(len(seeds), 0)
+
+        param_ranges = {'t0': (59080.0, 59120.0), 'sigma_t': (0.2, 10.0)}
+        seeds = [{k: float(np.clip(v, *param_ranges[k])) for (k, v) in seed.items()} for seed in seeds]
+        result = fit_time_flux_profile_params(
+            ana=ana, time_flux_profile=profile, param_ranges=param_ranges, seeds=seeds
+        )
+
+        self.assertGreater(result['ts'], 25)
+        self.assertLess(abs(result['time_params']['t0'] - 59101.0), 1.0)
+        self.assertLess(result['time_params']['sigma_t'], 3.0)
+
+    def test_fit_lightcurve_window_and_flare(self):
+        """A box window on a lightcurve and the weight of an additional flare
+        can be fitted.
+        """
+        cfg = Config()
+        lc = TabulatedTimeFluxProfile(t=[59080.0, 59100.0, 59120.0], values=[0.0, 1.0, 0.0], cfg=cfg)
+        window = BoxTimeFluxProfile(t0=59100.0, tw=6.0, cfg=cfg)
+        product = ProductTimeFluxProfile({'lc': lc, 'window': window}, cfg=cfg)
+        inj = product.copy({'window_t0': 59105.0})
+        ana = self._create_td_analysis(['S1', 'S2'], time_flux_profile=product, injection_time_flux_profile=inj)
+        self._inject(ana, mean_n_sig=30, seed=16)
+        result = fit_time_flux_profile_params(
+            ana=ana, time_flux_profile=product, param_ranges={'window_t0': (59085.0, 59115.0)}, n_seeds=11
+        )
+        self.assertLess(abs(result['time_params']['window_t0'] - 59105.0), 1.5)
+
+        flare = GaussianTimeFluxProfile(t0=59150.0, sigma_t=1.0, cfg=cfg)
+        total = SumTimeFluxProfile({'lc': lc.copy(), 'flare': flare}, weights={'flare': 1.0}, cfg=cfg)
+        inj = total.copy({'flare_weight': 10.0})
+        ana = self._create_td_analysis(['S1', 'S2'], time_flux_profile=total, injection_time_flux_profile=inj)
+        self._inject(ana, mean_n_sig=30, seed=17)
+        result = fit_time_flux_profile_params(
+            ana=ana, time_flux_profile=total, param_ranges={'flare_weight': (0.0, 30.0)}, n_seeds=7
+        )
+        self.assertTrue(np.isfinite(result['ts']))
+        self.assertGreater(result['time_params']['flare_weight'], 2.0)
 
 
 class TimeDependentPSModuleTestCase(unittest.TestCase):

@@ -105,3 +105,35 @@ Frequently Asked Questions (FAQ)
     SkyLLH does not check for common events. A combined dataset, e.g.
     ``IC86_I-XI`` of the IceTracks-DR2 release, must not be used together with its
     individual seasons, e.g. ``IC86_VII``.
+
+.. dropdown:: How can I fit the time lag of a lightcurve, or the parameters of a gaussian or box profile?
+   :icon: question
+
+    Any parameter of the time flux profile of the signal hypothesis can be fitted
+    together with the global fit parameters, e.g. ns and gamma, via
+    :py:func:`~skyllh.core.time_profile_fit.fit_time_flux_profile_params`. It
+    maximizes the profile log-likelihood ratio by evaluating a grid of seeds and
+    refining the best seeds with a bounded minimization. Trials are generated via
+    :py:func:`~skyllh.core.time_profile_fit.do_trials_with_time_flux_profile_fit`.
+    Examples of fitted parameters are
+
+    - the ``lag`` of a :py:class:`~skyllh.core.flux_model.TabulatedTimeFluxProfile`,
+    - ``t0`` and ``sigma_t`` of a
+      :py:class:`~skyllh.core.flux_model.GaussianTimeFluxProfile`, or ``t0`` and
+      ``tw`` of a :py:class:`~skyllh.core.flux_model.BoxTimeFluxProfile`,
+    - the parameters of the components of a
+      :py:class:`~skyllh.core.flux_model.ProductTimeFluxProfile`, e.g. a time
+      window applied to a lightcurve, or of a
+      :py:class:`~skyllh.core.flux_model.SumTimeFluxProfile`, e.g. the weight of an
+      additional flare. The parameters are named ``<component>_<parameter>``.
+
+    For gaussian flares, the expectation maximization of the
+    :py:mod:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps_em` module can be
+    used instead, or to provide the seeds of the fit via
+    :py:func:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps_em.em_results_to_time_flux_profile_seeds`.
+
+    The time flux profile passed to the fit must be the instance used by the
+    analysis for the signal hypothesis. The injected signal uses an independent
+    copy by default, which is not changed by the fit. If the time window event
+    selection is used, it must use a fixed time range covering all tested time
+    flux profiles, e.g. ``evt_sel_time_window=(t_min, t_max)``.

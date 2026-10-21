@@ -352,7 +352,8 @@ def change_time_flux_profile(
         if _uses_time_window_event_selection(evt_sel_method):
             raise RuntimeError(
                 'The time flux profile of the signal hypothesis cannot be changed, because the analysis uses a time '
-                'window event selection! Create the analysis with evt_sel_time_window=False.'
+                'window event selection based on the time flux profile! Create the analysis with '
+                'evt_sel_time_window=False, or with a fixed time range covering all tested time flux profiles.'
             )
 
     for sig_time_pdf in get_signal_time_pdfs(ana):
@@ -390,10 +391,10 @@ def change_injection_time_flux_profile(
 
 def _uses_time_window_event_selection(evt_sel_method) -> bool:
     """Checks if the given event selection method is or contains a time window
-    event selection method.
+    event selection method, whose time range is given by a time flux profile.
     """
     if isinstance(evt_sel_method, TimeWindowEventSelectionMethod):
-        return True
+        return evt_sel_method.time_flux_profile is not None
     if isinstance(evt_sel_method, IntersectionEventSelectionMethod):
         return _uses_time_window_event_selection(evt_sel_method.evt_sel_method1) or (
             _uses_time_window_event_selection(evt_sel_method.evt_sel_method2)
@@ -494,7 +495,7 @@ def create_analysis(
     compress_data: bool = False,
     keep_data_fields: list[str] | None = None,
     evt_sel_delta_angle_deg: float = 10,
-    evt_sel_time_window: bool = False,
+    evt_sel_time_window: bool | tuple[float, float] = False,
     pdfratio_factories: dict[str, Callable[..., PDFRatio]] | None = None,
     construct_bkg_generator: bool = True,
     construct_sig_generator: bool = True,
@@ -549,8 +550,8 @@ def create_analysis(
         ``box`` and ``gauss`` must be ``None``.
     injection_time_flux_profile
         The optional instance of TimeFluxProfile describing the time dependence
-        of the injected signal. If set to ``None``, the time flux profile of
-        the signal hypothesis is used.
+        of the injected signal. If set to ``None``, a copy of the time flux
+        profile of the signal hypothesis is used.
     refplflux_Phi0
         The flux normalization to use for the reference power law flux model.
     refplflux_E0
@@ -591,9 +592,11 @@ def create_analysis(
         Flag if only events within the time range of the time flux profile of
         the signal hypothesis should be selected for the likelihood evaluation.
         This speeds up the analysis significantly for short time flux profiles.
-        It can only be used if the time flux profile of the signal hypothesis
-        is not changed after the creation of the analysis, i.e. not for the
-        expectation maximization based flare search.
+        If set to ``True``, the time flux profile of the signal hypothesis must
+        not be changed after the creation of the analysis. If the time flux
+        profile is changed or fitted, e.g. its time lag, a fixed
+        ``(t_min, t_max)`` time range covering all tested time flux profiles can
+        be given instead.
     pdfratio_factories
         The optional dictionary mapping dataset names to callables creating
         the product of the spatial and energy PDF ratios for the respective
@@ -648,8 +651,11 @@ def create_analysis(
                 f'Its current type is {type(time_flux_profile).__name__}.'
             )
 
+    # The time flux profile of the injected signal is an independent copy of
+    # the time flux profile of the signal hypothesis by default, so that changing
+    # or fitting the signal hypothesis does not change the injected signal.
     if injection_time_flux_profile is None:
-        injection_time_flux_profile = time_flux_profile
+        injection_time_flux_profile = time_flux_profile.copy()
     elif not isinstance(injection_time_flux_profile, TimeFluxProfile):
         raise TypeError(
             'The injection_time_flux_profile argument must be an instance of TimeFluxProfile! '
@@ -749,7 +755,11 @@ def create_analysis(
     event_selection_method = SpatialBoxEventSelectionMethod(
         shg_mgr=shg_mgr, delta_angle=np.deg2rad(evt_sel_delta_angle_deg)
     )
-    if evt_sel_time_window:
+    if isinstance(evt_sel_time_window, tuple):
+        event_selection_method = event_selection_method & TimeWindowEventSelectionMethod(
+            shg_mgr=shg_mgr, time_range=evt_sel_time_window
+        )
+    elif evt_sel_time_window:
         event_selection_method = event_selection_method & TimeWindowEventSelectionMethod(
             shg_mgr=shg_mgr, time_flux_profile=time_flux_profile
         )

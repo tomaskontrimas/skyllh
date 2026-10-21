@@ -27,10 +27,15 @@ bkg_ts
     The background TS distribution for the tabulated lightcurve is reported:
     the fraction of trials with TS=0 and a chi2 fit of the TS>0 part.
 
+lag_fit
+    Signal is injected with the tabulated lightcurve shifted by a time lag,
+    and the time lag is fitted together with ns and gamma. The distribution of
+    the fitted time lags and numbers of signal events is reported.
+
 Usage example::
 
     python validate_time_dependent_ps.py --data-basepath /path/to/data \\
-        --checks full_livetime season_split injection_recovery bkg_ts \\
+        --checks full_livetime season_split injection_recovery bkg_ts lag_fit \\
         --lightcurve my_lightcurve.txt --ra 77.36 --dec 5.69
 
 The lightcurve file must contain two columns: the MJD time and the (relative)
@@ -59,6 +64,7 @@ from skyllh.core.flux_model import (
 )
 from skyllh.core.random import RandomStateService
 from skyllh.core.source_model import PointLikeSource
+from skyllh.core.time_profile_fit import do_trials_with_time_flux_profile_fit
 from skyllh.core.utils.flux_model import get_ontime_integral_of_TimeFluxProfile
 
 DatasetsFactory = Callable[[Config, list[str]], list[Dataset]]
@@ -308,6 +314,59 @@ def check_bkg_ts(
     return result
 
 
+def check_lag_fit(
+    datasets_factory: DatasetsFactory,
+    names: list[str],
+    source: PointLikeSource,
+    profile_factory: Callable[[Config], TimeFluxProfile],
+    injected_lag: float,
+    lag_range: tuple[float, float],
+    mean_n_sig: float,
+    n_trials: int,
+    seed: int,
+    ncpu: int | None,
+):
+    """Injects signal with a lagged lightcurve and fits the time lag."""
+    cfg = Config()
+    profile = profile_factory(cfg)
+    if 'lag' not in profile.param_names:
+        raise ValueError('The lag_fit check requires a time flux profile with a "lag" parameter!')
+    injection_profile = profile.copy({'lag': profile.get_param('lag') + injected_lag})
+    time_range = (profile.t_start + lag_range[0], profile.t_stop + lag_range[1])
+
+    ana = time_dependent_ps.create_analysis(
+        cfg=cfg,
+        datasets=datasets_factory(cfg, names),
+        source=source,
+        time_flux_profile=profile,
+        injection_time_flux_profile=injection_profile,
+        evt_sel_time_window=time_range,
+    )
+    trials = do_trials_with_time_flux_profile_fit(
+        ana=ana,
+        time_flux_profile=profile,
+        param_ranges={'lag': lag_range},
+        n=n_trials,
+        mean_n_sig=mean_n_sig,
+        seed=seed,
+        ncpu=ncpu,
+        n_seeds=max(5, int(np.ceil((lag_range[1] - lag_range[0]) / max(profile.duration / 10, 1e-6))) + 1),
+    )
+    result = {
+        'injected_lag': injected_lag,
+        'mean_n_sig': mean_n_sig,
+        'mean_n_injected': float(np.mean(trials['n_sig'])),
+        'lag_fit_median': float(np.median(trials['lag'])),
+        'lag_fit_mean': float(np.mean(trials['lag'])),
+        'lag_fit_std': float(np.std(trials['lag'])),
+        'lag_fit_68_interval': [float(np.quantile(trials['lag'], 0.16)), float(np.quantile(trials['lag'], 0.84))],
+        'mean_ns_fit': float(np.mean(trials['ns'])),
+        'median_ts': float(np.median(trials['ts'])),
+        'passed': True,
+    }
+    return result
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--collection', default='IceTracks-DR2')
@@ -315,7 +374,7 @@ def main(argv=None) -> int:
     parser.add_argument(
         '--checks',
         nargs='*',
-        default=['full_livetime', 'season_split', 'injection_recovery', 'bkg_ts'],
+        default=['full_livetime', 'season_split', 'injection_recovery', 'bkg_ts', 'lag_fit'],
     )
     parser.add_argument('--names', nargs='*', default=['IC40', 'IC59', 'IC79', 'IC86_I-XI'])
     parser.add_argument('--combined-name', default='IC86_I-XI')
@@ -332,6 +391,9 @@ def main(argv=None) -> int:
     parser.add_argument('--t-decay', type=float, default=5.0, help='Decay time in days of the FRED lightcurve.')
     parser.add_argument('--sigma-t', type=float, default=20.0, help='Width in days of the season split profile.')
     parser.add_argument('--n-sig', type=float, nargs='*', default=[0, 3, 6, 12])
+    parser.add_argument('--injected-lag', type=float, default=1.0, help='The injected time lag in days.')
+    parser.add_argument('--lag-range', type=float, nargs=2, default=[-5.0, 5.0], help='The fitted lag range.')
+    parser.add_argument('--lag-n-sig', type=float, default=10, help='The mean number of signal events.')
     parser.add_argument('--n-trials', type=int, default=200)
     parser.add_argument('--n-bkg-trials', type=int, default=2000)
     parser.add_argument('--ncpu', type=int, default=None)
@@ -361,6 +423,9 @@ def main(argv=None) -> int:
         n_sig_list=args.n_sig,
         n_trials=args.n_trials,
         n_bkg_trials=args.n_bkg_trials,
+        injected_lag=args.injected_lag,
+        lag_range=tuple(args.lag_range),
+        lag_n_sig=args.lag_n_sig,
         seed=args.seed,
         ncpu=args.ncpu,
         output=args.output,
@@ -382,6 +447,9 @@ def run_checks(
     seed: int,
     ncpu: int | None,
     output: str | None = None,
+    injected_lag: float = 1.0,
+    lag_range: tuple[float, float] = (-5.0, 5.0),
+    lag_n_sig: float = 10,
 ) -> int:
     """Runs the given checks, prints the results, and returns the exit code."""
     results = {}
@@ -397,6 +465,19 @@ def run_checks(
             )
         elif check == 'bkg_ts':
             results[check] = check_bkg_ts(datasets_factory, names, source, profile_factory, n_bkg_trials, seed, ncpu)
+        elif check == 'lag_fit':
+            results[check] = check_lag_fit(
+                datasets_factory,
+                names,
+                source,
+                profile_factory,
+                injected_lag,
+                lag_range,
+                lag_n_sig,
+                n_trials,
+                seed,
+                ncpu,
+            )
         else:
             raise ValueError(f'Unknown check "{check}"!')
         print(json.dumps(results[check], indent=2), flush=True)

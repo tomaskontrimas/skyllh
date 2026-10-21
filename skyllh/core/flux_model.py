@@ -1915,13 +1915,14 @@ class TabulatedTimeFluxProfile(
     tabulated times the profile is interpolated linearly. Outside the tabulated
     time range the profile is zero.
 
-    The profile can be moved in time, which allows e.g. to introduce a time lag
-    w.r.t. the reference time of the lightcurve. It has the following
-    parameter:
+    The profile can be moved in time, which allows to introduce a time lag
+    w.r.t. the times of the given lightcurve, e.g. to fit the time lag. It has
+    the following parameter:
 
-        t_start : float
-            The start time of the profile, i.e. the time of the first tabulated
-            value. Changing it moves the entire profile in time.
+        lag : float
+            The time lag of the profile w.r.t. the given tabulated times.
+            Changing it moves the entire profile in time. It is zero for the
+            given tabulated times.
 
     .. note::
 
@@ -1972,6 +1973,7 @@ class TabulatedTimeFluxProfile(
         # Store the tabulated times relative to the first time. The absolute
         # position of the profile is given by t_start.
         self._t_rel = t - t[0]
+        self._t_ref = t[0]
         self._values = values
 
         # The slopes of the linear segments between the tabulated points.
@@ -1985,7 +1987,19 @@ class TabulatedTimeFluxProfile(
 
         # Define the parameters which can be set via the `set_params`
         # method.
-        self.param_names = ('t_start',)
+        self.param_names = ('lag',)
+
+    @property
+    def lag(self) -> float:
+        """The time lag of the profile w.r.t. the given tabulated times.
+        Setting it moves the entire profile in time.
+        """
+        return self._t_start - self._t_ref
+
+    @lag.setter
+    def lag(self, dt):
+        dt = float_cast(dt, f'The lag property must be castable to type float! Its current type is {classname(dt)}!')
+        self.t_start = self._t_ref + dt
 
     @property
     def t_start(self):
@@ -2165,6 +2179,453 @@ class TabulatedTimeFluxProfile(
 
         integral = self._get_cum_integral(t2) - self._get_cum_integral(t1)
 
+        return integral
+
+
+class CompositeTimeFluxProfile(
+    TimeFluxProfile,
+    metaclass=abc.ABCMeta,
+):
+    """Abstract base class for a time flux profile composed of several named
+    time flux profiles, e.g. the product of a lightcurve and a time window, or
+    the sum of a lightcurve and a flare.
+
+    The parameters of the component profiles are accessible via the names
+    ``<component name>_<parameter name>``, e.g. ``window_t0`` for the parameter
+    ``t0`` of the component named ``window``. Hence, they can be set via the
+    :meth:`set_params` method and be fitted.
+
+    The start and stop times of the composite profile are determined by its
+    components. Moving the composite profile moves all its components.
+    """
+
+    def __init__(
+        self,
+        profiles: dict[str, TimeFluxProfile],
+        time_unit: units.UnitBase | None = None,
+        **kwargs,
+    ):
+        """Creates a new composite time flux profile.
+
+        Parameters
+        ----------
+        profiles
+            The dictionary mapping the component names to the TimeFluxProfile
+            instances. The names must be valid Python identifiers.
+        time_unit
+            The used unit for time. If set to ``None``, the configured default
+            time unit for fluxes is used.
+        """
+        if not isinstance(profiles, dict) or len(profiles) == 0:
+            raise TypeError('The profiles argument must be a non-empty dictionary of TimeFluxProfile instances!')
+        for name, profile in profiles.items():
+            if not isinstance(name, str) or not name.isidentifier():
+                raise ValueError(f'The component name "{name}" must be a valid identifier!')
+            if not isinstance(profile, TimeFluxProfile):
+                raise TypeError(
+                    f'The component "{name}" must be an instance of TimeFluxProfile! '
+                    f'Its current type is {classname(profile)}.'
+                )
+
+        self._profiles = dict(profiles)
+
+        super().__init__(t_start=self.t_start, t_stop=self.t_stop, time_unit=time_unit, **kwargs)
+
+        self._param_names = self._get_component_param_names()
+
+    @property
+    def profiles(self) -> dict[str, TimeFluxProfile]:
+        """(read-only) The dictionary of the component time flux profiles."""
+        return self._profiles
+
+    def _get_component_param_names(self) -> tuple[str, ...]:
+        """Returns the prefixed parameter names of the component profiles."""
+        return tuple(f'{name}_{pname}' for (name, profile) in self._profiles.items() for pname in profile.param_names)
+
+    def _split_param_name(self, name: str) -> tuple[TimeFluxProfile, str] | None:
+        """Splits the given prefixed parameter name into the component profile
+        and its parameter name.
+        """
+        for cname, profile in self._profiles.items():
+            prefix = f'{cname}_'
+            if name.startswith(prefix) and name[len(prefix) :] in profile.param_names:
+                return (profile, name[len(prefix) :])
+        return None
+
+    @property
+    def param_names(self):
+        """The tuple holding the names of the parameters of this composite time
+        flux profile.
+        """
+        return self._param_names
+
+    @param_names.setter
+    def param_names(self, names):
+        # The parameter names of a composite time flux profile are determined
+        # by its components.
+        self._param_names = tuple(names)
+
+    def get_param(self, name: str) -> float:
+        """Retrieves the value of the given parameter. It returns ``np.nan`` if
+        the parameter does not exist.
+        """
+        split = self._split_param_name(name)
+        if split is None:
+            return super().get_param(name)
+        (profile, pname) = split
+        return profile.get_param(pname)
+
+    def set_params(self, pdict: dict) -> bool:
+        """Sets the parameters of the component profiles to the given values.
+
+        Parameters
+        ----------
+        pdict
+            The dictionary holding the prefixed names of the parameters and
+            their new values.
+
+        Returns
+        -------
+        updated
+            Flag if parameter values were actually updated.
+        """
+        if not isinstance(pdict, dict):
+            raise TypeError('The pdict argument must be of type dict!')
+
+        updated = False
+        for name, value in pdict.items():
+            split = self._split_param_name(name)
+            if split is None:
+                continue
+            (profile, pname) = split
+            updated |= profile.set_params({pname: value})
+
+        return updated
+
+    @property
+    def state(self) -> tuple:
+        """(read-only) The tuple describing the current state of the composite
+        time flux profile, i.e. the states of its components.
+        """
+        return tuple(profile.state for profile in self._profiles.values())
+
+    def _set_t_start_t_stop(self, name, t, current):
+        """Checks that the start or stop time is not changed."""
+        t = float_cast(t, f'The {name} property must be castable to type float! Its current type is {classname(t)}!')
+        if t != current:
+            raise AttributeError(
+                f'The {name} property of a {classname(self)} is determined by its component profiles. Change the '
+                'component profiles instead.'
+            )
+
+    @property
+    def t_start(self):
+        """(read-only) The start time of the composite profile."""
+        return self._get_t_start()
+
+    @t_start.setter
+    def t_start(self, t):
+        self._set_t_start_t_stop('t_start', t, self.t_start)
+
+    @property
+    def t_stop(self):
+        """(read-only) The stop time of the composite profile."""
+        return self._get_t_stop()
+
+    @t_stop.setter
+    def t_stop(self, t):
+        self._set_t_start_t_stop('t_stop', t, self.t_stop)
+
+    @property
+    def duration(self):
+        """(read-only) The duration of the composite profile."""
+        return self.t_stop - self.t_start
+
+    @abc.abstractmethod
+    def _get_t_start(self) -> float:
+        """Returns the start time of the composite profile."""
+
+    @abc.abstractmethod
+    def _get_t_stop(self) -> float:
+        """Returns the stop time of the composite profile."""
+
+    def get_total_integral(self) -> 'float | np.ndarray':
+        """Calculates the total integral of the composite time profile."""
+        if not (self.t_stop > self.t_start):
+            return 0.0
+        return np.asarray(self.get_integral(self.t_start, self.t_stop)).squeeze()
+
+    def cdf(
+        self,
+        t: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Calculates the cumulative distribution function values for the given
+        time values ``t``.
+        """
+        t = np.atleast_1d(np.asarray(t, dtype=np.float64))
+        total = float(np.asarray(self.get_total_integral()).squeeze())
+        if total == 0:
+            return np.zeros_like(t)
+        t_start = np.full_like(t, self.t_start)
+        tc = np.clip(t, self.t_start, self.t_stop)
+        return np.asarray(self.get_integral(t_start, tc, unit=unit)) / total
+
+    def move(
+        self,
+        dt: float,
+        unit: units.UnitBase | None = None,
+    ):
+        """Moves all component profiles by the given amount of time."""
+        for profile in self._profiles.values():
+            profile.move(dt, unit=unit)
+
+
+class ProductTimeFluxProfile(
+    CompositeTimeFluxProfile,
+):
+    """This class describes the product of several time flux profiles, e.g. a
+    neutrino lightcurve multiplied with a gaussian or box shaped time window,
+    whose position and width can be fitted to determine the active part of the
+    lightcurve.
+
+    The integral of the product is calculated numerically by tabulating the
+    product on a grid, which includes the tabulated times and the start and
+    stop times of the components, and ``n_grid`` equidistant times. The
+    tabulation is recalculated automatically when a component changes.
+    """
+
+    def __init__(
+        self,
+        profiles: dict[str, TimeFluxProfile],
+        n_grid: int = 5000,
+        time_unit: units.UnitBase | None = None,
+        **kwargs,
+    ):
+        """Creates a new product of time flux profiles.
+
+        Parameters
+        ----------
+        profiles
+            The dictionary mapping the component names to the TimeFluxProfile
+            instances.
+        n_grid
+            The number of equidistant grid points for the numerical integration.
+        time_unit
+            The used unit for time. If set to ``None``, the configured default
+            time unit for fluxes is used.
+        """
+        self._n_grid = int(n_grid)
+        self._tabulation = None
+        self._tabulation_state = None
+
+        super().__init__(profiles=profiles, time_unit=time_unit, **kwargs)
+
+    @property
+    def math_function_str(self):
+        """The string representation of the mathematical function."""
+        return ' * '.join(f'({profile.math_function_str})' for profile in self._profiles.values())
+
+    def _get_t_start(self) -> float:
+        return max(profile.t_start for profile in self._profiles.values())
+
+    def _get_t_stop(self) -> float:
+        return min(profile.t_stop for profile in self._profiles.values())
+
+    def __call__(
+        self,
+        t: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Returns the product of the component profile values for the given
+        time(s).
+        """
+        t = np.atleast_1d(np.asarray(t, dtype=np.float64))
+        values = np.ones_like(t)
+        for profile in self._profiles.values():
+            values = values * profile(t=t, unit=unit)
+        m = (t >= self.t_start) & (t <= self.t_stop)
+        return np.where(m, values, 0)
+
+    def _get_tabulation(self) -> 'TabulatedTimeFluxProfile | None':
+        """Returns the tabulation of the product, which is recalculated if a
+        component has changed. It returns ``None`` if the product is zero
+        everywhere.
+        """
+        state = self.state
+        if state == self._tabulation_state:
+            return self._tabulation
+
+        (t_start, t_stop) = (self.t_start, self.t_stop)
+        self._tabulation_state = state
+        self._tabulation = None
+        if not (t_stop > t_start):
+            return None
+        if not (np.isfinite(t_start) and np.isfinite(t_stop)):
+            raise ValueError(f'The product of time flux profiles {self} must have a finite time range!')
+
+        grid = [np.linspace(t_start, t_stop, self._n_grid)]
+        for profile in self._profiles.values():
+            for t in (profile.t_start, profile.t_stop):
+                if t_start < t < t_stop:
+                    grid.append(np.array([np.nextafter(t, -np.inf), t, np.nextafter(t, np.inf)]))
+            times = getattr(profile, 'times', None)
+            if times is not None:
+                grid.append(times[(times > t_start) & (times < t_stop)])
+        t = np.unique(np.concatenate(grid))
+        values = self(t)
+        if np.all(values == 0):
+            return None
+
+        self._tabulation = TabulatedTimeFluxProfile(t=t, values=values, cfg=self._cfg)
+        return self._tabulation
+
+    def get_integral(
+        self,
+        t1: float | np.ndarray,
+        t2: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Calculates the integral of the product from time ``t1`` to time
+        ``t2`` numerically.
+        """
+        tab = self._get_tabulation()
+        t1 = np.atleast_1d(np.asarray(t1, dtype=np.float64))
+        t2 = np.atleast_1d(np.asarray(t2, dtype=np.float64))
+        if tab is None:
+            return np.zeros(np.broadcast(t1, t2).shape, dtype=np.float64)
+        return tab.get_integral(t1, t2, unit=unit)
+
+
+class SumTimeFluxProfile(
+    CompositeTimeFluxProfile,
+):
+    """This class describes the weighted sum of several time flux profiles,
+    e.g. a neutrino lightcurve plus an additional gaussian or box shaped flare,
+    i.e. ``T(t) = sum_i w_i T_i(t)``.
+
+    Besides the parameters of the components, the weight of each component is
+    a parameter named ``<component name>_weight``, which can be fitted, e.g. to
+    determine the relative strength of a flare.
+    """
+
+    def __init__(
+        self,
+        profiles: dict[str, TimeFluxProfile],
+        weights: dict[str, float] | None = None,
+        time_unit: units.UnitBase | None = None,
+        **kwargs,
+    ):
+        """Creates a new weighted sum of time flux profiles.
+
+        Parameters
+        ----------
+        profiles
+            The dictionary mapping the component names to the TimeFluxProfile
+            instances.
+        weights
+            The optional dictionary mapping the component names to their
+            non-negative weights. The default weight is 1.
+        time_unit
+            The used unit for time. If set to ``None``, the configured default
+            time unit for fluxes is used.
+        """
+        if weights is None:
+            weights = {}
+        unknown = set(weights) - set(profiles)
+        if unknown:
+            raise KeyError(f'The weights of unknown components {sorted(unknown)} were given!')
+
+        self._weights = {name: float(weights.get(name, 1.0)) for name in profiles}
+        for name, w in self._weights.items():
+            if w < 0:
+                raise ValueError(f'The weight of the component "{name}" must be non-negative!')
+
+        super().__init__(profiles=profiles, time_unit=time_unit, **kwargs)
+
+        self._param_names = self._get_component_param_names() + tuple(f'{name}_weight' for name in self._profiles)
+
+    @property
+    def weights(self) -> dict[str, float]:
+        """(read-only) The dictionary of the component weights."""
+        return dict(self._weights)
+
+    @property
+    def math_function_str(self):
+        """The string representation of the mathematical function."""
+        return ' + '.join(
+            f'{self._weights[name]:g} * ({profile.math_function_str})' for (name, profile) in self._profiles.items()
+        )
+
+    def _get_weight_name(self, name: str) -> str | None:
+        """Returns the component name if the given name is a weight parameter."""
+        if name.endswith('_weight') and name[: -len('_weight')] in self._profiles:
+            return name[: -len('_weight')]
+        return None
+
+    def get_param(self, name: str) -> float:
+        """Retrieves the value of the given parameter."""
+        cname = self._get_weight_name(name)
+        if cname is not None:
+            return self._weights[cname]
+        return super().get_param(name)
+
+    def set_params(self, pdict: dict) -> bool:
+        """Sets the parameters of the components and the component weights to
+        the given values.
+        """
+        updated = super().set_params({k: v for (k, v) in pdict.items() if self._get_weight_name(k) is None})
+        for name, value in pdict.items():
+            cname = self._get_weight_name(name)
+            if cname is None:
+                continue
+            value = float_cast(value, f'The weight "{name}" must be castable to type float!')
+            if value < 0:
+                raise ValueError(f'The weight "{name}" must be non-negative!')
+            if value != self._weights[cname]:
+                self._weights[cname] = value
+                updated = True
+        return updated
+
+    @property
+    def state(self) -> tuple:
+        """(read-only) The tuple describing the current state of the sum."""
+        return (*super().state, *self._weights.values())
+
+    def _get_t_start(self) -> float:
+        return min(profile.t_start for profile in self._profiles.values())
+
+    def _get_t_stop(self) -> float:
+        return max(profile.t_stop for profile in self._profiles.values())
+
+    def __call__(
+        self,
+        t: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Returns the weighted sum of the component profile values."""
+        t = np.atleast_1d(np.asarray(t, dtype=np.float64))
+        values = np.zeros_like(t)
+        for name, profile in self._profiles.items():
+            if self._weights[name] != 0:
+                values = values + self._weights[name] * profile(t=t, unit=unit)
+        return values
+
+    def get_integral(
+        self,
+        t1: float | np.ndarray,
+        t2: float | np.ndarray,
+        unit: units.UnitBase | None = None,
+    ) -> np.ndarray:
+        """Calculates the weighted sum of the integrals of the components from
+        time ``t1`` to time ``t2``.
+        """
+        t1 = np.atleast_1d(np.asarray(t1, dtype=np.float64))
+        t2 = np.atleast_1d(np.asarray(t2, dtype=np.float64))
+        integral = np.zeros(np.broadcast(t1, t2).shape, dtype=np.float64)
+        for name, profile in self._profiles.items():
+            if self._weights[name] != 0:
+                integral = integral + self._weights[name] * np.asarray(profile.get_integral(t1, t2, unit=unit))
         return integral
 
 

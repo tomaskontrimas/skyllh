@@ -578,6 +578,40 @@ def do_trials_with_em(
     return trials
 
 
+def em_results_to_time_flux_profile_seeds(
+    em_results: np.ndarray,
+    t0_name: str = 't0',
+    sigma_name: str = 'sigma_t',
+) -> list[dict[str, float]]:
+    """Converts the results of the expectation maximization gamma scan into
+    seeds for the direct fit of the parameters of a gaussian time flux profile
+    via :func:`skyllh.core.time_profile_fit.fit_time_flux_profile_params`.
+
+    Parameters
+    ----------
+    em_results
+        The numpy structured ndarray holding the EM results, as returned by
+        :func:`run_gamma_scan_for_single_flare`.
+    t0_name
+        The name of the time flux profile parameter for the mean of the flare,
+        e.g. ``'window_t0'`` for a gaussian window of a product profile.
+    sigma_name
+        The name of the time flux profile parameter for the width of the flare.
+
+    Returns
+    -------
+    seeds
+        The list of unique seeds.
+    """
+    seeds = []
+    for em_result in em_results:
+        seed = {t0_name: float(em_result['mu']), sigma_name: float(em_result['sigma'])}
+        if np.all(np.isfinite(list(seed.values()))) and seed not in seeds:
+            seeds.append(seed)
+
+    return seeds
+
+
 __all__ = (
     'TXS_0506_PLUS056_ALERT_TIME',
     'TXS_0506_PLUS056_SOURCE',
@@ -588,6 +622,7 @@ __all__ = (
     'create_analysis',
     'do_trial_with_em',
     'do_trials_with_em',
+    'em_results_to_time_flux_profile_seeds',
     'get_energy_spatial_signal_over_background',
     'get_signal_time_pdfs',
     'run_gamma_scan_for_single_flare',

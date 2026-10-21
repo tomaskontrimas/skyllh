@@ -1339,13 +1339,15 @@ class AngErrOfPsiEventSelectionMethod(SpatialEventSelectionMethod):
 class TimeWindowEventSelectionMethod(EventSelectionMethod):
     """This event selection method selects events, whose time lies within the
     time range of a time flux profile, i.e. within ``[t_start, t_stop]`` of the
-    profile. Events outside this time range have a signal time probability
+    profile, or within a fixed time range. Events outside this time range have a signal time probability
     density of zero and do not contribute to the signal part of the
     log-likelihood ratio function.
 
     This event selection method is supposed to be used for time-dependent
     analyses with a time flux profile, whose time range does not change during
-    the likelihood maximization. It can be combined with a spatial event
+    the likelihood maximization. If the time flux profile is moved, e.g. when
+    fitting a time lag, a fixed time range covering all tested time flux
+    profiles must be used. It can be combined with a spatial event
     selection method via the ``&`` operator, e.g.
     ``SpatialBoxEventSelectionMethod(...) & TimeWindowEventSelectionMethod(...)``.
 
@@ -1360,7 +1362,8 @@ class TimeWindowEventSelectionMethod(EventSelectionMethod):
     def __init__(
         self,
         shg_mgr: SourceHypoGroupManager | None,
-        time_flux_profile: TimeFluxProfile,
+        time_flux_profile: TimeFluxProfile | None = None,
+        time_range: tuple[float, float] | None = None,
         **kwargs,
     ):
         """Creates a new time window event selection method instance.
@@ -1374,16 +1377,34 @@ class TimeWindowEventSelectionMethod(EventSelectionMethod):
             method.
         time_flux_profile
             The instance of TimeFluxProfile, which defines the time range of
-            the selected events.
+            the selected events. Either ``time_flux_profile`` or ``time_range``
+            must be specified.
+        time_range
+            The fixed (t_min, t_max) time range of the selected events. This
+            can be used if the time flux profile is moved during the analysis,
+            e.g. when fitting a time lag, by specifying the range covering all
+            tested time flux profiles. Either ``time_flux_profile`` or
+            ``time_range`` must be specified.
         """
         super().__init__(shg_mgr=shg_mgr, **kwargs)
 
-        self.time_flux_profile = time_flux_profile
+        if (time_flux_profile is None) == (time_range is None):
+            raise ValueError('Exactly one of the time_flux_profile and time_range arguments must be specified!')
+
+        self._time_flux_profile = None
+        self._time_range = None
+        if time_flux_profile is not None:
+            self.time_flux_profile = time_flux_profile
+        else:
+            assert time_range is not None
+            if time_range[0] > time_range[1]:
+                raise ValueError(f'The time range {time_range} must be ascending!')
+            self._time_range = (float(time_range[0]), float(time_range[1]))
 
     @property
-    def time_flux_profile(self):
+    def time_flux_profile(self) -> TimeFluxProfile | None:
         """The instance of TimeFluxProfile, which defines the time range of the
-        selected events.
+        selected events, or ``None`` if a fixed time range is used.
         """
         return self._time_flux_profile
 
@@ -1395,6 +1416,15 @@ class TimeWindowEventSelectionMethod(EventSelectionMethod):
                 f'Its current type is {classname(profile)}.'
             )
         self._time_flux_profile = profile
+        self._time_range = None
+
+    @property
+    def time_range(self) -> tuple[float, float]:
+        """(read-only) The (t_min, t_max) time range of the selected events."""
+        if self._time_flux_profile is not None:
+            return (self._time_flux_profile.t_start, self._time_flux_profile.t_stop)
+        assert self._time_range is not None
+        return self._time_range
 
     @overload
     def select_events(
@@ -1458,7 +1488,8 @@ class TimeWindowEventSelectionMethod(EventSelectionMethod):
         """
         with TaskTimer(tl, 'ESM: Calculate time window mask.'):
             times = events['time']
-            mask = (times >= self._time_flux_profile.t_start) & (times <= self._time_flux_profile.t_stop)
+            (t_min, t_max) = self.time_range
+            mask = (times >= t_min) & (times <= t_max)
 
         with TaskTimer(tl, 'ESM: Create selected_events.'):
             selected_events_idxs = events.indices[mask]

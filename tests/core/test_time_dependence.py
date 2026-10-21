@@ -30,6 +30,8 @@ from skyllh.core.flux_model import (
     BoxTimeFluxProfile,
     FluxModel,
     GaussianTimeFluxProfile,
+    ProductTimeFluxProfile,
+    SumTimeFluxProfile,
     TabulatedTimeFluxProfile,
     UnityTimeFluxProfile,
 )
@@ -53,6 +55,9 @@ from skyllh.core.source_model import (
 )
 from skyllh.core.storage import (
     DataFieldRecordArray,
+)
+from skyllh.core.time_profile_fit import (
+    create_time_flux_profile_param_seeds,
 )
 from skyllh.core.utils.flux_model import (
     draw_ontimes_from_TimeFluxProfile,
@@ -148,9 +153,11 @@ class TabulatedTimeFluxProfileTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(self.profile(t=np.array([16.0])), [2.0])
         np.testing.assert_almost_equal(self.profile.get_total_integral(), 4.5)
 
-        updated = self.profile.set_params({'t_start': 10.0})
+        self.assertEqual(self.profile.lag, 5.0)
+        updated = self.profile.set_params({'lag': 0.0})
         self.assertTrue(updated)
         self.assertEqual(self.profile.state, state)
+        self.assertEqual(self.profile.t_start, 10.0)
         np.testing.assert_almost_equal(self.profile(t=np.array([11.0])), [2.0])
 
         np.testing.assert_almost_equal(self.profile.times, self.t)
@@ -376,11 +383,117 @@ class TimeWindowEventSelectionMethodTestCase(unittest.TestCase):
         np.testing.assert_equal(src_idxs, [0, 0, 0, 1, 1, 1])
         np.testing.assert_equal(evt_idxs, [0, 1, 2, 0, 1, 2])
 
+    def test_time_range(self):
+        method = TimeWindowEventSelectionMethod(shg_mgr=self.shg_mgr, time_range=(2.5, 9.0))
+        self.assertIsNone(method.time_flux_profile)
+        self.assertEqual(method.time_range, (2.5, 9.0))
+        (events, _) = method.select_events(self.events)
+        np.testing.assert_equal(events['time'], [3.0, 5.0, 9.0])
+
+        with self.assertRaises(ValueError):
+            TimeWindowEventSelectionMethod(shg_mgr=self.shg_mgr)
+        with self.assertRaises(ValueError):
+            TimeWindowEventSelectionMethod(shg_mgr=self.shg_mgr, time_flux_profile=self.profile, time_range=(0, 1))
+
     def test_follows_profile_changes(self):
         method = TimeWindowEventSelectionMethod(shg_mgr=self.shg_mgr, time_flux_profile=self.profile)
         self.profile.set_params({'t0': 8.5, 'tw': 2})
         (events, _) = method.select_events(self.events)
         np.testing.assert_equal(events['time'], [9.0])
+
+
+class CompositeTimeFluxProfileTestCase(unittest.TestCase):
+    def setUp(self):
+        self.cfg = Config()
+        self.lc = TabulatedTimeFluxProfile(t=[0.0, 1.0, 5.0, 10.0], values=[0.0, 2.0, 1.0, 0.0], cfg=self.cfg)
+
+    def _quad(self, profile, t1, t2, points=None):
+        return scipy.integrate.quad(lambda t: profile(t)[0], t1, t2, points=points, limit=500)[0]
+
+    def test_product_with_gaussian_window(self):
+        window = GaussianTimeFluxProfile(t0=4.0, sigma_t=1.0, cfg=self.cfg)
+        p = ProductTimeFluxProfile({'lc': self.lc, 'window': window}, cfg=self.cfg)
+
+        self.assertEqual(p.param_names, ('lc_lag', 'window_t0', 'window_sigma_t'))
+        self.assertEqual(p.t_start, 0.0)
+        self.assertEqual(p.t_stop, 10.0)
+        np.testing.assert_allclose(p(t=np.array([4.0])), self.lc(t=np.array([4.0])))
+        np.testing.assert_allclose(p.get_total_integral(), self._quad(p, 0, 10, [1, 4, 5]), rtol=1e-6)
+        np.testing.assert_allclose(p.get_integral(np.array([2.0]), np.array([4.5])), self._quad(p, 2, 4.5), rtol=1e-6)
+
+        # Changing the parameters of the components via the prefixed names.
+        state = p.state
+        self.assertTrue(p.set_params({'window_t0': 6.0, 'lc_lag': 1.0}))
+        self.assertNotEqual(p.state, state)
+        self.assertEqual(window.t0, 6.0)
+        self.assertEqual(self.lc.lag, 1.0)
+        self.assertEqual(p.get_param('window_t0'), 6.0)
+        np.testing.assert_allclose(p.get_total_integral(), self._quad(p, 1, 11, [2, 6]), rtol=1e-6)
+
+        # The start and stop times are determined by the components.
+        with self.assertRaises(AttributeError):
+            p.t_start = 3.0
+
+    def test_product_with_box_window(self):
+        window = BoxTimeFluxProfile.from_start_and_stop_time(start=2.0, stop=7.0, cfg=self.cfg)
+        p = ProductTimeFluxProfile({'lc': self.lc, 'window': window}, cfg=self.cfg)
+        self.assertEqual((p.t_start, p.t_stop), (2.0, 7.0))
+        np.testing.assert_allclose(p.get_total_integral(), self.lc.get_integral(2.0, 7.0), rtol=1e-6)
+
+        # Without overlap the product is zero.
+        window.set_params({'t0': 20.0})
+        self.assertEqual(p.get_total_integral(), 0)
+        np.testing.assert_equal(p.get_integral(np.array([0.0]), np.array([30.0])), [0.0])
+
+    def test_sum_with_flare(self):
+        flare = BoxTimeFluxProfile(t0=20.0, tw=2.0, cfg=self.cfg)
+        p = SumTimeFluxProfile({'lc': self.lc, 'flare': flare}, weights={'flare': 0.5}, cfg=self.cfg)
+
+        self.assertEqual(p.param_names, ('lc_lag', 'flare_t0', 'flare_tw', 'lc_weight', 'flare_weight'))
+        self.assertEqual((p.t_start, p.t_stop), (0.0, 21.0))
+        np.testing.assert_allclose(p.get_total_integral(), 9.5 + 0.5 * 2)
+        np.testing.assert_allclose(p(t=np.array([1.0, 20.0])), [2.0, 0.5])
+        np.testing.assert_allclose(p.cdf(t=np.array([-1.0, 10.0, 21.0])), [0.0, 9.5 / 10.5, 1.0])
+
+        self.assertTrue(p.set_params({'flare_weight': 2.0, 'flare_t0': 15.0}))
+        self.assertEqual(p.get_param('flare_weight'), 2.0)
+        np.testing.assert_allclose(p.get_total_integral(), 9.5 + 2 * 2)
+        with self.assertRaises(ValueError):
+            p.set_params({'flare_weight': -1.0})
+
+    def test_move_and_copy(self):
+        window = GaussianTimeFluxProfile(t0=4.0, sigma_t=1.0, cfg=self.cfg)
+        p = ProductTimeFluxProfile({'lc': self.lc, 'window': window}, cfg=self.cfg)
+        c = p.copy()
+        c.move(3.0)
+        self.assertEqual(c.t_start, 3.0)
+        self.assertEqual(p.t_start, 0.0)
+        np.testing.assert_allclose(c.get_total_integral(), p.get_total_integral(), rtol=1e-6)
+
+    def test_draw_ontimes(self):
+        livetime = Livetime(np.array([[0.0, 3.0], [3.5, 12.0]]))
+        window = GaussianTimeFluxProfile(t0=4.0, sigma_t=1.0, cfg=self.cfg)
+        p = ProductTimeFluxProfile({'lc': self.lc, 'window': window}, cfg=self.cfg)
+        times = draw_ontimes_from_TimeFluxProfile(
+            profile=p, livetime=livetime, rss=RandomStateService(seed=1), size=5000
+        )
+        self.assertTrue(np.all(livetime.is_on(times)))
+        expected_mean = self._quad(
+            lambda t: np.atleast_1d(t * p(t)[0] * livetime.is_on(t)[0]), 0, 10, [1, 3, 3.5, 4, 5]
+        )
+        expected_mean /= self._quad(lambda t: np.atleast_1d(p(t)[0] * livetime.is_on(t)[0]), 0, 10, [1, 3, 3.5, 4, 5])
+        self.assertAlmostEqual(np.mean(times), expected_mean, delta=0.05)
+
+
+class TimeFluxProfileParamSeedsTestCase(unittest.TestCase):
+    def test_create_seeds(self):
+        seeds = create_time_flux_profile_param_seeds({'a': (0.0, 1.0), 'b': (10.0, 20.0)}, n_seeds={'a': 3, 'b': 2})
+        self.assertEqual(len(seeds), 6)
+        self.assertEqual(seeds[0], {'a': 0.0, 'b': 10.0})
+        self.assertEqual(seeds[-1], {'a': 1.0, 'b': 20.0})
+
+        seeds = create_time_flux_profile_param_seeds({'lag': (-2.0, 2.0)}, n_seeds=1)
+        self.assertEqual(seeds, [{'lag': 0.0}])
 
 
 if __name__ == '__main__':
