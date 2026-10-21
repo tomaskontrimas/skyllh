@@ -31,6 +31,7 @@ import scipy.stats
 
 from skyllh.analyses.i3.publicdata_ps import (
     time_dependent_ps,
+    time_dependent_ps_em,
     time_integrated_ps,
 )
 from skyllh.core.config import Config
@@ -421,7 +422,7 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
         gauss = {'mu': 59100.0, 'sigma': 2.0}
         ana = self._create_td_analysis(['S1', 'S2'], gauss=gauss)
 
-        trials = time_dependent_ps.do_trials_with_em(
+        trials = time_dependent_ps_em.do_trials_with_em(
             ana=ana, n=2, ncpu=1, mean_n_sig=10, gamma_src=2.0, n_gamma=3, gauss=gauss, ppbar=None
         )
         self.assertEqual(len(trials), 2)
@@ -430,12 +431,27 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
 
         # Changing the signal hypothesis changes the signal time PDFs of all
         # datasets.
-        time_dependent_ps.change_signal_time_pdf_of_llhratio_function(ana=ana, box={'start': 59050.0, 'stop': 59150.0})
+        time_dependent_ps_em.change_signal_time_pdf_of_llhratio_function(
+            ana=ana, box={'start': 59050.0, 'stop': 59150.0}
+        )
         sig_time_pdfs = time_dependent_ps.get_signal_time_pdfs(ana)
         self.assertEqual(len(sig_time_pdfs), 2)
         for pdf in sig_time_pdfs:
             self.assertIsInstance(pdf.time_flux_profile, BoxTimeFluxProfile)
         np.testing.assert_allclose(np.sum(_get_ds_weights(ana)), 1.0)
+
+
+class TimeDependentPSModuleTestCase(unittest.TestCase):
+    def test_deprecated_em_names(self):
+        """The names of the EM flare search can still be imported from the
+        time_dependent_ps module, but a deprecation warning is issued.
+        """
+        with self.assertWarns(DeprecationWarning):
+            func = time_dependent_ps.do_trials_with_em
+        self.assertIs(func, time_dependent_ps_em.do_trials_with_em)
+
+        with self.assertRaises(AttributeError):
+            _ = time_dependent_ps.does_not_exist
 
 
 class SyntheticDataTestCase(unittest.TestCase):
