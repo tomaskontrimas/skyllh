@@ -298,6 +298,34 @@ class Parabola1DGridManifoldInterpolationMethod_TestCase(unittest.TestCase):
         np.testing.assert_almost_equal(values, [-5.0, -5.0, 1.0, 1.0, 7.0, 7.0])
         np.testing.assert_almost_equal(grads, [[2.0, 2.0, 2.0, 2.0, 2.0, 2.0]])
 
+    def test_grid_values_cache(self):
+        """The manifold values of the grid points are calculated only once for
+        the same trial data, and calculated again for new trial data.
+        """
+        calls = []
+
+        def func(tdm, eventdata, gridparams_recarray, n_values):
+            calls.append(tuple(gridparams_recarray['p']))
+            return line_manifold_func(tdm, eventdata, gridparams_recarray, n_values)
+
+        interpolmethod = Parabola1DGridManifoldInterpolationMethod(
+            func=func, param_grid_set=ParameterGridSet((ParameterGrid.from_range('p', -3, 3, 0.1),))
+        )
+        params_recarray = np.empty((1,), dtype=[('p', np.float64)])
+
+        for p in [1.36, 1.46, 1.36, 1.46]:
+            params_recarray['p'] = p
+            (values, grads) = interpolmethod(tdm=self.tdm, eventdata=self.eventdata, params_recarray=params_recarray)
+            np.testing.assert_almost_equal(values, np.full((6,), 2 * p + 1))
+            np.testing.assert_almost_equal(grads, np.full((1, 6), 2.0))
+        # The grid points 1.3, 1.4, 1.5 for x1=1.4, and 1.6 for x1=1.5.
+        self.assertEqual(len(calls), 4)
+
+        self.tdm.trial_data_state_id += 1
+        params_recarray['p'] = 1.36
+        interpolmethod(tdm=self.tdm, eventdata=self.eventdata, params_recarray=params_recarray)
+        self.assertEqual(len(calls), 7)
+
 
 if __name__ == '__main__':
     unittest.main()

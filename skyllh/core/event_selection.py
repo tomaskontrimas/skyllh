@@ -824,6 +824,33 @@ class SpatialBoxEventSelectionMethod(SpatialEventSelectionMethod):
         angle = float_cast(angle, 'The delta_angle property must be castable to type float!')
         self._delta_angle = angle
 
+    def get_declination_mask(self, events: DataFieldRecordArray) -> np.ndarray:
+        """Returns the mask of the events, which fall inside the declination
+        band of at least one source. Only these events can be selected by
+        this event selection method, independent of their right-ascension.
+
+        Parameters
+        ----------
+        events
+            The instance of DataFieldRecordArray holding the events.
+
+        Returns
+        -------
+        mask
+            The (N_events,)-shaped numpy ndarray of bool.
+        """
+        assert self._src_arr is not None
+        srcs_dec = self._src_arr['dec']
+        src_dec_minus = np.maximum(-np.pi / 2, srcs_dec - self._delta_angle)
+        src_dec_plus = np.minimum(srcs_dec + self._delta_angle, np.pi / 2)
+
+        evts_dec = events['dec']
+        mask = np.zeros((len(evts_dec),), dtype=np.bool_)
+        for dec_minus, dec_plus in zip(src_dec_minus, src_dec_plus, strict=True):
+            mask |= (evts_dec > dec_minus) & (evts_dec < dec_plus)
+
+        return mask
+
     @overload
     def select_events(
         self,

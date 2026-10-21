@@ -1,6 +1,7 @@
 """This module provides functionality for interpolation."""
 
 import abc
+from collections import OrderedDict
 from collections.abc import Callable
 from typing import cast
 
@@ -474,6 +475,67 @@ class Parabola1DGridManifoldInterpolationMethod(
         # manifold grid point for the different events.
         self._cache = self._create_cache(trial_data_state_id=None, x1=None, M1=None, a=None, b=None)
 
+        # Create a cache for the manifold values at the most recently used
+        # grid points of the trial data. When the parameter value moves to a
+        # neighboring grid point, e.g. during the minimization, or when the
+        # log-likelihood ratio function is maximized repeatedly for the same
+        # trial data, e.g. for different time flux profiles, the manifold
+        # values do not need to be calculated again.
+        self._grid_values_cache: OrderedDict = OrderedDict()
+        self._grid_values_cache_trial_data_state_id: int | None = None
+        self.grid_values_cache_size = 16
+
+    @property
+    def grid_values_cache_size(self) -> int:
+        """The maximal number of grid points, for which the manifold values of
+        the trial data are cached.
+        """
+        return self._grid_values_cache_size
+
+    @grid_values_cache_size.setter
+    def grid_values_cache_size(self, n: int):
+        n = int(n)
+        if n < 3:
+            raise ValueError(f'The grid values cache size must be at least 3! Its value is {n}.')
+        self._grid_values_cache_size = n
+
+    def _get_grid_values(
+        self,
+        tdm: TrialDataManager,
+        eventdata: np.ndarray,
+        xname: str,
+        x: np.ndarray,
+        n_values: int,
+        **kwargs,
+    ) -> np.ndarray:
+        """Returns the manifold values for the given grid point(s) ``x`` of the
+        sources, using the grid values cache of the trial data.
+        """
+        if self._grid_values_cache_trial_data_state_id != tdm.trial_data_state_id:
+            self._grid_values_cache.clear()
+            self._grid_values_cache_trial_data_state_id = tdm.trial_data_state_id
+
+        x = np.atleast_1d(np.asarray(x, dtype=np.float64))
+        key = x.tobytes()
+        cache = self._grid_values_cache
+        if key in cache:
+            cache.move_to_end(key)
+            return cache[key]
+
+        gridparams_recarray = np.array(x, dtype=[(xname, np.float64)])
+        M: np.ndarray = cast(
+            np.ndarray,
+            self._func(
+                tdm=tdm, eventdata=eventdata, gridparams_recarray=gridparams_recarray, n_values=n_values, **kwargs
+            ),
+        )
+
+        cache[key] = M
+        if len(cache) > self._grid_values_cache_size:
+            cache.popitem(last=False)
+
+        return M
+
     def _create_cache(
         self,
         trial_data_state_id: int | None,
@@ -590,33 +652,11 @@ class Parabola1DGridManifoldInterpolationMethod(
             x2 = self._p_grid.round_to_nearest_grid_point(x1 + dx)
 
             # Parameterize the parabola with parameters a, b, and M1.
-            self__func = self._func
-
             n_values = tdm.get_n_values()
 
-            gridparams_recarray = np.array(x0, dtype=[(xname, np.float64)])
-            M0: np.ndarray = cast(
-                np.ndarray,
-                self__func(
-                    tdm=tdm, eventdata=eventdata, gridparams_recarray=gridparams_recarray, n_values=n_values, **kwargs
-                ),
-            )
-
-            gridparams_recarray = np.array(x1, dtype=[(xname, np.float64)])
-            M1: np.ndarray = cast(
-                np.ndarray,
-                self__func(
-                    tdm=tdm, eventdata=eventdata, gridparams_recarray=gridparams_recarray, n_values=n_values, **kwargs
-                ),
-            )
-
-            gridparams_recarray = np.array(x2, dtype=[(xname, np.float64)])
-            M2: np.ndarray = cast(
-                np.ndarray,
-                self__func(
-                    tdm=tdm, eventdata=eventdata, gridparams_recarray=gridparams_recarray, n_values=n_values, **kwargs
-                ),
-            )
+            M0 = self._get_grid_values(tdm, eventdata, xname, x0, n_values, **kwargs)
+            M1 = self._get_grid_values(tdm, eventdata, xname, x1, n_values, **kwargs)
+            M2 = self._get_grid_values(tdm, eventdata, xname, x2, n_values, **kwargs)
 
             a = 0.5 * (M0 - 2.0 * M1 + M2) / dx**2
             b = 0.5 * (M2 - M0) / dx

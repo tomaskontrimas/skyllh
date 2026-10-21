@@ -160,7 +160,8 @@ def create_gaussian_flare_ts_penalty(
     flare, which accounts for the trials factor of the flare width, i.e.
     ``2 ln(sqrt(2 pi) sigma_t / T)``, where ``T`` is the total livetime
     [1]_. Without this term the fit of the flare width prefers very narrow
-    flares around single events.
+    flares around single events. The term is limited to be not positive, i.e.
+    flares wider than the livetime are not preferred.
 
     .. [1] J. Braun et al., Astropart. Phys. 33 (2010) 175-181
 
@@ -184,7 +185,7 @@ def create_gaussian_flare_ts_penalty(
         raise ValueError(f'The livetime must be positive! Its value is {livetime}.')
 
     def ts_penalty(params: dict[str, float]) -> float:
-        return float(2 * np.log(np.sqrt(2 * np.pi) * params[sigma_name] / livetime))
+        return float(2 * np.log(min(1.0, np.sqrt(2 * np.pi) * params[sigma_name] / livetime)))
 
     return ts_penalty
 

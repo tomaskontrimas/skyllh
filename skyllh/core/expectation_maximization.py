@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.stats import norm
 
 
 def em_expectation_step(
@@ -43,7 +42,10 @@ def em_expectation_step(
     N = len(t)
     e_sig = np.empty((n_flares, N), dtype=np.float64)
     for i in range(n_flares):
-        e_sig[i] = norm(loc=mu[i], scale=sigma[i]).pdf(t)  # pyright: ignore[reportAttributeAccessIssue]
+        # The gaussian PDF is evaluated directly, because creating a frozen
+        # scipy.stats.norm instance for each iteration is slow.
+        z = (t - mu[i]) / sigma[i]
+        e_sig[i] = np.exp(-0.5 * z * z) / (np.sqrt(2 * np.pi) * sigma[i])
         e_sig[i] *= sob
         e_sig[i] *= ns[i]
     e_bkg = (N - np.sum(ns)) / (np.max(t) - np.min(t)) / b_term

@@ -499,6 +499,7 @@ def create_analysis(
     pdfratio_factories: dict[str, Callable[..., PDFRatio]] | None = None,
     construct_bkg_generator: bool = True,
     construct_sig_generator: bool = True,
+    bkg_gen_dec_band_only: bool = False,
     tl: TimeLord | None = None,
     ppbar: ProgressBar | None = None,
     logger_name: str | None = None,
@@ -609,6 +610,15 @@ def create_analysis(
     construct_sig_generator
         Flag if the signal generator should be constructed (``True``) or not
         (``False``).
+    bkg_gen_dec_band_only
+        Flag if the background generator should scramble only the events
+        within the declination band of the event selection around the source.
+        The other events can never be selected, because only the time and
+        right-ascension of the events are scrambled, and are counted as pure
+        background events. This speeds up the background generation
+        significantly, without changing the distribution of the background
+        trials. But the generated trials for a given random seed differ from
+        the trials generated with ``bkg_gen_dec_band_only=False``.
     tl
         The TimeLord instance to use to time the creation of the analysis.
     ppbar
@@ -752,9 +762,10 @@ def create_analysis(
 
     # Define the event selection method for pure optimization purposes.
     # We will use the same method for all datasets.
-    event_selection_method = SpatialBoxEventSelectionMethod(
+    spatial_event_selection_method = SpatialBoxEventSelectionMethod(
         shg_mgr=shg_mgr, delta_angle=np.deg2rad(evt_sel_delta_angle_deg)
     )
+    event_selection_method = spatial_event_selection_method
     if isinstance(evt_sel_time_window, tuple):
         event_selection_method = event_selection_method & TimeWindowEventSelectionMethod(
             shg_mgr=shg_mgr, time_range=evt_sel_time_window
@@ -815,7 +826,11 @@ def create_analysis(
         tdm.add_data_field(name='psi', func=get_tdm_field_func_psi(), dt='dec', is_srcevt_data=True)
 
         data_scrambler = DataScrambler(I3SeasonalVariationTimeScramblingMethod(data=data))
-        bkg_gen_method = FixedScrambledExpDataI3BkgGenMethod(cfg=cfg, data_scrambler=data_scrambler)
+        bkg_gen_method = FixedScrambledExpDataI3BkgGenMethod(
+            cfg=cfg,
+            data_scrambler=data_scrambler,
+            keep_mask_func=spatial_event_selection_method.get_declination_mask if bkg_gen_dec_band_only else None,
+        )
 
         bkg_generator = DatasetBackgroundGenerator(
             cfg=cfg,

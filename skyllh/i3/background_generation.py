@@ -1,3 +1,7 @@
+from collections.abc import Callable
+
+import numpy as np
+
 from skyllh.core.background_generation import (
     BackgroundGenerationMethod,
 )
@@ -24,6 +28,7 @@ class FixedScrambledExpDataI3BkgGenMethod(
     def __init__(
         self,
         data_scrambler: DataScrambler,
+        keep_mask_func: Callable[[DataFieldRecordArray], np.ndarray] | None = None,
         **kwargs,
     ):
         """Creates a new background generation method instance to generate
@@ -35,10 +40,24 @@ class FixedScrambledExpDataI3BkgGenMethod(
         data_scrambler
             The DataScrambler instance to use to generate scrambled experimental
             data.
+        keep_mask_func
+            The optional function, which takes the experimental data and
+            returns the mask of the events, which should be scrambled and
+            returned as background events. The other events are only counted
+            as generated background events. This speeds up the background
+            generation, but it must be used only if the masked events cannot
+            be selected by the event selection of the analysis for any
+            scrambling, e.g. events outside the declination band of the
+            sources, when only the time and right-ascension are scrambled.
         """
         super().__init__(**kwargs)
 
         self.data_scrambler = data_scrambler
+        self.keep_mask_func = keep_mask_func
+
+        # The cache of the experimental data, the hash of the mask, and the
+        # kept experimental data events for the last used experimental data.
+        self._kept_exp_cache: tuple | None = None
 
     @property
     def data_scrambler(self):
@@ -87,6 +106,18 @@ class FixedScrambledExpDataI3BkgGenMethod(
             background events.
         """
         assert data.exp is not None
-        bkg_events = self._data_scrambler.scramble_data(rss=rss, dataset=dataset, data=data.exp, copy=True)
 
-        return (len(bkg_events), bkg_events)
+        if self.keep_mask_func is None:
+            bkg_events = self._data_scrambler.scramble_data(rss=rss, dataset=dataset, data=data.exp, copy=True)
+            return (len(bkg_events), bkg_events)
+
+        # Scramble only the events, which can be selected by the analysis.
+        mask = np.asarray(self.keep_mask_func(data.exp), dtype=np.bool_)
+        mask_hash = hash(mask.tobytes())
+        cache = self._kept_exp_cache
+        if (cache is None) or (cache[0] is not data.exp) or (cache[1] != mask_hash):
+            cache = (data.exp, mask_hash, data.exp[mask])
+            self._kept_exp_cache = cache
+        bkg_events = self._data_scrambler.scramble_data(rss=rss, dataset=dataset, data=cache[2], copy=True)
+
+        return (len(data.exp), bkg_events)

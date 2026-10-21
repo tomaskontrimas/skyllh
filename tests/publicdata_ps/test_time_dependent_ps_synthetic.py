@@ -186,6 +186,38 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
             if isinstance(detsigyield, TimeDependentDetSigYield)
         ]
 
+    def test_bkg_gen_dec_band_only(self):
+        """Scrambling only the events within the declination band of the event
+        selection gives the same number of events and the same distribution of
+        selected events as scrambling all events.
+        """
+        names = ['S1', 'S2']
+        ana_all = self._create_td_analysis(names, gauss={'mu': 59100.0, 'sigma': 20.0})
+        ana_band = self._create_td_analysis(names, gauss={'mu': 59100.0, 'sigma': 20.0}, bkg_gen_dec_band_only=True)
+        dec_src = ana_band.shg_mgr.source_list[0].dec
+        delta = np.deg2rad(10)
+
+        n_selected = {'all': [], 'band': []}
+        for seed in range(30):
+            for key, ana in (('all', ana_all), ('band', ana_band)):
+                (_, n_events_list, events_list) = ana.generate_pseudo_data(
+                    rss=RandomStateService(seed=seed), mean_n_sig=0
+                )
+                ana.initialize_trial(events_list, n_events_list)
+                n_selected[key].append(sum(tdm.n_selected_events for tdm in ana.tdm_list))
+                for tdm, n_events, events in zip(ana.tdm_list, n_events_list, events_list, strict=True):
+                    self.assertEqual(tdm.n_selected_events + tdm.n_pure_bkg_events, n_events)
+                    if key == 'band':
+                        self.assertLess(len(events), n_events)
+                        self.assertTrue(np.all(np.abs(events['dec'] - dec_src) < delta))
+                    else:
+                        self.assertEqual(len(events), n_events)
+
+        self.assertEqual(n_events_list, [len(ds_data.exp) for ds_data in ana_all.data_list])
+        (n_all, n_band) = (np.array(n_selected['all']), np.array(n_selected['band']))
+        sigma = np.sqrt((n_all.var() + n_band.var()) / len(n_all))
+        self.assertLess(abs(n_all.mean() - n_band.mean()), 5 * sigma)
+
     def test_full_livetime_box_equals_time_integrated(self):
         """A box profile covering the entire livetime of all datasets must
         reproduce the time-integrated analysis exactly.

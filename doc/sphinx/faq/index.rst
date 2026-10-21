@@ -131,9 +131,42 @@ Frequently Asked Questions (FAQ)
     :py:mod:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps_em` module can be
     used instead, or to provide the seeds of the fit via
     :py:func:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps_em.em_results_to_time_flux_profile_seeds`.
+    Seeded with the EM results, the fit finds a test-statistic value at least as
+    large as the one of the EM, because the EM determines the flare with a
+    simplified likelihood for each tested spectral index. For narrow flares a
+    grid of seeds needs a fine spacing in time, so the EM seeds should be
+    combined with a grid of seeds, e.g. with logarithmically spaced widths. In
+    an untriggered search, the fit of the width prefers very narrow flares
+    around single events. The ``ts_penalty`` argument created by
+    :py:func:`~skyllh.core.time_profile_fit.create_gaussian_flare_ts_penalty`
+    adds the usual term ``2 ln(sqrt(2 pi) sigma_t / T)``, which accounts for the
+    number of possible flares of the given width.
 
     The time flux profile passed to the fit must be the instance used by the
     analysis for the signal hypothesis. The injected signal uses an independent
     copy by default, which is not changed by the fit. If the time window event
     selection is used, it must use a fixed time range covering all tested time
     flux profiles, e.g. ``evt_sel_time_window=(t_min, t_max)``.
+
+.. dropdown:: How can I speed up the trials of a time-dependent analysis?
+   :icon: question
+
+    - If the time flux profile is short compared to the livetime, select only
+      the events within the time range of the profile via the
+      ``evt_sel_time_window`` argument of
+      :py:func:`~skyllh.analyses.i3.publicdata_ps.time_dependent_ps.create_analysis`.
+      The other events have a zero signal time PDF and are treated
+      analytically as pure background events, so the result does not change. If
+      the time flux profile is fitted, e.g. its lag, a fixed time range covering
+      all tested profiles must be given.
+    - Set ``bkg_gen_dec_band_only=True`` to scramble only the events within the
+      declination band of the event selection when generating background
+      events. The other events can never be selected, so the distribution of the
+      trials does not change, but the trials for a given random seed differ.
+    - Trials can be run in parallel via the ``ncpu`` argument of the trial
+      functions.
+
+    The signal energy PDF values of the trial events are cached for the
+    recently used grid points of the spectral index, so repeated maximizations
+    of the log-likelihood ratio function for different time flux profiles, e.g.
+    in a fit of the time flux profile or in the EM gamma scan, are faster.

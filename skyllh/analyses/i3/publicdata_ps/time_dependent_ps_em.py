@@ -189,7 +189,16 @@ def calculate_TS(
     max_TS = None
     best_em_result = None
     best_fitparam_values = None
+    # The EM of different gamma values often converges to the same flare. The
+    # maximization of the log-likelihood ratio function is done only once for
+    # each flare.
+    tested_flares = set()
     for em_result in em_results:
+        flare = (float(em_result['mu']), float(em_result['sigma']))
+        if flare in tested_flares:
+            continue
+        tested_flares.add(flare)
+
         change_signal_time_pdf_of_llhratio_function(ana=ana, gauss={'mu': em_result['mu'], 'sigma': em_result['sigma']})
 
         (log_lambda_max, fitparam_values, _) = ana.llhratio.maximize(rss=rss)
