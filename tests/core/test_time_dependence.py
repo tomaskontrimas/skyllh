@@ -163,6 +163,27 @@ class TabulatedTimeFluxProfileTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(self.profile.times, self.t)
 
 
+class GaussianTimeFluxProfileTestCase(unittest.TestCase):
+    def setUp(self):
+        self.cfg = Config()
+
+    def test_set_sigma_t_updates_support(self):
+        profile = GaussianTimeFluxProfile(t0=10.0, sigma_t=1.0, cfg=self.cfg)
+        profile.set_params({'sigma_t': 100.0})
+        self.assertAlmostEqual(profile.t0, 10.0)
+        self.assertAlmostEqual(profile.sigma_t, 100.0)
+        # The profile must not be truncated at the support of the old width.
+        np.testing.assert_allclose(profile([10.0 + 50.0]), np.exp(-0.125))
+        np.testing.assert_allclose(profile.get_total_integral(), np.sqrt(2 * np.pi) * 100.0)
+
+    def test_set_t0_and_sigma_t(self):
+        profile = GaussianTimeFluxProfile(t0=10.0, sigma_t=1.0, cfg=self.cfg)
+        profile.set_params({'t0': 50.0, 'sigma_t': 2.0})
+        self.assertAlmostEqual(profile.t0, 50.0)
+        self.assertAlmostEqual(profile.sigma_t, 2.0)
+        np.testing.assert_allclose(profile.get_total_integral(), np.sqrt(2 * np.pi) * 2.0)
+
+
 class OntimeIntegralTestCase(unittest.TestCase):
     def setUp(self):
         self.cfg = Config()

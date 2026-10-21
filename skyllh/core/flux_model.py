@@ -1717,6 +1717,7 @@ class GaussianTimeFluxProfile(
 
         super().__init__(t_start=t_start, t_stop=t_stop, time_unit=time_unit, **kwargs)
 
+        self._tol = tol
         self.t0 = t0
         self.sigma_t = sigma_t
 
@@ -1758,6 +1759,13 @@ class GaussianTimeFluxProfile(
     def sigma_t(self, sigma):
         sigma = float_cast(sigma, 'The sigma_t property must be castable to type float!')
         self._sigma_t = sigma
+
+        # Update the start and end time of the gaussian profile, such that
+        # the profile is not truncated when its width changes.
+        t0 = self.t0
+        dt = np.sqrt(-2 * sigma**2 * np.log(self._tol))
+        self._t_start = t0 - dt
+        self._t_stop = t0 + dt
 
     def __call__(
         self,

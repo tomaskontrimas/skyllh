@@ -554,6 +554,14 @@ class DatasetSignalWeightFactorsService:
         a_j = np.sum(a_jk, axis=1)
         a = np.sum(a_jk)
 
+        # If no signal is expected in any dataset, e.g. for a time-dependent
+        # signal hypothesis without overlap with the detector on-time of any
+        # dataset, the dataset signal weight factors are zero.
+        if a == 0:
+            self._f_j = np.zeros_like(a_j, dtype=np.float64)
+            self._f_j_grads = {gpidx: np.zeros_like(a_j, dtype=np.float64) for gpidx in a_jk_grads}
+            return
+
         self._f_j = a_j / a
 
         # Calculate the derivative of f_j w.r.t. all floating parameters present

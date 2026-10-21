@@ -49,6 +49,7 @@ from skyllh.core.signal_generator import TimeDependentMultiDatasetSignalGenerato
 from skyllh.core.source_model import PointLikeSource
 from skyllh.core.storage import DataFieldRecordArray
 from skyllh.core.time_profile_fit import (
+    create_gaussian_flare_ts_penalty,
     do_trials_with_time_flux_profile_fit,
     fit_time_flux_profile_params,
 )
@@ -275,6 +276,16 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
         trials = ana.do_trials(rss=RandomStateService(seed=5), n=5, mean_n_sig=5, ncpu=1)
         self.assertTrue(np.all(np.isfinite(trials['ts'])))
         self.assertTrue(np.all(trials['ns'] >= 0))
+
+        # A signal hypothesis without overlap with any dataset, e.g. a narrow
+        # gaussian within a detector down-time, gives TS=0.
+        livetime = self._get_livetimes(ana)[1]
+        t_gap = 0.5 * (livetime.uptime_mjd_intervals_arr[0, 1] + livetime.uptime_mjd_intervals_arr[1, 0])
+        time_dependent_ps.change_time_flux_profile(ana, GaussianTimeFluxProfile(t0=t_gap, sigma_t=1e-4, cfg=Config()))
+        np.testing.assert_equal(_get_ds_weights(ana), [0.0, 0.0])
+        (log_lambda, fitparam_values, _) = ana.llhratio.maximize(RandomStateService(seed=1))
+        self.assertEqual(ana.calculate_test_statistic(log_lambda, fitparam_values), 0)
+        self.assertTrue(np.all(np.isfinite(fitparam_values)))
 
     def test_time_window_event_selection(self):
         """The time window event selection must not change the result."""
@@ -534,6 +545,23 @@ class TimeDependentPSSyntheticTestCase(unittest.TestCase):
         self.assertGreater(result['ts'], 25)
         self.assertLess(abs(result['time_params']['t0'] - 59101.0), 1.0)
         self.assertLess(result['time_params']['sigma_t'], 3.0)
+        self.assertEqual(result['ts'], result['ts_llhratio'])
+
+        # Seeded with the EM results, the fit cannot be worse than the EM.
+        (ts_em, _, _) = time_dependent_ps_em.calculate_TS(
+            ana=ana, em_results=em_results, rss=RandomStateService(seed=1)
+        )
+        self.assertGreaterEqual(result['ts'], ts_em - 1e-6)
+
+        # The penalty term of an untriggered flare search is added to the TS.
+        ts_penalty = create_gaussian_flare_ts_penalty(livetime=100.0)
+        result_penalty = fit_time_flux_profile_params(
+            ana=ana, time_flux_profile=profile, param_ranges=param_ranges, seeds=seeds, ts_penalty=ts_penalty
+        )
+        np.testing.assert_allclose(
+            result_penalty['ts'] - result_penalty['ts_llhratio'], ts_penalty(result_penalty['time_params'])
+        )
+        self.assertLess(result_penalty['ts'], result_penalty['ts_llhratio'])
 
     def test_fit_lightcurve_window_and_flare(self):
         """A box window on a lightcurve and the weight of an additional flare

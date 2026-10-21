@@ -19,7 +19,7 @@ the prefixed parameters of composite time flux profiles.
 """
 
 import itertools
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from typing import Any
 
 import numpy as np
@@ -152,6 +152,43 @@ def _create_initial_simplex(
     return simplex
 
 
+def create_gaussian_flare_ts_penalty(
+    livetime: float,
+    sigma_name: str = 'sigma_t',
+) -> Callable[[dict[str, float]], float]:
+    """Creates the test-statistic term of an untriggered search for a gaussian
+    flare, which accounts for the trials factor of the flare width, i.e.
+    ``2 ln(sqrt(2 pi) sigma_t / T)``, where ``T`` is the total livetime
+    [1]_. Without this term the fit of the flare width prefers very narrow
+    flares around single events.
+
+    .. [1] J. Braun et al., Astropart. Phys. 33 (2010) 175-181
+
+    Parameters
+    ----------
+    livetime
+        The total livetime ``T`` of the search, in the time unit of the time
+        flux profile.
+    sigma_name
+        The name of the width parameter of the gaussian time flux profile.
+
+    Returns
+    -------
+    ts_penalty
+        The function, which takes the dictionary of the time flux profile
+        parameter values and returns the term, which is added to the
+        test-statistic value. It can be passed as ``ts_penalty`` argument to
+        :func:`fit_time_flux_profile_params`.
+    """
+    if livetime <= 0:
+        raise ValueError(f'The livetime must be positive! Its value is {livetime}.')
+
+    def ts_penalty(params: dict[str, float]) -> float:
+        return float(2 * np.log(np.sqrt(2 * np.pi) * params[sigma_name] / livetime))
+
+    return ts_penalty
+
+
 def fit_time_flux_profile_params(
     ana: LLHRatioAnalysis,
     time_flux_profile: TimeFluxProfile,
@@ -162,6 +199,7 @@ def fit_time_flux_profile_params(
     minimizer_rss: RandomStateService | None = None,
     method: str = 'Nelder-Mead',
     minimize_options: dict | None = None,
+    ts_penalty: Callable[[dict[str, float]], float] | None = None,
     tl: TimeLord | None = None,
 ) -> dict[str, Any]:
     """Fits the given parameters of the time flux profile of the signal
@@ -209,6 +247,11 @@ def fit_time_flux_profile_params(
         ``'Nelder-Mead'`` method, the default options are an absolute parameter
         tolerance of 0.1% of the smallest parameter range, and an absolute
         test-statistic tolerance of 0.01.
+    ts_penalty
+        The optional function, which takes the dictionary of the time flux
+        profile parameter values and returns a term, which is added to the
+        test-statistic value, e.g. the function created by
+        :func:`create_gaussian_flare_ts_penalty`.
     tl
         The optional instance of TimeLord to measure timing information.
 
@@ -218,7 +261,11 @@ def fit_time_flux_profile_params(
         The dictionary with the following keys:
 
         ts : float
-            The maximal test-statistic value.
+            The maximal test-statistic value, including the ``ts_penalty``
+            term.
+        ts_llhratio : float
+            The test-statistic value of the best fit without the
+            ``ts_penalty`` term.
         time_params : dict
             The best fit values of the time flux profile parameters.
         global_params : dict
@@ -266,9 +313,12 @@ def fit_time_flux_profile_params(
         if x in cache:
             return cache[x]
 
-        time_flux_profile.set_params(dict(zip(names, x, strict=True)))
+        params = dict(zip(names, x, strict=True))
+        time_flux_profile.set_params(params)
         (log_lambda, fitparam_values, _) = ana.llhratio.maximize(rss=minimizer_rss)
         ts = float(ana.calculate_test_statistic(log_lambda=log_lambda, fitparam_values=fitparam_values))
+        if ts_penalty is not None:
+            ts += ts_penalty(params)
         n_evaluations += 1
 
         cache[x] = (ts, np.array(fitparam_values, copy=True))
@@ -305,8 +355,10 @@ def fit_time_flux_profile_params(
     cache.pop(best_x, None)
     (best_ts, best_fitparam_values) = evaluate(best_x)
 
+    best_params = dict(zip(names, best_x, strict=True))
     result = {
         'ts': best_ts,
+        'ts_llhratio': best_ts - ts_penalty(best_params) if ts_penalty is not None else best_ts,
         'time_params': dict(zip(names, best_x, strict=True)),
         'global_params': ana.pmm.create_global_params_dict(gflp_values=best_fitparam_values),
         'fitparam_values': best_fitparam_values,
@@ -327,6 +379,7 @@ def do_trial_with_time_flux_profile_fit(
     n_refine: int = 1,
     method: str = 'Nelder-Mead',
     minimize_options: dict | None = None,
+    ts_penalty: Callable[[dict[str, float]], float] | None = None,
     tl: TimeLord | None = None,
 ) -> np.ndarray:
     """Generates pseudo data and fits the time flux profile parameters of the
@@ -357,6 +410,9 @@ def do_trial_with_time_flux_profile_fit(
         The minimization method of ``scipy.optimize.minimize``.
     minimize_options
         The optional options passed to ``scipy.optimize.minimize``.
+    ts_penalty
+        The optional function returning a term, which is added to the
+        test-statistic value.
     tl
         The optional instance of TimeLord to measure timing information.
 
@@ -364,7 +420,7 @@ def do_trial_with_time_flux_profile_fit(
     -------
     trial
         The structured numpy ndarray of length 1 with the fields ``seed``,
-        ``mean_n_sig``, ``n_sig``, ``ts``, the global parameters of the analysis,
+        ``mean_n_sig``, ``n_sig``, ``ts``, ``ts_llhratio``, the global parameters of the analysis,
         and the fitted time flux profile parameters.
     """
     (n_sig, n_events_list, events_list) = ana.generate_pseudo_data(rss=rss, mean_n_sig=mean_n_sig, tl=tl)
@@ -380,6 +436,7 @@ def do_trial_with_time_flux_profile_fit(
         minimizer_rss=RandomStateService(seed=1),
         method=method,
         minimize_options=minimize_options,
+        ts_penalty=ts_penalty,
         tl=tl,
     )
 
@@ -389,6 +446,7 @@ def do_trial_with_time_flux_profile_fit(
         ('mean_n_sig', np.float64),
         ('n_sig', np.int64),
         ('ts', np.float64),
+        ('ts_llhratio', np.float64),
     ]
     dtype += [(name, np.float64) for name in result['global_params']]
     dtype += [(name, np.float64) for name in names]
@@ -398,6 +456,7 @@ def do_trial_with_time_flux_profile_fit(
     trial['mean_n_sig'] = mean_n_sig
     trial['n_sig'] = n_sig
     trial['ts'] = result['ts']
+    trial['ts_llhratio'] = result['ts_llhratio']
     for name, value in result['global_params'].items():
         trial[name] = value
     for name in names:
@@ -419,6 +478,7 @@ def do_trials_with_time_flux_profile_fit(
     n_refine: int = 1,
     method: str = 'Nelder-Mead',
     minimize_options: dict | None = None,
+    ts_penalty: Callable[[dict[str, float]], float] | None = None,
     tl: TimeLord | None = None,
     ppbar: ProgressBar | None = None,
 ) -> np.ndarray:
@@ -448,6 +508,7 @@ def do_trials_with_time_flux_profile_fit(
                 'n_refine': n_refine,
                 'method': method,
                 'minimize_options': minimize_options,
+                'ts_penalty': ts_penalty,
             },
         )
         for _ in range(n)
